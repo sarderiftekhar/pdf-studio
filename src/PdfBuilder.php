@@ -4,8 +4,6 @@ namespace PdfStudio\Laravel;
 
 use Illuminate\Contracts\Foundation\Application;
 use PdfStudio\Laravel\DTOs\RenderContext;
-use PdfStudio\Laravel\DTOs\RenderOptions;
-use PdfStudio\Laravel\Exceptions\RenderException;
 
 class PdfBuilder
 {
@@ -16,7 +14,7 @@ class PdfBuilder
     public function __construct(
         protected Application $app,
     ) {
-        $this->context = new RenderContext();
+        $this->context = new RenderContext;
     }
 
     public function view(string $view): static
@@ -36,7 +34,7 @@ class PdfBuilder
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function data(array $data): static
     {

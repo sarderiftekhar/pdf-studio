@@ -5,7 +5,7 @@ namespace PdfStudio\Laravel\DTOs;
 class RenderContext
 {
     /**
-     * @param array<string, mixed> $data
+     * @param  array<string, mixed>  $data
      */
     public function __construct(
         public ?string $viewName = null,
@@ -17,6 +17,6 @@ class RenderContext
         public ?string $pdfContent = null,
         public ?RenderOptions $options = null,
     ) {
-        $this->options ??= new RenderOptions();
+        $this->options ??= new RenderOptions;
     }
 }

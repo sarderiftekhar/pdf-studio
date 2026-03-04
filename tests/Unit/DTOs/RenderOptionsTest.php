@@ -3,7 +3,7 @@
 use PdfStudio\Laravel\DTOs\RenderOptions;
 
 it('has sensible defaults', function () {
-    $options = new RenderOptions();
+    $options = new RenderOptions;
 
     expect($options->format)->toBe('A4')
         ->and($options->landscape)->toBeFalse()

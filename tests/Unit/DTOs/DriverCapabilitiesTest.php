@@ -3,7 +3,7 @@
 use PdfStudio\Laravel\DTOs\DriverCapabilities;
 
 it('has sensible defaults', function () {
-    $caps = new DriverCapabilities();
+    $caps = new DriverCapabilities;
 
     expect($caps->landscape)->toBeTrue()
         ->and($caps->customMargins)->toBeTrue()

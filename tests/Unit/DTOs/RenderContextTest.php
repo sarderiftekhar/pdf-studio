@@ -4,7 +4,7 @@ use PdfStudio\Laravel\DTOs\RenderContext;
 use PdfStudio\Laravel\DTOs\RenderOptions;
 
 it('initializes with default RenderOptions', function () {
-    $context = new RenderContext();
+    $context = new RenderContext;
 
     expect($context->options)->toBeInstanceOf(RenderOptions::class)
         ->and($context->viewName)->toBeNull()
