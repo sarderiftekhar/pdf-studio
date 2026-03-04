@@ -35,6 +35,9 @@ class PdfBuilder
         return $this;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     public function data(array $data): static
     {
         $this->context->data = $data;

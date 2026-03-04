@@ -4,6 +4,9 @@ namespace PdfStudio\Laravel\DTOs;
 
 class DriverCapabilities
 {
+    /**
+     * @param array<int, string> $supportedFormats
+     */
     public function __construct(
         public bool $landscape = true,
         public bool $customMargins = true,

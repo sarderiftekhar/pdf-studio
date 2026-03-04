@@ -4,6 +4,9 @@ namespace PdfStudio\Laravel\DTOs;
 
 class RenderContext
 {
+    /**
+     * @param array<string, mixed> $data
+     */
     public function __construct(
         public ?string $viewName = null,
         public ?string $rawHtml = null,

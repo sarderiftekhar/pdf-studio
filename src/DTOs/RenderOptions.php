@@ -4,6 +4,9 @@ namespace PdfStudio\Laravel\DTOs;
 
 class RenderOptions
 {
+    /**
+     * @param array<string, int> $margins
+     */
     public function __construct(
         public string $format = 'A4',
         public bool $landscape = false,
