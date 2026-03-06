@@ -2,7 +2,7 @@
 
 namespace PdfStudio\Laravel\Events;
 
-class RenderFailed
+final class RenderFailed
 {
     public function __construct(
         public string $driver,

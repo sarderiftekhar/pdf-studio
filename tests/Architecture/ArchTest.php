@@ -32,3 +32,12 @@ arch('cache classes have flush method')
 arch('commands extend Illuminate Command')
     ->expect('PdfStudio\Laravel\Commands')
     ->toExtend(\Illuminate\Console\Command::class);
+
+arch('events are simple DTOs')
+    ->expect('PdfStudio\Laravel\Events')
+    ->toBeFinal()
+    ->toHaveConstructor();
+
+arch('preview data provider contract is interface')
+    ->expect('PdfStudio\Laravel\Contracts\PreviewDataProviderContract')
+    ->toBeInterface();

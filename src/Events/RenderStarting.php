@@ -2,7 +2,7 @@
 
 namespace PdfStudio\Laravel\Events;
 
-class RenderStarting
+final class RenderStarting
 {
     public function __construct(
         public string $html,
