@@ -56,5 +56,26 @@ class PdfStudioServiceProvider extends ServiceProvider
                 Commands\CacheClearCommand::class,
             ]);
         }
+
+        $this->registerPreviewRoutes();
+    }
+
+    protected function registerPreviewRoutes(): void
+    {
+        if (! $this->app['config']->get('pdf-studio.preview.enabled', false)) {
+            return;
+        }
+
+        $prefix = $this->app['config']->get('pdf-studio.preview.prefix', 'pdf-studio/preview');
+        $middleware = $this->app['config']->get('pdf-studio.preview.middleware', ['web', 'auth']);
+
+        $this->app['router']->group([
+            'prefix' => $prefix,
+            'middleware' => $middleware,
+        ], function ($router) {
+            $router->get('{template}', [Preview\PreviewController::class, 'show'])
+                ->where('template', '.*')
+                ->name('pdf-studio.preview');
+        });
     }
 }
