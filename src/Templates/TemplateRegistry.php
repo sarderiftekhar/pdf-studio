@@ -17,7 +17,7 @@ class TemplateRegistry
 
     public function get(string $name): TemplateDefinition
     {
-        if (! isset($this->templates[$name])) {
+        if (!isset($this->templates[$name])) {
             throw TemplateNotFoundException::forName($name);
         }
 

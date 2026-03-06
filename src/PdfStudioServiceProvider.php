@@ -109,7 +109,7 @@ class PdfStudioServiceProvider extends ServiceProvider
 
     protected function registerPreviewRoutes(): void
     {
-        if (! $this->app['config']->get('pdf-studio.preview.enabled', false)) {
+        if (!$this->app['config']->get('pdf-studio.preview.enabled', false)) {
             return;
         }
 
