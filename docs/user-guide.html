@@ -699,6 +699,21 @@
     </div>
 
     <div class="nav-group">
+      <div class="nav-group-label">Layout & Design</div>
+      <a href="#layouts" class="nav-item"><span class="nav-dot"></span>Page Layouts</a>
+      <a href="#troubleshooting" class="nav-item"><span class="nav-dot"></span>Troubleshooting</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Framework Integrations</div>
+      <a href="#livewire" class="nav-item"><span class="nav-dot"></span>Livewire</a>
+      <a href="#vue" class="nav-item"><span class="nav-dot"></span>Vue 3</a>
+      <a href="#react" class="nav-item"><span class="nav-dot"></span>React</a>
+      <a href="#nodejs" class="nav-item"><span class="nav-dot"></span>Node.js</a>
+      <a href="#javascript" class="nav-item"><span class="nav-dot"></span>Vanilla JavaScript</a>
+    </div>
+
+    <div class="nav-group">
       <div class="nav-group-label">Reference</div>
       <a href="#config" class="nav-item"><span class="nav-dot"></span>Configuration</a>
       <a href="#testing" class="nav-item"><span class="nav-dot"></span>Testing</a>
@@ -1549,11 +1564,900 @@
       </div>
     </section>
 
+
+    <div class="divider"></div>
+
+    <!-- ── PAGE LAYOUTS ── -->
+    <section class="section fade-in" id="layouts">
+      <div class="section-eyebrow ey-base">// 18 · Layout &amp; Design</div>
+      <h2>Page Layouts</h2>
+      <p class="section-lead">Control paper size, orientation, margins, headers, footers, and multi-column layouts. Every option works across all drivers unless noted.</p>
+
+      <h3>Paper Sizes</h3>
+      <table class="data-table">
+        <thead><tr><th>Format</th><th>Dimensions</th><th>Common use</th></tr></thead>
+        <tbody>
+          <tr><td><code>A4</code></td><td>210 × 297 mm</td><td>International standard, invoices, reports</td></tr>
+          <tr><td><code>Letter</code></td><td>215.9 × 279.4 mm</td><td>North American default</td></tr>
+          <tr><td><code>Legal</code></td><td>215.9 × 355.6 mm</td><td>Legal documents</td></tr>
+          <tr><td><code>A3</code></td><td>297 × 420 mm</td><td>Wide tables, architectural sheets</td></tr>
+          <tr><td><code>A5</code></td><td>148 × 210 mm</td><td>Compact receipts, vouchers</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP · Paper size &amp; orientation</span>
+        </div>
+        <pre><span class="kw">use</span> <span class="cls">PdfStudio\Laravel\Facades\Pdf</span>;
+
+<span class="cm">// A4 portrait (default)</span>
+<span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'reports.annual'</span>)
+    -><span class="fn">format</span>(<span class="str">'A4'</span>)
+    -><span class="fn">download</span>(<span class="str">'report.pdf'</span>);
+
+<span class="cm">// A4 landscape — great for wide tables / dashboards</span>
+<span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'reports.quarterly'</span>)
+    -><span class="fn">format</span>(<span class="str">'A4'</span>)
+    -><span class="fn">landscape</span>()
+    -><span class="fn">download</span>(<span class="str">'quarterly.pdf'</span>);
+
+<span class="cm">// US Letter — most common for North American clients</span>
+<span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'invoices.us'</span>)
+    -><span class="fn">format</span>(<span class="str">'Letter'</span>)
+    -><span class="fn">download</span>(<span class="str">'invoice.pdf'</span>);</pre>
+      </div>
+
+      <h3>Margins</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP · Custom margins</span>
+        </div>
+        <pre><span class="cm">// All sides equal (mm)</span>
+<span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'invoices.show'</span>)
+    -><span class="fn">margins</span>(<span class="num">20</span>)
+    -><span class="fn">download</span>(<span class="str">'invoice.pdf'</span>);
+
+<span class="cm">// Individual sides: top, right, bottom, left (mm)</span>
+<span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'invoices.show'</span>)
+    -><span class="fn">margins</span>(<span class="prop">top</span>: <span class="num">15</span>, <span class="prop">right</span>: <span class="num">20</span>, <span class="prop">bottom</span>: <span class="num">30</span>, <span class="prop">left</span>: <span class="num">20</span>)
+    -><span class="fn">download</span>(<span class="str">'invoice.pdf'</span>);
+
+<span class="cm">// Compact receipt — very tight margins</span>
+<span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'receipts.thermal'</span>)
+    -><span class="fn">format</span>(<span class="str">'A5'</span>)
+    -><span class="fn">margins</span>(<span class="num">5</span>)
+    -><span class="fn">download</span>(<span class="str">'receipt.pdf'</span>);</pre>
+      </div>
+
+      <h3>Headers &amp; Footers</h3>
+      <div class="callout callout-info">
+        <span class="callout-icon">ℹ️</span>
+        <div class="callout-body">
+          Headers and footers work differently by driver. <strong>wkhtmltopdf</strong> supports full HTML headers/footers. <strong>Chromium</strong> uses CSS <code>@page</code> rules and the <code>@pageNumber</code> directive. <strong>dompdf</strong> has limited header/footer support.
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP · wkhtmltopdf HTML header &amp; footer</span>
+        </div>
+        <pre><span class="cm">// wkhtmltopdf: pass raw HTML strings</span>
+<span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'reports.show'</span>)
+    -><span class="fn">driver</span>(<span class="str">'wkhtmltopdf'</span>)
+    -><span class="fn">headerHtml</span>(<span class="str">'&lt;div style="font-size:10px;text-align:right;width:100%;"&gt;Acme Corp — Confidential&lt;/div&gt;'</span>)
+    -><span class="fn">footerHtml</span>(<span class="str">'&lt;div style="font-size:9px;text-align:center;width:100%;"&gt;Page [page] of [topage]&lt;/div&gt;'</span>)
+    -><span class="fn">download</span>(<span class="str">'report.pdf'</span>);</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">Blade · Chromium page numbers via @pageNumber</span>
+        </div>
+        <pre><span class="cm">{{-- resources/views/pdf/report.blade.php --}}</span>
+&lt;html&gt;
+&lt;head&gt;
+  &lt;style&gt;
+    @media print {
+      @page {
+        margin: 20mm 15mm 25mm 15mm; <span class="cm">/* leave space for footer */</span>
+      }
+      .page-footer {
+        position: fixed;
+        bottom: -18mm;
+        width: 100%;
+        text-align: center;
+        font-size: 9pt;
+        color: #888;
+      }
+    }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class="page-footer"&gt;
+    @pageNumber(['format' =&gt; 'Page {page} of {total}'])
+  &lt;/div&gt;
+
+  &lt;h1&gt;Annual Report&lt;/h1&gt;
+  <span class="cm">&lt;!-- content --&gt;</span>
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+      </div>
+
+      <h3>Multi-Column Layouts</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">Blade · Two-column invoice layout</span>
+        </div>
+        <pre>&lt;!-- Two-column header: logo left, client info right --&gt;
+&lt;div style="display:flex; justify-content:space-between; margin-bottom:32px;"&gt;
+  &lt;div&gt;
+    &lt;img src="{{ asset('logo.png') }}" style="height:48px;"&gt;
+    &lt;p style="color:#666; font-size:12px; margin-top:8px;"&gt;123 Main St, London&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;div style="text-align:right;"&gt;
+    &lt;h2 style="margin:0;"&gt;INVOICE #{{ $invoice->number }}&lt;/h2&gt;
+    &lt;p style="color:#666;"&gt;{{ $invoice->date->format('d M Y') }}&lt;/p&gt;
+    &lt;p style="font-weight:600;"&gt;{{ $invoice->client->name }}&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;!-- Line items table --&gt;
+&lt;table style="width:100%; border-collapse:collapse; font-size:13px;"&gt;
+  &lt;thead&gt;
+    &lt;tr style="background:#F8F8F8; border-bottom:2px solid #E5E5E5;"&gt;
+      &lt;th style="padding:10px 8px; text-align:left;"&gt;Description&lt;/th&gt;
+      &lt;th style="padding:10px 8px; text-align:right;"&gt;Qty&lt;/th&gt;
+      &lt;th style="padding:10px 8px; text-align:right;"&gt;Rate&lt;/th&gt;
+      &lt;th style="padding:10px 8px; text-align:right;"&gt;Total&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    @foreach($invoice->items as $item)
+    &lt;tr style="border-bottom:1px solid #F0F0F0;"&gt;
+      &lt;td style="padding:8px;"&gt;{{ $item->description }}&lt;/td&gt;
+      &lt;td style="padding:8px; text-align:right;"&gt;{{ $item->qty }}&lt;/td&gt;
+      &lt;td style="padding:8px; text-align:right;"&gt;£{{ number_format($item->rate, 2) }}&lt;/td&gt;
+      &lt;td style="padding:8px; text-align:right;"&gt;£{{ number_format($item->total, 2) }}&lt;/td&gt;
+    &lt;/tr&gt;
+    @endforeach
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;!-- Totals: right-aligned summary --&gt;
+&lt;div style="margin-top:24px; display:flex; justify-content:flex-end;"&gt;
+  &lt;table style="font-size:13px;"&gt;
+    &lt;tr&gt;&lt;td style="padding:4px 16px 4px 0; color:#666;"&gt;Subtotal&lt;/td&gt;
+        &lt;td style="text-align:right;"&gt;£{{ number_format($invoice->subtotal, 2) }}&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr&gt;&lt;td style="padding:4px 16px 4px 0; color:#666;"&gt;VAT (20%)&lt;/td&gt;
+        &lt;td style="text-align:right;"&gt;£{{ number_format($invoice->vat, 2) }}&lt;/td&gt;&lt;/tr&gt;
+    &lt;tr style="border-top:2px solid #333; font-weight:700; font-size:15px;"&gt;
+        &lt;td style="padding:8px 16px 0 0;"&gt;Total&lt;/td&gt;
+        &lt;td style="text-align:right;"&gt;£{{ number_format($invoice->total, 2) }}&lt;/td&gt;&lt;/tr&gt;
+  &lt;/table&gt;
+&lt;/div&gt;</pre>
+      </div>
+
+      <h3>Page Break Control</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">Blade · Page break directives in practice</span>
+        </div>
+        <pre>@foreach($sections as $section)
+  &lt;!-- Keep a section header with its content --&gt;
+  @keepTogether
+    &lt;h2&gt;{{ $section->title }}&lt;/h2&gt;
+    &lt;p&gt;{{ $section->intro }}&lt;/p&gt;
+  @endKeepTogether
+
+  @foreach($section->tables as $table)
+    @keepTogether
+      &lt;h3&gt;{{ $table->title }}&lt;/h3&gt;
+      &lt;table&gt;...&lt;/table&gt;
+    @endKeepTogether
+
+    @if(!$loop->last)
+      @pageBreak  {{-- force break between tables --}}
+    @endif
+  @endforeach
+@endforeach</pre>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ── TROUBLESHOOTING ── -->
+    <section class="section fade-in" id="troubleshooting">
+      <div class="section-eyebrow ey-base">// 19 · Layout &amp; Design</div>
+      <h2>Troubleshooting</h2>
+      <p class="section-lead">Common layout, rendering, and configuration issues — and how to fix them.</p>
+
+      <h3>Tailwind classes not applying</h3>
+      <div class="callout callout-info">
+        <span class="callout-icon">⚡</span>
+        <div class="callout-body">
+          The Tailwind compiler scans HTML for class names and generates only the CSS classes it finds. If a class is missing from the rendered PDF, the HTML sent to the compiler may not contain it — usually because of dynamic class construction.
+        </div>
+      </div>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">Blade · Dynamic classes — wrong vs. right</span>
+        </div>
+        <pre><span class="cm">// ❌ Wrong — Tailwind cannot detect these at compile time</span>
+&lt;div class="text-{{ $color }}-500"&gt;...&lt;/div&gt;
+
+<span class="cm">// ✅ Right — use a full class map</span>
+@php
+$colorClass = match($status) {
+    'paid'    =&gt; 'text-green-600 bg-green-50',
+    'overdue' =&gt; 'text-red-600 bg-red-50',
+    default   =&gt; 'text-gray-600 bg-gray-50',
+};
+@endphp
+&lt;div class="{{ $colorClass }}"&gt;...&lt;/div&gt;
+
+<span class="cm">// ✅ Or — add a safelist in your tailwind.config.js</span>
+<span class="cm">// safelist: [ 'text-red-500', 'text-green-500', 'text-blue-500' ]</span></pre>
+      </div>
+
+      <h3>Images not rendering</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">Blade · Image paths for PDF rendering</span>
+        </div>
+        <pre><span class="cm">// ❌ Wrong — relative paths break outside a browser context</span>
+&lt;img src="/images/logo.png"&gt;
+
+<span class="cm">// ✅ Right — use absolute URLs or storage paths</span>
+&lt;img src="{{ asset('images/logo.png') }}"&gt;
+
+<span class="cm">// ✅ Best for local files — convert to base64</span>
+@php
+  $logo = 'data:image/png;base64,' . base64_encode(
+      file_get_contents(public_path('images/logo.png'))
+  );
+@endphp
+&lt;img src="{{ $logo }}"&gt;
+
+<span class="cm">// ✅ For S3 / cloud storage — use a temporary signed URL</span>
+&lt;img src="{{ Storage::temporaryUrl('logos/acme.png', now()-&gt;addMinutes(5)) }}"&gt;</pre>
+      </div>
+
+      <h3>Custom fonts not loading</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">Blade · Embed fonts via base64</span>
+        </div>
+        <pre><span class="cm">&lt;!-- ❌ Google Fonts URLs fail in headless environments --&gt;</span>
+&lt;link href="https://fonts.googleapis.com/css2?family=Inter"&gt;
+
+<span class="cm">&lt;!-- ✅ Embed font as base64 in &lt;style&gt; --&gt;</span>
+@php
+  $font = base64_encode(file_get_contents(public_path('fonts/Inter-Regular.woff2')));
+@endphp
+&lt;style&gt;
+  @font-face {
+    font-family: 'Inter';
+    src: url('data:font/woff2;base64,{{ $font }}') format('woff2');
+  }
+  body { font-family: 'Inter', sans-serif; }
+&lt;/style&gt;</pre>
+      </div>
+
+      <h3>Page breaks not working</h3>
+      <table class="data-table">
+        <thead><tr><th>Symptom</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr><td>Break inside a flex/grid container</td><td>Add <code>display:block</code> wrapper around the section; flex/grid containers ignore <code>break-before</code></td></tr>
+          <tr><td><code>@keepTogether</code> not holding</td><td>Section is taller than one page — can't be kept together; split content or reduce font size</td></tr>
+          <tr><td>Extra blank page at end</td><td>Remove trailing margin/padding on the last element: <code>last:mb-0</code></td></tr>
+          <tr><td>Table rows splitting mid-row</td><td>Add <code>page-break-inside: avoid</code> to <code>tr</code> elements in CSS</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Text/layout looks different from browser preview</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP · Debug: dump compiled HTML to inspect it</span>
+        </div>
+        <pre><span class="cm">// Enable debug recording in config</span>
+<span class="cm">// pdf-studio.debug.enabled = true</span>
+
+<span class="cm">// Or dump inline for a single render</span>
+<span class="var">$result</span> = <span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'invoices.show'</span>)
+    -><span class="fn">data</span>([<span class="str">'invoice'</span> => <span class="var">$invoice</span>])
+    -><span class="fn">render</span>();
+
+<span class="cm">// Inspect the compiled HTML in your browser</span>
+<span class="kw">return</span> <span class="fn">response</span>(<span class="var">$result</span>-><span class="prop">html</span>, <span class="num">200</span>, [
+    <span class="str">'Content-Type'</span> => <span class="str">'text/html'</span>
+]);</pre>
+      </div>
+
+      <h3>Chromium vs dompdf rendering differences</h3>
+      <table class="data-table">
+        <thead><tr><th>Feature</th><th>Chromium</th><th>dompdf</th><th>wkhtmltopdf</th></tr></thead>
+        <tbody>
+          <tr><td>Flexbox</td><td>✅ Full</td><td>⚠️ Partial</td><td>⚠️ Partial</td></tr>
+          <tr><td>CSS Grid</td><td>✅ Full</td><td>❌</td><td>❌</td></tr>
+          <tr><td>Tailwind v4</td><td>✅</td><td>⚠️ Utilities only</td><td>⚠️ Utilities only</td></tr>
+          <tr><td>Custom fonts</td><td>✅</td><td>✅ (woff/ttf)</td><td>✅</td></tr>
+          <tr><td>Background images</td><td>✅</td><td>⚠️ Partial</td><td>✅</td></tr>
+          <tr><td><code>@page</code> margins</td><td>✅</td><td>✅</td><td>✅</td></tr>
+          <tr><td>HTML header/footer</td><td>❌</td><td>❌</td><td>✅</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Performance — large PDFs taking too long</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP · Tips for faster rendering</span>
+        </div>
+        <pre><span class="cm">// 1. Use the cache — Tailwind compilation is the slowest step</span>
+<span class="cm">//    Ensure pdf-studio.tailwind.cache.enabled = true (default)</span>
+
+<span class="cm">// 2. Use dompdf for simple layouts (no external process spawn)</span>
+<span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'receipts.simple'</span>)-><span class="fn">driver</span>(<span class="str">'dompdf'</span>)-><span class="fn">download</span>();
+
+<span class="cm">// 3. Offload heavy renders to the queue</span>
+<span class="cls">RenderPdfJob</span>::<span class="fn">dispatch</span>(
+    <span class="prop">view</span>: <span class="str">'reports.annual'</span>,
+    <span class="prop">data</span>: <span class="var">$data</span>,
+    <span class="prop">outputPath</span>: <span class="str">'reports/annual.pdf'</span>,
+    <span class="prop">disk</span>: <span class="str">'s3'</span>,
+);
+
+<span class="cm">// 4. For bulk rendering use Pdf::batch()</span>
+<span class="cls">Pdf</span>::<span class="fn">batch</span>(<span class="var">$invoiceJobs</span>, <span class="prop">driver</span>: <span class="str">'chromium'</span>, <span class="prop">disk</span>: <span class="str">'s3'</span>);</pre>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ── LIVEWIRE ── -->
+    <section class="section fade-in" id="livewire">
+      <div class="section-eyebrow ey-base">// 20 · Framework Integrations</div>
+      <h2>Livewire</h2>
+      <p class="section-lead">PDF Studio integrates natively with Livewire — call the <code>Pdf</code> facade directly from any Livewire component action.</p>
+
+      <h3>Download PDF from a Livewire action</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP · app/Livewire/InvoiceShow.php</span>
+        </div>
+        <pre><span class="kw">namespace</span> <span class="cls">App\Livewire</span>;
+
+<span class="kw">use</span> <span class="cls">Livewire\Component</span>;
+<span class="kw">use</span> <span class="cls">PdfStudio\Laravel\Facades\Pdf</span>;
+<span class="kw">use</span> <span class="cls">App\Models\Invoice</span>;
+
+<span class="kw">class</span> <span class="cls">InvoiceShow</span> <span class="kw">extends</span> <span class="cls">Component</span>
+{
+    <span class="kw">public</span> <span class="cls">Invoice</span> <span class="var">$invoice</span>;
+
+    <span class="cm">/**
+     * Called when the user clicks "Download PDF".
+     * Livewire streams file downloads automatically.
+     */</span>
+    <span class="kw">public function</span> <span class="fn">downloadPdf</span>(): <span class="kw">mixed</span>
+    {
+        <span class="kw">return</span> <span class="fn">response</span>()-><span class="fn">streamDownload</span>(<span class="kw">function</span> () {
+            <span class="kw">echo</span> <span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'pdf.invoice'</span>)
+                -><span class="fn">data</span>([<span class="str">'invoice'</span> => <span class="var">$this</span>-><span class="prop">invoice</span>])
+                -><span class="fn">format</span>(<span class="str">'A4'</span>)
+                -><span class="fn">render</span>()-><span class="prop">content</span>;
+        }, <span class="str">'invoice-'</span> . <span class="var">$this</span>-><span class="prop">invoice</span>-><span class="prop">number</span> . <span class="str">'.pdf'</span>);
+    }
+
+    <span class="kw">public function</span> <span class="fn">render</span>(): <span class="kw">mixed</span>
+    {
+        <span class="kw">return</span> <span class="fn">view</span>(<span class="str">'livewire.invoice-show'</span>);
+    }
+}</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">Blade · resources/views/livewire/invoice-show.blade.php</span>
+        </div>
+        <pre>&lt;div&gt;
+  &lt;h1&gt;Invoice #{{ $invoice-&gt;number }}&lt;/h1&gt;
+
+  &lt;button wire:click="downloadPdf" wire:loading.attr="disabled"&gt;
+    &lt;span wire:loading.remove&gt;Download PDF&lt;/span&gt;
+    &lt;span wire:loading&gt;Generating...&lt;/span&gt;
+  &lt;/button&gt;
+&lt;/div&gt;</pre>
+      </div>
+
+      <h3>Live PDF preview in an iframe</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP · Livewire component with live preview</span>
+        </div>
+        <pre><span class="kw">use</span> <span class="cls">Livewire\Attributes\Reactive</span>;
+
+<span class="kw">class</span> <span class="cls">InvoiceEditor</span> <span class="kw">extends</span> <span class="cls">Component</span>
+{
+    <span class="kw">public string</span> <span class="var">$clientName</span> = <span class="str">''</span>;
+    <span class="kw">public float</span>  <span class="var">$amount</span>     = <span class="num">0</span>;
+
+    <span class="cm">/** Returns data URL of rendered HTML for preview iframe */</span>
+    <span class="kw">public function</span> <span class="fn">previewHtml</span>(): <span class="kw">string</span>
+    {
+        <span class="kw">return</span> <span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'pdf.invoice'</span>)
+            -><span class="fn">data</span>([<span class="str">'clientName'</span> => <span class="var">$this</span>-><span class="prop">clientName</span>, <span class="str">'amount'</span> => <span class="var">$this</span>-><span class="prop">amount</span>])
+            -><span class="fn">render</span>()-><span class="prop">html</span>; <span class="cm">// returns compiled HTML string</span>
+    }
+
+    <span class="kw">public function</span> <span class="fn">render</span>(): <span class="kw">mixed</span>
+    {
+        <span class="kw">return</span> <span class="fn">view</span>(<span class="str">'livewire.invoice-editor'</span>, [
+            <span class="str">'previewHtml'</span> => <span class="var">$this</span>-><span class="fn">previewHtml</span>(),
+        ]);
+    }
+}</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">Blade · Embedded HTML preview</span>
+        </div>
+        <pre>&lt;div class="flex gap-8"&gt;
+  &lt;!-- Edit panel --&gt;
+  &lt;div&gt;
+    &lt;input wire:model.live="clientName" placeholder="Client name"&gt;
+    &lt;input wire:model.live="amount" type="number" placeholder="Amount"&gt;
+  &lt;/div&gt;
+
+  &lt;!-- Live preview iframe --&gt;
+  &lt;iframe
+    srcdoc="{{ $previewHtml }}"
+    style="width:595px; height:842px; border:1px solid #ccc; border-radius:4px;"
+  &gt;&lt;/iframe&gt;
+&lt;/div&gt;</pre>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ── VUE 3 ── -->
+    <section class="section fade-in" id="vue">
+      <div class="section-eyebrow ey-base">// 21 · Framework Integrations</div>
+      <h2>Vue 3</h2>
+      <p class="section-lead">Call the PDF Studio Render API from your Vue 3 frontend using <code>fetch</code> or Axios. Requires the SaaS API to be enabled and an API key.</p>
+
+      <div class="callout callout-info">
+        <span class="callout-icon">🔑</span>
+        <div class="callout-body">
+          Never expose API keys in client-side code. Store the key in your backend and proxy requests through a controller, or restrict keys to server-to-server calls only.
+        </div>
+      </div>
+
+      <h3>Sync download — click to get PDF</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">Vue 3 · Composition API</span>
+        </div>
+        <pre><span class="cm">&lt;!-- components/DownloadInvoice.vue --&gt;</span>
+&lt;script setup&gt;
+import { ref } from 'vue'
+
+const props = defineProps({ invoiceId: Number })
+const loading = ref(false)
+
+async function downloadPdf() {
+  loading.value = true
+  try {
+    <span class="cm">// Proxy through your own API endpoint to keep the key server-side</span>
+    const response = await fetch(`/api/invoices/${props.invoiceId}/pdf`, {
+      headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content }
+    })
+
+    if (!response.ok) throw new Error('PDF generation failed')
+
+    const blob = await response.blob()
+    const url  = URL.createObjectURL(blob)
+    const a    = document.createElement('a')
+    a.href     = url
+    a.download = `invoice-${props.invoiceId}.pdf`
+    a.click()
+    URL.revokeObjectURL(url)
+  } finally {
+    loading.value = false
+  }
+}
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;button @click="downloadPdf" :disabled="loading"&gt;
+    {{ loading ? 'Generating PDF…' : 'Download PDF' }}
+  &lt;/button&gt;
+&lt;/template&gt;</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP · Laravel proxy route (keeps API key server-side)</span>
+        </div>
+        <pre><span class="cm">// routes/api.php</span>
+<span class="cls">Route</span>::<span class="fn">middleware</span>(<span class="str">'auth:sanctum'</span>)-><span class="fn">get</span>(<span class="str">'/invoices/{invoice}/pdf'</span>, <span class="kw">function</span> (<span class="cls">Invoice</span> <span class="var">$invoice</span>) {
+    <span class="kw">return</span> <span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'pdf.invoice'</span>)
+        -><span class="fn">data</span>([<span class="str">'invoice'</span> => <span class="var">$invoice</span>-><span class="fn">load</span>(<span class="str">'items'</span>)])
+        -><span class="fn">download</span>(<span class="str">'invoice-'</span> . <span class="var">$invoice</span>-><span class="prop">number</span> . <span class="str">'.pdf'</span>);
+});</pre>
+      </div>
+
+      <h3>Async render with progress polling</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">Vue 3 · Async + polling composable</span>
+        </div>
+        <pre><span class="cm">// composables/usePdfRender.js</span>
+import { ref } from 'vue'
+
+export function usePdfRender() {
+  const status  = ref('idle')   <span class="cm">// idle | pending | completed | failed</span>
+  const jobId   = ref(null)
+  const error   = ref(null)
+
+  async function startRender(payload) {
+    status.value = 'pending'
+    error.value  = null
+
+    <span class="cm">// Step 1: dispatch async job via your backend proxy</span>
+    const res = await fetch('/api/pdf/async', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+    const { id } = await res.json()
+    jobId.value = id
+
+    <span class="cm">// Step 2: poll until done</span>
+    const interval = setInterval(async () => {
+      const poll = await fetch(`/api/pdf/status/${id}`)
+      const job  = await poll.json()
+
+      if (job.status === 'completed') {
+        status.value = 'completed'
+        clearInterval(interval)
+      } else if (job.status === 'failed') {
+        status.value = 'failed'
+        error.value  = job.error
+        clearInterval(interval)
+      }
+    }, 2000)
+  }
+
+  return { status, jobId, error, startRender }
+}</pre>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ── REACT ── -->
+    <section class="section fade-in" id="react">
+      <div class="section-eyebrow ey-base">// 22 · Framework Integrations</div>
+      <h2>React</h2>
+      <p class="section-lead">Trigger PDF generation from React using <code>fetch</code>. Route requests through your Laravel backend to keep API credentials server-side.</p>
+
+      <h3>Download button component</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">React · DownloadPdfButton.jsx</span>
+        </div>
+        <pre>import { useState } from 'react'
+
+export function DownloadPdfButton({ invoiceId }) {
+  const [loading, setLoading] = useState(false)
+  const [error,   setError]   = useState(null)
+
+  async function handleDownload() {
+    setLoading(true)
+    setError(null)
+
+    try {
+      const response = await fetch(`/api/invoices/${invoiceId}/pdf`, {
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content ?? '',
+        },
+      })
+
+      if (!response.ok) throw new Error(`Server error: ${response.status}`)
+
+      const blob     = await response.blob()
+      const url      = URL.createObjectURL(blob)
+      const link     = document.createElement('a')
+      link.href      = url
+      link.download  = `invoice-${invoiceId}.pdf`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={handleDownload} disabled={loading}&gt;
+        {loading ? 'Generating PDF…' : 'Download PDF'}
+      &lt;/button&gt;
+      {error &amp;&amp; &lt;p style={{ color: 'red' }}&gt;{error}&lt;/p&gt;}
+    &lt;/div&gt;
+  )
+}</pre>
+      </div>
+
+      <h3>Async render with status polling (hooks)</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">React · usePdfRender.js custom hook</span>
+        </div>
+        <pre>import { useState, useRef, useEffect } from 'react'
+
+export function usePdfRender() {
+  const [status, setStatus] = useState('idle')
+  const [jobId,  setJobId]  = useState(null)
+  const [err,    setErr]    = useState(null)
+  const timerRef = useRef(null)
+
+  useEffect(() => () => clearInterval(timerRef.current), [])
+
+  async function startRender(payload) {
+    setStatus('pending')
+    setErr(null)
+
+    const res  = await fetch('/api/pdf/async', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    })
+    const { id } = await res.json()
+    setJobId(id)
+
+    timerRef.current = setInterval(async () => {
+      const poll = await fetch(`/api/pdf/status/${id}`)
+      const job  = await poll.json()
+
+      if (job.status === 'completed') {
+        setStatus('completed')
+        clearInterval(timerRef.current)
+      } else if (job.status === 'failed') {
+        setStatus('failed')
+        setErr(job.error)
+        clearInterval(timerRef.current)
+      }
+    }, 2000)
+  }
+
+  return { status, jobId, err, startRender }
+}
+
+<span class="cm">// Usage in a component:</span>
+function ReportPage() {
+  const { status, err, startRender } = usePdfRender()
+
+  return (
+    &lt;div&gt;
+      &lt;button
+        onClick={() =&gt; startRender({ view: 'pdf.report', data: { month: 'Jan' } })}
+        disabled={status === 'pending'}
+      &gt;
+        {status === 'pending' ? 'Rendering…' : 'Generate Report'}
+      &lt;/button&gt;
+      {status === 'completed' &amp;&amp; &lt;p&gt;✅ Report saved to S3&lt;/p&gt;}
+      {status === 'failed'    &amp;&amp; &lt;p&gt;❌ {err}&lt;/p&gt;}
+    &lt;/div&gt;
+  )
+}</pre>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ── NODE.JS ── -->
+    <section class="section fade-in" id="nodejs">
+      <div class="section-eyebrow ey-base">// 23 · Framework Integrations</div>
+      <h2>Node.js</h2>
+      <p class="section-lead">Call the PDF Studio API from a Node.js service — useful for microservices, automation scripts, or non-Laravel backends that need to generate PDFs.</p>
+
+      <h3>Download PDF buffer (native fetch)</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">Node.js 18+ · fetch API</span>
+        </div>
+        <pre>// pdf-client.mjs  (Node 18+ has native fetch)
+const API_BASE = 'https://yourapp.com/api/pdf-studio';
+const API_KEY  = process.env.PDF_STUDIO_KEY;  // never hardcode keys
+
+async function renderPdf({ view, data = {}, options = {}, filename = 'document.pdf' }) {
+  const response = await fetch(`${API_BASE}/render`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${API_KEY}`,
+      'Content-Type':  'application/json',
+      'Accept':        'application/pdf',
+    },
+    body: JSON.stringify({ view, data, options }),
+  });
+
+  if (!response.ok) {
+    const text = await response.text();
+    throw new Error(`PDF render failed (${response.status}): ${text}`);
+  }
+
+  return Buffer.from(await response.arrayBuffer());
+}
+
+// Usage
+const pdf = await renderPdf({
+  view:    'pdf.invoice',
+  data:    { invoice: { number: 'INV-001', total: 1500 } },
+  options: { format: 'A4' },
+});
+
+await fs.writeFile('invoice.pdf', pdf);
+console.log(`Written ${pdf.length} bytes`);</pre>
+      </div>
+
+      <h3>Async render + polling (Node.js)</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">Node.js · async render with polling</span>
+        </div>
+        <pre">import { setTimeout as sleep } from 'timers/promises';
+
+async function renderAsync({ view, data, outputPath, disk = 's3' }) {
+  // 1. Dispatch
+  const res = await fetch(`${API_BASE}/render/async`, {
+    method: 'POST',
+    headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ view, data, output_path: outputPath, output_disk: disk }),
+  });
+  const { id } = await res.json();
+
+  // 2. Poll
+  for (let attempt = 0; attempt &lt; 30; attempt++) {
+    await sleep(2000);
+    const poll = await fetch(`${API_BASE}/render/${id}`, {
+      headers: { 'Authorization': `Bearer ${API_KEY}` },
+    });
+    const job = await poll.json();
+
+    if (job.status === 'completed') {
+      console.log(`Done — ${job.bytes} bytes in ${job.render_time_ms}ms`);
+      return job;
+    }
+    if (job.status === 'failed') throw new Error(job.error);
+  }
+  throw new Error('Render timed out');
+}
+
+await renderAsync({
+  view:       'pdf.report',
+  data:       { month: 'January', year: 2026 },
+  outputPath: 'reports/jan-2026.pdf',
+});</pre>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ── VANILLA JS ── -->
+    <section class="section fade-in" id="javascript">
+      <div class="section-eyebrow ey-base">// 24 · Framework Integrations</div>
+      <h2>Vanilla JavaScript</h2>
+      <p class="section-lead">No framework needed — use the browser's native <code>fetch</code> API to trigger PDF downloads from any web page.</p>
+
+      <h3>Single-file example</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">HTML + JavaScript</span>
+        </div>
+        <pre>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;meta name="csrf-token" content="{{ csrf_token() }}"&gt;&lt;/head&gt;
+&lt;body&gt;
+
+&lt;button id="downloadBtn"&gt;Download Invoice PDF&lt;/button&gt;
+&lt;p id="status"&gt;&lt;/p&gt;
+
+&lt;script&gt;
+document.getElementById('downloadBtn').addEventListener('click', async () => {
+  const btn    = document.getElementById('downloadBtn');
+  const status = document.getElementById('status');
+
+  btn.disabled  = true;
+  btn.textContent = 'Generating...';
+  status.textContent = '';
+
+  try {
+    const response = await fetch('/api/invoices/42/pdf', {
+      headers: {
+        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+      },
+    });
+
+    if (!response.ok) throw new Error('Generation failed');
+
+    const blob = await response.blob();
+    const url  = URL.createObjectURL(blob);
+
+    // Trigger download
+    Object.assign(document.createElement('a'), {
+      href:     url,
+      download: 'invoice-42.pdf',
+    }).click();
+
+    URL.revokeObjectURL(url);
+    status.textContent = '✅ Download started';
+  } catch (e) {
+    status.textContent = '❌ ' + e.message;
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = 'Download Invoice PDF';
+  }
+});
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</pre>
+      </div>
+
+      <h3>Open PDF inline in a new tab</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">JavaScript · Open PDF in browser tab</span>
+        </div>
+        <pre">async function previewPdf(invoiceId) {
+  const response = await fetch(`/api/invoices/${invoiceId}/pdf`);
+  const blob     = await response.blob();
+  const url      = URL.createObjectURL(new Blob([blob], { type: 'application/pdf' }));
+
+  // Opens in a new browser tab for inline viewing
+  window.open(url, '_blank');
+
+  // Optional: clean up after tab loads (5 second grace period)
+  setTimeout(() =&gt; URL.revokeObjectURL(url), 5000);
+}</pre>
+      </div>
+    </section>
+
   </div><!-- /content -->
 
   <footer class="footer">
     <div>PDF Studio for Laravel · MIT License · <a href="https://github.com/sarderiftekhar/pdf-studio">GitHub</a></div>
-    <div style="color:var(--border2)">261 tests · PHPStan level 6 · M0–M9 complete</div>
+    <div style="color:var(--border2)">261 tests · PHPStan level 6 · 24 sections</div>
   </footer>
 
 </div><!-- /main -->
