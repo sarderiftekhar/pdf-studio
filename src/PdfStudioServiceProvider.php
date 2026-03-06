@@ -54,6 +54,8 @@ class PdfStudioServiceProvider extends ServiceProvider
             Contracts\TemplateVersionServiceContract::class,
             Services\TemplateVersionService::class
         );
+
+        $this->app->bind(Contracts\UsageMeterContract::class, Services\UsageMeter::class);
     }
 
     public function boot(): void
