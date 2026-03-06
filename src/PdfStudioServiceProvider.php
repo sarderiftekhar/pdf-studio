@@ -51,10 +51,16 @@ class PdfStudioServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'pdf-studio');
+
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__.'/../config/pdf-studio.php' => config_path('pdf-studio.php'),
             ], 'pdf-studio-config');
+
+            $this->publishes([
+                __DIR__.'/../resources/views' => resource_path('views/vendor/pdf-studio'),
+            ], 'pdf-studio-views');
 
             $this->commands([
                 Commands\CacheClearCommand::class,
@@ -63,6 +69,7 @@ class PdfStudioServiceProvider extends ServiceProvider
         }
 
         $this->registerConfigTemplates();
+        $this->registerStarterTemplates();
         $this->registerPreviewRoutes();
         $this->registerBladeDirectives();
     }
@@ -82,6 +89,21 @@ class PdfStudioServiceProvider extends ServiceProvider
                 defaultOptions: $config['default_options'] ?? [],
                 dataProvider: $config['data_provider'] ?? null,
             ));
+        }
+    }
+
+    protected function registerStarterTemplates(): void
+    {
+        if (!$this->app['config']->get('pdf-studio.starter_templates', false)) {
+            return;
+        }
+
+        $registry = $this->app->make(Templates\TemplateRegistry::class);
+
+        foreach (Templates\StarterTemplates::definitions() as $definition) {
+            if (!$registry->has($definition->name)) {
+                $registry->register($definition);
+            }
         }
     }
 
