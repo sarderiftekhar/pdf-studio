@@ -72,6 +72,7 @@ class PdfStudioServiceProvider extends ServiceProvider
         $this->registerStarterTemplates();
         $this->registerPreviewRoutes();
         $this->registerBladeDirectives();
+        $this->registerEventListeners();
     }
 
     protected function registerConfigTemplates(): void
@@ -151,5 +152,18 @@ class PdfStudioServiceProvider extends ServiceProvider
         \Illuminate\Support\Facades\Blade::directive('endAvoidBreak', function () {
             return '</div>';
         });
+    }
+
+    protected function registerEventListeners(): void
+    {
+        if (!$this->app['config']->get('pdf-studio.logging.enabled', false)) {
+            return;
+        }
+
+        $logger = $this->app->make(Listeners\RenderLogger::class);
+
+        $this->app['events']->listen(Events\RenderStarting::class, [$logger, 'handleStarting']);
+        $this->app['events']->listen(Events\RenderCompleted::class, [$logger, 'handleCompleted']);
+        $this->app['events']->listen(Events\RenderFailed::class, [$logger, 'handleFailed']);
     }
 }
