@@ -25,6 +25,10 @@ class PdfStudioServiceProvider extends ServiceProvider
             return new Cache\CssCache($app);
         });
 
+        $this->app->singleton(Debug\DebugRecorder::class, function ($app) {
+            return new Debug\DebugRecorder($app);
+        });
+
         $this->app->bind(Pipeline\RenderPipeline::class);
         $this->app->bind(Pipeline\BladeCompiler::class);
         $this->app->bind(Pipeline\PdfRenderer::class);

@@ -133,6 +133,9 @@ class PdfBuilder
                 bytes: $result->bytes,
             ));
 
+            $debugRecorder = $this->app->make(\PdfStudio\Laravel\Debug\DebugRecorder::class);
+            $debugRecorder->record($context, $driverName, $renderTimeMs);
+
             return $result;
         } catch (\Throwable $e) {
             event(new \PdfStudio\Laravel\Events\RenderFailed(
