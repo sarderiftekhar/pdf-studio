@@ -19,12 +19,17 @@ class PreviewController extends Controller
 
     public function show(Request $request, string $template): Response|StreamedResponse
     {
+        $format = $request->query('format', 'html');
+
+        if (!in_array($format, ['html', 'pdf'], true)) {
+            abort(422, "Invalid format [{$format}]. Supported: html, pdf.");
+        }
+
         if (!View::exists($template)) {
             abort(404, "Template [{$template}] not found.");
         }
 
         $data = $this->resolveData($template);
-        $format = $request->query('format', 'html');
 
         if ($format === 'pdf') {
             return Pdf::view($template)

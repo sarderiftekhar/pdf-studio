@@ -72,6 +72,8 @@ return [
         'prefix' => 'pdf-studio/preview',
         'middleware' => ['web', 'auth'],
         'data_providers' => [],
+        'environment_gate' => true,
+        'allowed_environments' => ['local', 'staging', 'testing'],
     ],
 
     /*

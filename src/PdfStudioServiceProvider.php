@@ -113,6 +113,14 @@ class PdfStudioServiceProvider extends ServiceProvider
             return;
         }
 
+        // Environment gate: block in production by default
+        if ($this->app['config']->get('pdf-studio.preview.environment_gate', true)) {
+            $allowed = $this->app['config']->get('pdf-studio.preview.allowed_environments', ['local', 'staging', 'testing']);
+            if (!in_array($this->app->environment(), $allowed, true)) {
+                return;
+            }
+        }
+
         $prefix = $this->app['config']->get('pdf-studio.preview.prefix', 'pdf-studio/preview');
         $middleware = $this->app['config']->get('pdf-studio.preview.middleware', ['web', 'auth']);
 
