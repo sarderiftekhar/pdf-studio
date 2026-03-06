@@ -58,3 +58,19 @@ arch('jobs implement ShouldQueue')
 arch('listeners have handle methods')
     ->expect('PdfStudio\Laravel\Listeners')
     ->toHaveMethod('handleStarting');
+
+arch('models extend Eloquent Model')
+    ->expect('PdfStudio\Laravel\Models')
+    ->toExtend(\Illuminate\Database\Eloquent\Model::class);
+
+arch('services implement their contracts')
+    ->expect('PdfStudio\Laravel\Services\TemplateVersionService')
+    ->toImplement(\PdfStudio\Laravel\Contracts\TemplateVersionServiceContract::class);
+
+arch('access control service implements contract')
+    ->expect('PdfStudio\Laravel\Services\AccessControl')
+    ->toImplement(\PdfStudio\Laravel\Contracts\AccessControlContract::class);
+
+arch('middleware has handle method')
+    ->expect('PdfStudio\Laravel\Http\Middleware')
+    ->toHaveMethod('handle');
