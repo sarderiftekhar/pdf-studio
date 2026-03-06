@@ -7,6 +7,7 @@ use PdfStudio\Laravel\Models\Workspace;
 
 class AccessControl implements AccessControlContract
 {
+    /** @var array<int, string> */
     protected array $manageRoles = ['owner', 'admin'];
 
     public function canAccess(Workspace $workspace, int $userId): bool

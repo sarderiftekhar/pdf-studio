@@ -22,6 +22,6 @@ class PageNumberGenerator
             $format
         );
 
-        return '<div style="font-size: 10px; width: 100%; text-align: ' . $align . ';">' . $html . '</div>';
+        return '<div style="font-size: 10px; width: 100%; text-align: '.$align.';">'.$html.'</div>';
     }
 }

@@ -5,6 +5,11 @@ namespace PdfStudio\Laravel\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+/**
+ * @property int $workspace_id
+ * @property int $user_id
+ * @property string $role
+ */
 class WorkspaceMember extends Model
 {
     protected $table = 'pdf_studio_workspace_members';

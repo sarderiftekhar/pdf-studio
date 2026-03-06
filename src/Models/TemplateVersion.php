@@ -5,6 +5,18 @@ namespace PdfStudio\Laravel\Models;
 use Illuminate\Database\Eloquent\Model;
 use PdfStudio\Laravel\DTOs\TemplateDefinition;
 
+/**
+ * @property string $template_name
+ * @property int $version_number
+ * @property string $view
+ * @property string|null $description
+ * @property array<string, mixed>|null $default_options
+ * @property string|null $data_provider
+ * @property string|null $author
+ * @property string|null $change_notes
+ *
+ * @mixin \Illuminate\Database\Eloquent\Builder<TemplateVersion>
+ */
 class TemplateVersion extends Model
 {
     protected $table = 'pdf_studio_template_versions';
@@ -20,6 +32,7 @@ class TemplateVersion extends Model
         'change_notes',
     ];
 
+    /** @var array<string, string> */
     protected $casts = [
         'default_options' => 'array',
         'version_number' => 'integer',

@@ -30,6 +30,7 @@ class TemplateVersionService implements TemplateVersionServiceContract
     /** @return Collection<int, TemplateVersion> */
     public function list(string $templateName): Collection
     {
+        /** @var Collection<int, TemplateVersion> */
         return TemplateVersion::where('template_name', $templateName)
             ->orderByDesc('version_number')
             ->get();

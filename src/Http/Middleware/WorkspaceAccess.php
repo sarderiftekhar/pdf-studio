@@ -23,7 +23,7 @@ class WorkspaceAccess
 
         $userId = $request->user()?->id;
 
-        if ($userId === null || ! $this->accessControl->canAccess($workspace, (int) $userId)) {
+        if ($userId === null || !$this->accessControl->canAccess($workspace, (int) $userId)) {
             abort(403, 'You do not have access to this workspace.');
         }
 

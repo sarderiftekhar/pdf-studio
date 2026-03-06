@@ -5,6 +5,13 @@ namespace PdfStudio\Laravel\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $slug
+ *
+ * @mixin \Illuminate\Database\Eloquent\Builder<Workspace>
+ */
 class Workspace extends Model
 {
     protected $table = 'pdf_studio_workspaces';
