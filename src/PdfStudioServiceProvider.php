@@ -84,6 +84,7 @@ class PdfStudioServiceProvider extends ServiceProvider
         $this->registerStarterTemplates();
         $this->registerPreviewRoutes();
         $this->registerBuilderPreviewRoutes();
+        $this->registerApiRoutes();
         $this->registerBladeDirectives();
         $this->registerEventListeners();
     }
@@ -145,6 +146,28 @@ class PdfStudioServiceProvider extends ServiceProvider
             $router->get('{template}', [Preview\PreviewController::class, 'show'])
                 ->where('template', '.*')
                 ->name('pdf-studio.preview');
+        });
+    }
+
+    protected function registerApiRoutes(): void
+    {
+        if (! $this->app['config']->get('pdf-studio.saas.enabled', false)) {
+            return;
+        }
+
+        $prefix = $this->app['config']->get('pdf-studio.saas.api.prefix', 'api/pdf-studio');
+        $middleware = $this->app['config']->get('pdf-studio.saas.api.middleware', ['api']);
+
+        $this->app['router']->group([
+            'prefix' => $prefix,
+            'middleware' => array_merge($middleware, [Http\Middleware\ApiKeyAuth::class]),
+        ], function ($router) {
+            $router->post('render', [Http\Controllers\Api\RenderController::class, 'sync'])
+                ->name('pdf-studio.api.render');
+            $router->post('render/async', [Http\Controllers\Api\RenderController::class, 'async'])
+                ->name('pdf-studio.api.render.async');
+            $router->get('render/{jobId}', [Http\Controllers\Api\RenderController::class, 'status'])
+                ->name('pdf-studio.api.render.status');
         });
     }
 
