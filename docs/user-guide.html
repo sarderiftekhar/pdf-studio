@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF Studio for Laravel — User Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:        #0E0F13;
+    --bg2:       #13151A;
+    --bg3:       #1A1D24;
+    --border:    #252830;
+    --border2:   #2E3240;
+    --text:      #E8E9EE;
+    --muted:     #6B7080;
+    --amber:     #F0A830;
+    --amber-dim: #C88820;
+    --amber-glow:#F0A83022;
+    --cyan:      #38BDF8;
+    --purple:    #A78BFA;
+    --pink:      #F472B6;
+    --green:     #4ADE80;
+    --red:       #F87171;
+    --code-bg:   #0A0B0F;
+    --sidebar-w: 270px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; font-size: 15px; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    line-height: 1.7;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ── */
+  #sidebar {
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #sidebar::-webkit-scrollbar { width: 4px; }
+  #sidebar::-webkit-scrollbar-track { background: transparent; }
+  #sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+  .sidebar-logo {
+    padding: 28px 24px 20px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .sidebar-logo .logo-mark {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+
+  .logo-icon {
+    width: 34px; height: 34px;
+    background: var(--amber);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .logo-sub { font-size: 0.68rem; color: var(--muted); font-family: 'DM Sans', sans-serif; font-weight: 400; }
+
+  .sidebar-version {
+    padding: 10px 24px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .badge-row { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  .badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .badge-oss  { background: #1E2A1A; color: var(--green); border: 1px solid #2A3E22; }
+  .badge-pro  { background: #1E1A2A; color: var(--purple); border: 1px solid #2A2240; }
+  .badge-saas { background: #2A1A24; color: var(--pink); border: 1px solid #3A2230; }
+
+  .sidebar-nav { padding: 16px 0 24px; flex: 1; }
+
+  .nav-group { margin-bottom: 4px; }
+
+  .nav-group-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 10px 24px 4px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 24px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.15s, background 0.15s;
+    border-left: 2px solid transparent;
+    position: relative;
+  }
+
+  .nav-item:hover { color: var(--text); background: var(--bg3); }
+
+  .nav-item.active {
+    color: var(--amber);
+    border-left-color: var(--amber);
+    background: var(--amber-glow);
+  }
+
+  .nav-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--border2);
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .nav-item.active .nav-dot,
+  .nav-item:hover .nav-dot { background: var(--amber); }
+
+  .nav-badge {
+    margin-left: auto;
+    font-size: 0.6rem;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+  }
+  .nb-pro  { background: #1E1A2A; color: var(--purple); }
+  .nb-saas { background: #2A1A24; color: var(--pink); }
+
+  /* ── MAIN CONTENT ── */
+  #main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    min-width: 0;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    padding: 80px 72px 72px;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -120px; right: -80px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, #F0A83018 0%, transparent 65%);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 40px 40px;
+    opacity: 0.15;
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--amber);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    position: relative; z-index: 1;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.6rem;
+    font-weight: 700;
+    line-height: 1.1;
+    color: var(--text);
+    position: relative; z-index: 1;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 span { color: var(--amber); }
+
+  .hero-desc {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 560px;
+    position: relative; z-index: 1;
+    margin-bottom: 32px;
+    font-weight: 300;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    position: relative; z-index: 1;
+  }
+
+  .stat { }
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--amber);
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .stat-label { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+
+  /* ── CONTENT SECTIONS ── */
+  .content { max-width: 860px; padding: 0 72px 120px; }
+
+  .section {
+    padding-top: 72px;
+    border-top: 1px solid var(--border);
+    margin-top: 64px;
+  }
+
+  .section:first-child { border-top: none; margin-top: 0; padding-top: 64px; }
+
+  .section-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .ey-base { color: var(--amber); }
+  .ey-pro  { color: var(--purple); }
+  .ey-saas { color: var(--pink); }
+
+  .section h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+
+  .section-lead {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-bottom: 32px;
+    font-weight: 300;
+    max-width: 640px;
+  }
+
+  h3 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 32px 0 12px;
+  }
+
+  p { color: var(--muted); margin-bottom: 16px; font-size: 0.9rem; }
+
+  /* ── CODE BLOCKS ── */
+  .code-block {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0 24px;
+    position: relative;
+  }
+
+  .code-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-lang {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .code-dots { display: flex; gap: 5px; }
+  .code-dots span {
+    width: 9px; height: 9px; border-radius: 50%;
+  }
+  .code-dots span:nth-child(1) { background: #FF5F57; }
+  .code-dots span:nth-child(2) { background: #FEBC2E; }
+  .code-dots span:nth-child(3) { background: #28C840; }
+
+  pre {
+    padding: 20px 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    line-height: 1.7;
+    color: #ABB2BF;
+  }
+
+  pre::-webkit-scrollbar { height: 4px; }
+  pre::-webkit-scrollbar-track { background: transparent; }
+  pre::-webkit-scrollbar-thumb { background: var(--border2); }
+
+  .kw   { color: #C678DD; }  /* keyword */
+  .fn   { color: #61AFEF; }  /* function */
+  .str  { color: #98C379; }  /* string */
+  .num  { color: #D19A66; }  /* number */
+  .cm   { color: #5C6370; font-style: italic; } /* comment */
+  .cls  { color: #E5C07B; }  /* class */
+  .prop { color: #E06C75; }  /* property */
+  .amb  { color: var(--amber); } /* amber highlight */
+  .var  { color: #ABB2BF; }
+
+  /* ── TERMINAL ── */
+  .terminal {
+    background: #020408;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0 24px;
+  }
+
+  .terminal-header {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 16px;
+    background: #0A0D12;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .terminal-header .code-dots { margin-right: 4px; }
+  .terminal-title { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); }
+
+  .terminal pre {
+    color: #7EE787;
+    padding: 16px 20px;
+  }
+
+  .t-prompt { color: var(--amber); }
+  .t-cmd    { color: #E8E9EE; }
+  .t-out    { color: #7EE787; }
+  .t-dim    { color: #3E4450; }
+
+  /* ── CALLOUT BOXES ── */
+  .callout {
+    display: flex;
+    gap: 14px;
+    padding: 16px 20px;
+    border-radius: 8px;
+    margin: 16px 0;
+    border: 1px solid;
+  }
+
+  .callout-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+  .callout-body { font-size: 0.85rem; }
+  .callout-body strong { font-weight: 600; display: block; margin-bottom: 2px; }
+
+  .callout-info    { background: #0C1824; border-color: #1E3048; }
+  .callout-info    .callout-body { color: #7BB8E8; }
+  .callout-warning { background: #1C1408; border-color: #3A2C10; }
+  .callout-warning .callout-body { color: #C8A04A; }
+  .callout-pro     { background: #100C1E; border-color: #2A2040; }
+  .callout-pro     .callout-body { color: #9575CD; }
+  .callout-saas    { background: #1A0C14; border-color: #38182A; }
+  .callout-saas    .callout-body { color: #D1659A; }
+
+  /* ── DRIVER CARDS ── */
+  .driver-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 20px 0;
+  }
+
+  .driver-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .driver-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+  .driver-card.featured { border-color: var(--amber-dim); }
+
+  .driver-icon { font-size: 1.4rem; margin-bottom: 10px; }
+  .driver-name { font-weight: 600; font-size: 0.9rem; color: var(--text); margin-bottom: 4px; }
+  .driver-pkg  { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--muted); margin-bottom: 10px; }
+
+  .driver-tags { display: flex; gap: 5px; flex-wrap: wrap; }
+  .tag {
+    font-size: 0.65rem;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+  .tag-green  { background: #0D1E12; color: var(--green); }
+  .tag-yellow { background: #1E1608; color: #FBBF24; }
+  .tag-muted  { background: var(--bg3); color: var(--muted); }
+
+  /* ── STEP LIST ── */
+  .steps { margin: 20px 0; }
+
+  .step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    position: relative;
+  }
+
+  .step::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: 34px;
+    bottom: -12px;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .step:last-child::before { display: none; }
+
+  .step-num {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--amber);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  .step-body { flex: 1; padding-top: 4px; }
+  .step-title { font-weight: 600; font-size: 0.9rem; color: var(--text); margin-bottom: 4px; }
+  .step-desc  { font-size: 0.83rem; color: var(--muted); }
+
+  /* ── TABLE ── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0 24px;
+    font-size: 0.83rem;
+  }
+
+  .data-table th {
+    text-align: left;
+    padding: 10px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .data-table td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--muted);
+    vertical-align: top;
+  }
+
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: var(--bg2); }
+
+  .data-table td code,
+  .data-table th code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    background: var(--bg3);
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: var(--amber);
+  }
+
+  /* ── INLINE CODE ── */
+  p code, li code, h3 code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82em;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 1px 6px;
+    border-radius: 4px;
+    color: var(--amber);
+  }
+
+  /* ── ENDPOINT PILLS ── */
+  .endpoint {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    margin: 6px 0;
+  }
+
+  .method {
+    font-weight: 600;
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+  .m-post { background: #1A2A0A; color: var(--green); }
+  .m-get  { background: #0A1A2A; color: var(--cyan); }
+
+  /* ── FEATURE LIST ── */
+  .feature-list {
+    list-style: none;
+    margin: 14px 0;
+  }
+
+  .feature-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.87rem;
+    color: var(--muted);
+  }
+
+  .feature-list li:last-child { border-bottom: none; }
+
+  .feature-list li::before {
+    content: '→';
+    color: var(--amber);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── STATUS BADGE ── */
+  .status-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.85rem;
+  }
+
+  .status-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .sd-pending   { background: #FBBF24; }
+  .sd-completed { background: var(--green); }
+  .sd-failed    { background: var(--red); }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 40px 0;
+  }
+
+  /* ── FOOTER ── */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  .footer a { color: var(--amber); text-decoration: none; }
+
+  /* ── SCROLL FADE IN ── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    :root { --sidebar-w: 0px; }
+    #sidebar { display: none; }
+    #main { margin-left: 0; }
+    .hero { padding: 48px 32px 40px; }
+    .hero h1 { font-size: 2.4rem; }
+    .content { padding: 0 32px 80px; }
+    .driver-grid { grid-template-columns: 1fr; }
+    .footer { flex-direction: column; gap: 12px; padding: 32px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════ SIDEBAR ══════════════════════════════════ -->
+<nav id="sidebar">
+  <div class="sidebar-logo">
+    <a class="logo-mark" href="#">
+      <div class="logo-icon">📄</div>
+      <div>
+        <div class="logo-text">PDF Studio</div>
+        <div class="logo-sub">for Laravel</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="sidebar-version">
+    <div class="badge-row">
+      <span class="badge badge-oss">OSS v1.0</span>
+      <span class="badge badge-pro">Pro</span>
+      <span class="badge badge-saas">SaaS</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+
+    <div class="nav-group">
+      <div class="nav-group-label">Getting Started</div>
+      <a href="#installation" class="nav-item"><span class="nav-dot"></span>Installation</a>
+      <a href="#quickstart" class="nav-item"><span class="nav-dot"></span>Quick Start</a>
+      <a href="#drivers" class="nav-item"><span class="nav-dot"></span>Drivers</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Core Features</div>
+      <a href="#templates" class="nav-item"><span class="nav-dot"></span>Template Registry</a>
+      <a href="#blade" class="nav-item"><span class="nav-dot"></span>Blade Directives</a>
+      <a href="#queue" class="nav-item"><span class="nav-dot"></span>Queue / Async</a>
+      <a href="#preview" class="nav-item"><span class="nav-dot"></span>Preview Routes</a>
+      <a href="#tailwind" class="nav-item"><span class="nav-dot"></span>Tailwind CSS</a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Pro Tier</div>
+      <a href="#versioning" class="nav-item"><span class="nav-dot"></span>Template Versioning <span class="nav-badge nb-pro">Pro</span></a>
+      <a href="#workspaces" class="nav-item"><span class="nav-dot"></span>Workspaces <span class="nav-badge nb-pro">Pro</span></a>
+      <a href="#builder" class="nav-item"><span class="nav-dot"></span>Visual Builder <span class="nav-badge nb-pro">Pro</span></a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">SaaS Tier</div>
+      <a href="#apikeys" class="nav-item"><span class="nav-dot"></span>API Keys <span class="nav-badge nb-saas">SaaS</span></a>
+      <a href="#renderapi" class="nav-item"><span class="nav-dot"></span>Render API <span class="nav-badge nb-saas">SaaS</span></a>
+      <a href="#metering" class="nav-item"><span class="nav-dot"></span>Usage Metering <span class="nav-badge nb-saas">SaaS</span></a>
+      <a href="#analytics" class="nav-item"><span class="nav-dot"></span>Analytics <span class="nav-badge nb-saas">SaaS</span></a>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Reference</div>
+      <a href="#config" class="nav-item"><span class="nav-dot"></span>Configuration</a>
+      <a href="#testing" class="nav-item"><span class="nav-dot"></span>Testing</a>
+    </div>
+
+  </nav>
+</nav>
+
+<!-- ══════════════════════════════════ MAIN ══════════════════════════════════ -->
+<div id="main">
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-eyebrow">Documentation · v1.0</div>
+    <h1>PDF <span>Studio</span><br>for Laravel</h1>
+    <p class="hero-desc">Design, preview, and generate PDFs using HTML and TailwindCSS. From simple invoices to hosted rendering platforms.</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">261</div>
+        <div class="stat-label">Tests Passing</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">3</div>
+        <div class="stat-label">PDF Drivers</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">M0–M9</div>
+        <div class="stat-label">Milestones</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- ── INSTALLATION ── -->
+    <section class="section fade-in" id="installation">
+      <div class="section-eyebrow ey-base">// 01 · Getting Started</div>
+      <h2>Installation</h2>
+      <p class="section-lead">Install via Composer. The service provider and <code>Pdf</code> facade are auto-discovered — no manual registration needed.</p>
+
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="terminal-title">bash</span>
+        </div>
+        <pre><span class="t-prompt">$</span> <span class="t-cmd">composer require pdfstudio/laravel</span>
+
+<span class="t-out">✓ Package installed successfully.</span></pre>
+      </div>
+
+      <p>Publish the config file to customise drivers, preview settings, and feature flags:</p>
+
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="terminal-title">bash</span>
+        </div>
+        <pre><span class="t-prompt">$</span> <span class="t-cmd">php artisan vendor:publish --tag=pdf-studio-config</span>
+<span class="t-dim"># → config/pdf-studio.php</span>
+
+<span class="t-dim"># Pro & SaaS features also require migrations:</span>
+<span class="t-prompt">$</span> <span class="t-cmd">php artisan vendor:publish --tag=pdf-studio-migrations</span>
+<span class="t-prompt">$</span> <span class="t-cmd">php artisan migrate</span></pre>
+      </div>
+
+      <div class="callout callout-info">
+        <span class="callout-icon">💡</span>
+        <div class="callout-body">
+          <strong>Zero config for basic use</strong>
+          The package works out of the box with the <code>fake</code> driver. Install <code>spatie/browsershot</code> or <code>dompdf/dompdf</code> when you're ready for real rendering.
+        </div>
+      </div>
+    </section>
+
+    <!-- ── QUICK START ── -->
+    <section class="section fade-in" id="quickstart">
+      <div class="section-eyebrow ey-base">// 02 · Getting Started</div>
+      <h2>Quick Start</h2>
+      <p class="section-lead">The <code>Pdf</code> facade is your primary interface. All methods are fluent and chainable.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP</span>
+        </div>
+        <pre><span class="kw">use</span> <span class="cls">PdfStudio\Laravel\Facades\Pdf</span>;
+
+<span class="cm">// Download a PDF immediately</span>
+<span class="kw">return</span> <span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'invoices.show'</span>)
+    -><span class="fn">data</span>([<span class="str">'invoice'</span> => <span class="var">$invoice</span>])
+    -><span class="fn">download</span>(<span class="str">'invoice.pdf'</span>);
+
+<span class="cm">// Stream inline in browser</span>
+<span class="kw">return</span> <span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'reports.quarterly'</span>)
+    -><span class="fn">data</span>([<span class="str">'report'</span> => <span class="var">$report</span>])
+    -><span class="fn">inline</span>(<span class="str">'report.pdf'</span>);
+
+<span class="cm">// Save to Storage (S3, local, etc.)</span>
+<span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'statements.monthly'</span>)
+    -><span class="fn">data</span>([<span class="str">'account'</span> => <span class="var">$account</span>])
+    -><span class="fn">driver</span>(<span class="str">'chromium'</span>)
+    -><span class="fn">format</span>(<span class="str">'A4'</span>)
+    -><span class="fn">landscape</span>()
+    -><span class="fn">save</span>(<span class="str">'statements/2024-01.pdf'</span>, <span class="str">'s3'</span>);
+
+<span class="cm">// Render from raw HTML</span>
+<span class="var">$result</span> = <span class="cls">Pdf</span>::<span class="fn">html</span>(<span class="str">'&lt;h1&gt;Hello&lt;/h1&gt;'</span>)-><span class="fn">render</span>();
+<span class="kw">echo</span> <span class="var">$result</span>-><span class="prop">bytes</span>;         <span class="cm">// file size in bytes</span>
+<span class="kw">echo</span> <span class="var">$result</span>-><span class="prop">renderTimeMs</span>;  <span class="cm">// render duration</span></pre>
+      </div>
+
+      <h3>Fluent API Reference</h3>
+      <table class="data-table">
+        <thead><tr><th>Method</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>->view('blade.path')</code></td><td>Set Blade view to render</td></tr>
+          <tr><td><code>->html('&lt;h1&gt;...')</code></td><td>Set raw HTML string</td></tr>
+          <tr><td><code>->data([...])</code></td><td>Pass data to the view</td></tr>
+          <tr><td><code>->driver('chromium')</code></td><td>Override the PDF driver</td></tr>
+          <tr><td><code>->format('A4')</code></td><td>Set paper format</td></tr>
+          <tr><td><code>->landscape()</code></td><td>Set landscape orientation</td></tr>
+          <tr><td><code>->template('name')</code></td><td>Use a registered template</td></tr>
+          <tr><td><code>->download('file.pdf')</code></td><td>Return download response</td></tr>
+          <tr><td><code>->inline('file.pdf')</code></td><td>Return inline browser response</td></tr>
+          <tr><td><code>->save('path', 'disk')</code></td><td>Save to Laravel Storage</td></tr>
+          <tr><td><code>->render()</code></td><td>Return raw result object</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ── DRIVERS ── -->
+    <section class="section fade-in" id="drivers">
+      <div class="section-eyebrow ey-base">// 03 · Getting Started</div>
+      <h2>Drivers</h2>
+      <p class="section-lead">PDF Studio supports three real rendering engines plus a test double. Install only what you need.</p>
+
+      <div class="driver-grid">
+        <div class="driver-card featured">
+          <div class="driver-icon">🌐</div>
+          <div class="driver-name">Chromium</div>
+          <div class="driver-pkg">spatie/browsershot</div>
+          <div class="driver-tags">
+            <span class="tag tag-green">Full CSS</span>
+            <span class="tag tag-green">TailwindCSS</span>
+            <span class="tag tag-yellow">Needs Node</span>
+          </div>
+        </div>
+        <div class="driver-card">
+          <div class="driver-icon">⚙️</div>
+          <div class="driver-name">wkhtmltopdf</div>
+          <div class="driver-pkg">System binary</div>
+          <div class="driver-tags">
+            <span class="tag tag-green">No Node</span>
+            <span class="tag tag-yellow">Good CSS</span>
+          </div>
+        </div>
+        <div class="driver-card">
+          <div class="driver-icon">🐘</div>
+          <div class="driver-name">dompdf</div>
+          <div class="driver-pkg">dompdf/dompdf</div>
+          <div class="driver-tags">
+            <span class="tag tag-green">PHP only</span>
+            <span class="tag tag-muted">Basic CSS</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="terminal-title">Install a driver</span>
+        </div>
+        <pre><span class="t-dim"># Chromium (recommended for TailwindCSS)</span>
+<span class="t-prompt">$</span> <span class="t-cmd">composer require spatie/browsershot</span>
+
+<span class="t-dim"># dompdf (no external binaries needed)</span>
+<span class="t-prompt">$</span> <span class="t-cmd">composer require dompdf/dompdf</span></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">config/pdf-studio.php</span>
+        </div>
+        <pre><span class="str">'default_driver'</span> => <span class="fn">env</span>(<span class="str">'PDF_STUDIO_DRIVER'</span>, <span class="str">'chromium'</span>),</pre>
+      </div>
+    </section>
+
+    <!-- ── TEMPLATE REGISTRY ── -->
+    <section class="section fade-in" id="templates">
+      <div class="section-eyebrow ey-base">// 04 · Core Features</div>
+      <h2>Template Registry</h2>
+      <p class="section-lead">Register named templates with default options and data providers. Use them by name anywhere in your app.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">config/pdf-studio.php</span>
+        </div>
+        <pre><span class="str">'templates'</span> => [
+    <span class="str">'invoice'</span> => [
+        <span class="str">'view'</span>            => <span class="str">'pdf.invoice'</span>,
+        <span class="str">'description'</span>     => <span class="str">'Customer invoice template'</span>,
+        <span class="str">'default_options'</span> => [<span class="str">'format'</span> => <span class="str">'A4'</span>],
+        <span class="str">'data_provider'</span>   => <span class="cls">App\Pdf\InvoiceDataProvider</span>::<span class="kw">class</span>,
+    ],
+    <span class="str">'report'</span> => [
+        <span class="str">'view'</span>            => <span class="str">'pdf.report'</span>,
+        <span class="str">'default_options'</span> => [<span class="str">'format'</span> => <span class="str">'A3'</span>, <span class="str">'landscape'</span> => <span class="kw">true</span>],
+    ],
+],</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP · Usage</span>
+        </div>
+        <pre><span class="cm">// Use a registered template</span>
+<span class="cls">Pdf</span>::<span class="fn">template</span>(<span class="str">'invoice'</span>)
+    -><span class="fn">data</span>([<span class="str">'id'</span> => <span class="num">123</span>])
+    -><span class="fn">download</span>(<span class="str">'invoice-123.pdf'</span>);</pre>
+      </div>
+
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="terminal-title">artisan</span>
+        </div>
+        <pre><span class="t-prompt">$</span> <span class="t-cmd">php artisan pdf-studio:templates</span>
+
+<span class="t-out">  invoice   pdf.invoice   App\Pdf\InvoiceDataProvider
+  report    pdf.report    —</span></pre>
+      </div>
+    </section>
+
+    <!-- ── BLADE DIRECTIVES ── -->
+    <section class="section fade-in" id="blade">
+      <div class="section-eyebrow ey-base">// 05 · Core Features</div>
+      <h2>Blade Directives</h2>
+      <p class="section-lead">Custom directives for precise control over page layout and rendering. All directives work in any Blade template.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">Blade</span>
+        </div>
+        <pre><span class="cm">{{-- Page breaks --}}</span>
+<span class="amb">@pageBreak</span>
+<span class="amb">@pageBreakBefore</span>
+
+<span class="cm">{{-- Prevent content splitting across pages --}}</span>
+<span class="amb">@avoidBreak</span>
+    &lt;div&gt;This stays together&lt;/div&gt;
+<span class="amb">@endAvoidBreak</span>
+
+<span class="cm">{{-- Pro: Conditional visibility (CSS-based, prints correctly) --}}</span>
+<span class="amb">@showIf</span>(<span class="var">$invoice</span>-><span class="fn">isPaid</span>())
+    &lt;span&gt;PAID&lt;/span&gt;
+<span class="amb">@endShowIf</span>
+
+<span class="cm">{{-- Pro: Keep a section on one page --}}</span>
+<span class="amb">@keepTogether</span>
+    &lt;table&gt;...&lt;/table&gt;
+<span class="amb">@endKeepTogether</span>
+
+<span class="cm">{{-- Pro: Chromium page number footer --}}</span>
+<span class="amb">@pageNumber</span>([<span class="str">'format'</span> => <span class="str">'Page {page} of {total}'</span>])</pre>
+      </div>
+    </section>
+
+    <!-- ── QUEUE ── -->
+    <section class="section fade-in" id="queue">
+      <div class="section-eyebrow ey-base">// 06 · Core Features</div>
+      <h2>Queue / Async Rendering</h2>
+      <p class="section-lead">Offload heavy rendering to Laravel queues. The built-in <code>RenderPdfJob</code> handles saving output to any Storage disk.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP</span>
+        </div>
+        <pre><span class="kw">use</span> <span class="cls">PdfStudio\Laravel\Jobs\RenderPdfJob</span>;
+
+<span class="cm">// Single async job</span>
+<span class="cls">RenderPdfJob</span>::<span class="fn">dispatch</span>(
+    <span class="prop">view</span>:       <span class="str">'invoices.show'</span>,
+    <span class="prop">data</span>:       [<span class="str">'invoice'</span> => <span class="var">$invoice</span>-><span class="fn">toArray</span>()],
+    <span class="prop">outputPath</span>: <span class="str">'invoices/inv-001.pdf'</span>,
+    <span class="prop">disk</span>:       <span class="str">'s3'</span>,
+    <span class="prop">driver</span>:     <span class="str">'chromium'</span>,
+);
+
+<span class="cm">// Batch rendering</span>
+<span class="cls">Pdf</span>::<span class="fn">batch</span>([
+    [<span class="str">'view'</span> => <span class="str">'invoices.show'</span>, <span class="str">'data'</span> => <span class="var">$inv1</span>, <span class="str">'outputPath'</span> => <span class="str">'inv-1.pdf'</span>],
+    [<span class="str">'view'</span> => <span class="str">'invoices.show'</span>, <span class="str">'data'</span> => <span class="var">$inv2</span>, <span class="str">'outputPath'</span> => <span class="str">'inv-2.pdf'</span>],
+], <span class="prop">driver</span>: <span class="str">'dompdf'</span>, <span class="prop">disk</span>: <span class="str">'s3'</span>);</pre>
+      </div>
+    </section>
+
+    <!-- ── PREVIEW ── -->
+    <section class="section fade-in" id="preview">
+      <div class="section-eyebrow ey-base">// 07 · Core Features</div>
+      <h2>Preview Routes</h2>
+      <p class="section-lead">Browser-based template preview for rapid development. Disabled in production by default via an environment gate.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">config/pdf-studio.php</span>
+        </div>
+        <pre><span class="str">'preview'</span> => [
+    <span class="str">'enabled'</span>              => <span class="fn">env</span>(<span class="str">'PDF_STUDIO_PREVIEW'</span>, <span class="kw">false</span>),
+    <span class="str">'middleware'</span>           => [<span class="str">'web'</span>, <span class="str">'auth'</span>],
+    <span class="str">'environment_gate'</span>     => <span class="kw">true</span>,
+    <span class="str">'allowed_environments'</span> => [<span class="str">'local'</span>, <span class="str">'staging'</span>, <span class="str">'testing'</span>],
+],</pre>
+      </div>
+
+      <h3>Preview URLs</h3>
+      <div style="margin: 12px 0;">
+        <div class="endpoint"><span class="method m-get">GET</span>/pdf-studio/preview/{template}<span style="color:var(--muted)">?format=html</span></div>
+        <div class="endpoint"><span class="method m-get">GET</span>/pdf-studio/preview/{template}<span style="color:var(--muted)">?format=pdf</span></div>
+        <div class="endpoint"><span class="method m-post">POST</span>/pdf-studio/builder/preview<span style="color:var(--muted)"> (JSON schema)</span></div>
+      </div>
+    </section>
+
+    <!-- ── TAILWIND ── -->
+    <section class="section fade-in" id="tailwind">
+      <div class="section-eyebrow ey-base">// 08 · Core Features</div>
+      <h2>Tailwind CSS</h2>
+      <p class="section-lead">Compile Tailwind utility classes inside your PDF views. The output is cached to avoid re-compilation on every render.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">config/pdf-studio.php</span>
+        </div>
+        <pre><span class="str">'tailwind'</span> => [
+    <span class="str">'binary'</span> => <span class="fn">env</span>(<span class="str">'TAILWIND_BINARY'</span>, <span class="fn">base_path</span>(<span class="str">'node_modules/.bin/tailwindcss'</span>)),
+    <span class="str">'config'</span> => <span class="fn">base_path</span>(<span class="str">'tailwind.config.js'</span>),
+],</pre>
+      </div>
+
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="terminal-title">Clear compiled CSS cache</span>
+        </div>
+        <pre><span class="t-prompt">$</span> <span class="t-cmd">php artisan pdf-studio:cache-clear</span>
+<span class="t-out">✓ CSS cache cleared.</span></pre>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ── PRO: VERSIONING ── -->
+    <section class="section fade-in" id="versioning">
+      <div class="section-eyebrow ey-pro">// 09 · Pro Tier</div>
+      <h2>Template Versioning</h2>
+      <p class="section-lead">Snapshot template definitions at any point, browse history, restore previous versions, and diff changes between versions.</p>
+
+      <div class="callout callout-pro">
+        <span class="callout-icon">🔒</span>
+        <div class="callout-body">
+          <strong>Requires Pro</strong>
+          Set <code>PDF_STUDIO_PRO=true</code> in <code>.env</code> and run migrations.
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP</span>
+        </div>
+        <pre><span class="kw">use</span> <span class="cls">PdfStudio\Laravel\Contracts\TemplateVersionServiceContract</span>;
+
+<span class="var">$versioning</span> = <span class="fn">app</span>(<span class="cls">TemplateVersionServiceContract</span>::<span class="kw">class</span>);
+
+<span class="cm">// Save current state as a new version</span>
+<span class="var">$version</span> = <span class="var">$versioning</span>-><span class="fn">create</span>(
+    <span class="prop">definition</span>:  <span class="var">$registry</span>-><span class="fn">get</span>(<span class="str">'invoice'</span>),
+    <span class="prop">author</span>:      <span class="str">'Jane Smith'</span>,
+    <span class="prop">changeNotes</span>: <span class="str">'Updated payment section layout'</span>,
+);
+
+<span class="cm">// List history (newest first)</span>
+<span class="var">$versions</span> = <span class="var">$versioning</span>-><span class="fn">list</span>(<span class="str">'invoice'</span>);
+
+<span class="cm">// Restore a specific version to a TemplateDefinition DTO</span>
+<span class="var">$definition</span> = <span class="var">$versioning</span>-><span class="fn">restore</span>(<span class="str">'invoice'</span>, <span class="prop">versionNumber</span>: <span class="num">3</span>);
+
+<span class="cm">// See what changed between versions</span>
+<span class="var">$changes</span> = <span class="var">$versioning</span>-><span class="fn">diff</span>(<span class="str">'invoice'</span>, <span class="prop">fromVersion</span>: <span class="num">2</span>, <span class="prop">toVersion</span>: <span class="num">3</span>);
+<span class="cm">// → ['view', 'default_options']</span></pre>
+      </div>
+    </section>
+
+    <!-- ── PRO: WORKSPACES ── -->
+    <section class="section fade-in" id="workspaces">
+      <div class="section-eyebrow ey-pro">// 10 · Pro Tier</div>
+      <h2>Workspaces &amp; Access Control</h2>
+      <p class="section-lead">Multi-tenant workspace model with role-based access control. Scope your PDF resources to teams and enforce permissions with a middleware.</p>
+
+      <h3>Role Hierarchy</h3>
+      <table class="data-table">
+        <thead><tr><th>Role</th><th>canAccess</th><th>canManage</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>owner</code></td><td>✅</td><td>✅</td><td>Full control</td></tr>
+          <tr><td><code>admin</code></td><td>✅</td><td>✅</td><td>Manage members and settings</td></tr>
+          <tr><td><code>member</code></td><td>✅</td><td>❌</td><td>View and render</td></tr>
+          <tr><td><code>viewer</code></td><td>✅</td><td>❌</td><td>View only</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP</span>
+        </div>
+        <pre><span class="kw">use</span> <span class="cls">PdfStudio\Laravel\Models\Workspace</span>;
+<span class="kw">use</span> <span class="cls">PdfStudio\Laravel\Models\WorkspaceMember</span>;
+<span class="kw">use</span> <span class="cls">PdfStudio\Laravel\Contracts\AccessControlContract</span>;
+
+<span class="cm">// Create a workspace</span>
+<span class="var">$workspace</span> = <span class="cls">Workspace</span>::<span class="fn">create</span>([
+    <span class="str">'name'</span> => <span class="str">'Acme Corp'</span>,
+    <span class="str">'slug'</span> => <span class="str">'acme'</span>,
+]);
+
+<span class="cm">// Add a member with a role</span>
+<span class="cls">WorkspaceMember</span>::<span class="fn">create</span>([
+    <span class="str">'workspace_id'</span> => <span class="var">$workspace</span>-><span class="prop">id</span>,
+    <span class="str">'user_id'</span>      => <span class="var">$user</span>-><span class="prop">id</span>,
+    <span class="str">'role'</span>         => <span class="str">'admin'</span>,
+]);
+
+<span class="cm">// Check permissions programmatically</span>
+<span class="var">$access</span> = <span class="fn">app</span>(<span class="cls">AccessControlContract</span>::<span class="kw">class</span>);
+<span class="var">$access</span>-><span class="fn">canAccess</span>(<span class="var">$user</span>-><span class="prop">id</span>, <span class="var">$workspace</span>-><span class="prop">id</span>);
+<span class="var">$access</span>-><span class="fn">canManage</span>(<span class="var">$user</span>-><span class="prop">id</span>, <span class="var">$workspace</span>-><span class="prop">id</span>);
+
+<span class="cm">// Protect routes — reads {workspace} slug from route</span>
+<span class="cls">Route</span>::<span class="fn">middleware</span>(<span class="str">'pdf-studio.workspace'</span>)-><span class="fn">group</span>(<span class="kw">function</span> () {
+    <span class="cls">Route</span>::<span class="fn">get</span>(<span class="str">'/workspaces/{workspace}/templates'</span>, ...);
+});</pre>
+      </div>
+    </section>
+
+    <!-- ── VISUAL BUILDER ── -->
+    <section class="section fade-in" id="builder">
+      <div class="section-eyebrow ey-pro">// 11 · Pro Tier</div>
+      <h2>Visual Builder</h2>
+      <p class="section-lead">Define document layouts as a typed JSON block schema. Compile to HTML, export to Blade, or preview live via HTTP.</p>
+
+      <h3>Available Block Types</h3>
+      <table class="data-table">
+        <thead><tr><th>Block</th><th>Key Properties</th></tr></thead>
+        <tbody>
+          <tr><td><code>TextBlock</code></td><td>content, tag (h1–h6/p/span), classes</td></tr>
+          <tr><td><code>ImageBlock</code></td><td>src, alt, classes</td></tr>
+          <tr><td><code>TableBlock</code></td><td>headers[], rowBinding (DataBinding), cellBindings[]</td></tr>
+          <tr><td><code>ColumnsBlock</code></td><td>columns (Block[][]), gap</td></tr>
+          <tr><td><code>SpacerBlock</code></td><td>height</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP · Build a schema</span>
+        </div>
+        <pre><span class="kw">use</span> <span class="cls">PdfStudio\Laravel\Builder\Schema\DocumentSchema</span>;
+<span class="kw">use</span> <span class="cls">PdfStudio\Laravel\Builder\Schema\{TextBlock, TableBlock, DataBinding, StyleTokens}</span>;
+
+<span class="var">$schema</span> = <span class="kw">new</span> <span class="cls">DocumentSchema</span>(
+    <span class="prop">blocks</span>: [
+        <span class="kw">new</span> <span class="cls">TextBlock</span>(<span class="prop">content</span>: <span class="str">'Invoice'</span>, <span class="prop">tag</span>: <span class="str">'h1'</span>, <span class="prop">classes</span>: <span class="str">'text-2xl font-bold'</span>),
+        <span class="kw">new</span> <span class="cls">TableBlock</span>(
+            <span class="prop">headers</span>: [<span class="str">'Item'</span>, <span class="str">'Qty'</span>, <span class="str">'Price'</span>],
+            <span class="prop">rowBinding</span>: <span class="kw">new</span> <span class="cls">DataBinding</span>(<span class="prop">variable</span>: <span class="str">'items'</span>, <span class="prop">path</span>: <span class="str">'items'</span>),
+            <span class="prop">cellBindings</span>: [<span class="str">'name'</span>, <span class="str">'quantity'</span>, <span class="str">'price'</span>],
+        ),
+    ],
+    <span class="prop">styleTokens</span>: <span class="kw">new</span> <span class="cls">StyleTokens</span>(
+        <span class="prop">primaryColor</span>: <span class="str">'#1a1a1a'</span>,
+        <span class="prop">fontFamily</span>: <span class="str">'Inter, sans-serif'</span>,
+    ),
+);
+
+<span class="cm">// Compile to full HTML</span>
+<span class="var">$html</span> = <span class="fn">app</span>(<span class="cls">SchemaToHtmlCompiler</span>::<span class="kw">class</span>)-><span class="fn">compile</span>(<span class="var">$schema</span>);
+
+<span class="cm">// Export to Blade template</span>
+<span class="var">$blade</span> = <span class="fn">app</span>(<span class="cls">BladeExporter</span>::<span class="kw">class</span>)-><span class="fn">export</span>(<span class="var">$schema</span>);
+
+<span class="cm">// Serialize / deserialize</span>
+<span class="var">$json</span>   = <span class="var">$schema</span>-><span class="fn">toJson</span>();
+<span class="var">$schema</span> = <span class="cls">DocumentSchema</span>::<span class="fn">fromJson</span>(<span class="var">$json</span>);</pre>
+      </div>
+
+      <h3>Live Preview API</h3>
+      <div class="endpoint" style="margin-bottom:12px;">
+        <span class="method m-post">POST</span>/pdf-studio/builder/preview
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">JSON payload</span>
+        </div>
+        <pre>{
+    <span class="prop">"schema"</span>: { <span class="cm">/* DocumentSchema JSON */</span> },
+    <span class="prop">"format"</span>: <span class="str">"html"</span>   <span class="cm">// or "pdf"</span>
+}</pre>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ── SAAS: API KEYS ── -->
+    <section class="section fade-in" id="apikeys">
+      <div class="section-eyebrow ey-saas">// 12 · SaaS Tier</div>
+      <h2>API Keys</h2>
+      <p class="section-lead">Issue scoped API keys to workspaces. Keys are hashed with SHA-256 before storage — the plaintext is shown once and never recoverable.</p>
+
+      <div class="callout callout-saas">
+        <span class="callout-icon">🚀</span>
+        <div class="callout-body">
+          <strong>Requires SaaS</strong>
+          Set <code>PDF_STUDIO_SAAS=true</code> in <code>.env</code> and run migrations.
+        </div>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">01</div>
+          <div class="step-body">
+            <div class="step-title">Enable in .env</div>
+            <div class="step-desc"><code>PDF_STUDIO_SAAS=true</code></div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">02</div>
+          <div class="step-body">
+            <div class="step-title">Create a workspace</div>
+            <div class="step-desc">All API activity is scoped to a workspace for tenant isolation.</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">03</div>
+          <div class="step-body">
+            <div class="step-title">Generate and store a key</div>
+            <div class="step-desc">Hash the raw key before persisting. Give the raw key to your customer once.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP</span>
+        </div>
+        <pre><span class="kw">use</span> <span class="cls">PdfStudio\Laravel\Models\{Workspace, ApiKey}</span>;
+
+<span class="var">$workspace</span> = <span class="cls">Workspace</span>::<span class="fn">create</span>([<span class="str">'name'</span> => <span class="str">'Acme Corp'</span>, <span class="str">'slug'</span> => <span class="str">'acme'</span>]);
+
+<span class="cm">// Generate raw key + prefix</span>
+<span class="var">$generated</span> = <span class="cls">ApiKey</span>::<span class="fn">generate</span>();
+<span class="cm">// → ['key' => '64-char string', 'prefix' => 'first8ch']</span>
+
+<span class="cls">ApiKey</span>::<span class="fn">create</span>([
+    <span class="str">'workspace_id'</span> => <span class="var">$workspace</span>-><span class="prop">id</span>,
+    <span class="str">'name'</span>         => <span class="str">'Production Key'</span>,
+    <span class="str">'key'</span>          => <span class="fn">hash</span>(<span class="str">'sha256'</span>, <span class="var">$generated</span>[<span class="str">'key'</span>]),  <span class="cm">// store hash only</span>
+    <span class="str">'prefix'</span>       => <span class="var">$generated</span>[<span class="str">'prefix'</span>],
+    <span class="str">'expires_at'</span>   => <span class="fn">now</span>()-><span class="fn">addYear</span>(),               <span class="cm">// optional</span>
+]);
+
+<span class="cm">// Show $generated['key'] to customer — cannot be retrieved later</span>
+
+<span class="cm">// Revoke a key</span>
+<span class="var">$apiKey</span>-><span class="fn">revoke</span>();</pre>
+      </div>
+    </section>
+
+    <!-- ── SAAS: RENDER API ── -->
+    <section class="section fade-in" id="renderapi">
+      <div class="section-eyebrow ey-saas">// 13 · SaaS Tier</div>
+      <h2>Hosted Rendering API</h2>
+      <p class="section-lead">A complete HTTP API for rendering PDFs. All endpoints require a Bearer token API key and are scoped to the key's workspace.</p>
+
+      <h3>Authentication</h3>
+      <div class="callout callout-info">
+        <span class="callout-icon">🔑</span>
+        <div class="callout-body">All requests must include <code>Authorization: Bearer &lt;raw_api_key&gt;</code></div>
+      </div>
+
+      <h3>Sync Render — immediate PDF download</h3>
+      <div class="endpoint"><span class="method m-post">POST</span>/api/pdf-studio/render</div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">cURL</span>
+        </div>
+        <pre><span class="fn">curl</span> -X POST https://yourapp.com/api/pdf-studio/render \
+  -H <span class="str">"Authorization: Bearer sk_abc123..."</span> \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{
+    "html": "&lt;h1&gt;Invoice #42&lt;/h1&gt;",
+    "filename": "invoice-42.pdf"
+  }'</span>
+<span class="cm"># → application/pdf download</span>
+
+<span class="cm"># With a Blade view, data, and options:</span>
+<span class="fn">curl</span> -X POST .../render \
+  -d <span class="str">'{
+    "view": "pdf.invoice",
+    "data": {"invoice": {"id": 42}},
+    "options": {"format": "A4", "landscape": false},
+    "driver": "chromium"
+  }'</span></pre>
+      </div>
+
+      <h3>Async Render — queue a job, poll for result</h3>
+      <div class="endpoint"><span class="method m-post">POST</span>/api/pdf-studio/render/async</div>
+      <div class="endpoint"><span class="method m-get">GET</span>/api/pdf-studio/render/{uuid}</div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">cURL</span>
+        </div>
+        <pre><span class="cm"># 1. Dispatch</span>
+<span class="fn">curl</span> -X POST .../render/async \
+  -H <span class="str">"Authorization: Bearer sk_abc123..."</span> \
+  -d <span class="str">'{"view": "pdf.report", "output_path": "reports/jan.pdf", "output_disk": "s3"}'</span>
+<span class="cm"># ← 202 {"id": "uuid-...", "status": "pending"}</span>
+
+<span class="cm"># 2. Poll</span>
+<span class="fn">curl</span> .../render/uuid-... -H <span class="str">"Authorization: Bearer sk_abc123..."</span>
+<span class="cm"># ← {"id": "...", "status": "completed", "bytes": 14200, "render_time_ms": 312.5}</span></pre>
+      </div>
+
+      <h3>Job Status Values</h3>
+      <div>
+        <div class="status-row"><span class="status-dot sd-pending"></span><strong style="color:var(--text);font-size:.85rem">pending</strong><span style="color:var(--muted);font-size:.83rem;margin-left:8px">Job queued, waiting for a worker</span></div>
+        <div class="status-row"><span class="status-dot sd-completed"></span><strong style="color:var(--text);font-size:.85rem">completed</strong><span style="color:var(--muted);font-size:.83rem;margin-left:8px">Render finished, file saved to output_disk</span></div>
+        <div class="status-row"><span class="status-dot sd-failed"></span><strong style="color:var(--text);font-size:.85rem">failed</strong><span style="color:var(--muted);font-size:.83rem;margin-left:8px">Render failed — check <code>error</code> field in response</span></div>
+      </div>
+    </section>
+
+    <!-- ── SAAS: METERING ── -->
+    <section class="section fade-in" id="metering">
+      <div class="section-eyebrow ey-saas">// 14 · SaaS Tier</div>
+      <h2>Usage Metering</h2>
+      <p class="section-lead">Record render events with idempotency keys — safe to call multiple times for the same job without double-counting. Emits a <code>BillableEvent</code> you can hook into any billing provider.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP · Record usage</span>
+        </div>
+        <pre><span class="kw">use</span> <span class="cls">PdfStudio\Laravel\Contracts\UsageMeterContract</span>;
+
+<span class="var">$meter</span> = <span class="fn">app</span>(<span class="cls">UsageMeterContract</span>::<span class="kw">class</span>);
+
+<span class="cm">// Idempotent — won't double-count the same jobId</span>
+<span class="var">$meter</span>-><span class="fn">recordRender</span>(
+    <span class="prop">workspaceId</span>:  <span class="var">$workspace</span>-><span class="prop">id</span>,
+    <span class="prop">jobId</span>:        <span class="var">$job</span>-><span class="prop">id</span>,
+    <span class="prop">bytes</span>:        <span class="var">$result</span>-><span class="prop">bytes</span>,
+    <span class="prop">renderTimeMs</span>: <span class="var">$result</span>-><span class="prop">renderTimeMs</span>,
+);</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP · Hook billing provider via BillableEvent</span>
+        </div>
+        <pre><span class="kw">use</span> <span class="cls">PdfStudio\Laravel\Events\BillableEvent</span>;
+
+<span class="cm">// AppServiceProvider::boot()</span>
+<span class="cls">Event</span>::<span class="fn">listen</span>(<span class="cls">BillableEvent</span>::<span class="kw">class</span>, <span class="kw">function</span> (<span class="cls">BillableEvent</span> <span class="var">$event</span>) {
+    <span class="cm">// $event->workspaceId</span>
+    <span class="cm">// $event->eventType   ('render')</span>
+    <span class="cm">// $event->quantity    (1 per render)</span>
+    <span class="cm">// $event->metadata    (['bytes' => ..., 'render_time_ms' => ...])</span>
+
+    <span class="cls">Stripe</span>::<span class="fn">meterEvent</span>(<span class="str">'pdf_render'</span>, [
+        <span class="str">'stripe_customer_id'</span> => <span class="var">$workspace</span>-><span class="prop">stripe_id</span>,
+        <span class="str">'value'</span> => <span class="var">$event</span>-><span class="prop">quantity</span>,
+    ]);
+});</pre>
+      </div>
+
+      <h3>Query Usage</h3>
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP</span>
+        </div>
+        <pre><span class="var">$records</span> = <span class="var">$meter</span>-><span class="fn">getUsage</span>(<span class="var">$workspace</span>-><span class="prop">id</span>, <span class="fn">now</span>()-><span class="fn">startOfMonth</span>(), <span class="fn">now</span>()-><span class="fn">endOfMonth</span>());
+
+<span class="var">$summary</span> = <span class="var">$meter</span>-><span class="fn">getSummary</span>(<span class="var">$workspace</span>-><span class="prop">id</span>, <span class="fn">now</span>()-><span class="fn">startOfMonth</span>(), <span class="fn">now</span>()-><span class="fn">endOfMonth</span>());
+<span class="cm">// → ['render' => 1432]</span></pre>
+      </div>
+    </section>
+
+    <!-- ── SAAS: ANALYTICS ── -->
+    <section class="section fade-in" id="analytics">
+      <div class="section-eyebrow ey-saas">// 15 · SaaS Tier</div>
+      <h2>Analytics</h2>
+      <p class="section-lead">Query aggregated rendering statistics for a workspace over any date range.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP</span>
+        </div>
+        <pre><span class="kw">use</span> <span class="cls">PdfStudio\Laravel\Contracts\AnalyticsServiceContract</span>;
+
+<span class="var">$analytics</span> = <span class="fn">app</span>(<span class="cls">AnalyticsServiceContract</span>::<span class="kw">class</span>);
+
+<span class="var">$stats</span> = <span class="var">$analytics</span>-><span class="fn">getStats</span>(
+    <span class="prop">workspaceId</span>: <span class="var">$workspace</span>-><span class="prop">id</span>,
+    <span class="prop">from</span>:        <span class="fn">now</span>()-><span class="fn">startOfMonth</span>(),
+    <span class="prop">to</span>:          <span class="fn">now</span>()-><span class="fn">endOfMonth</span>(),
+);
+
+<span class="cm">// Returns:</span>
+<span class="cm">// [</span>
+<span class="cm">//   'total'              => 1432,</span>
+<span class="cm">//   'completed'          => 1418,</span>
+<span class="cm">//   'failed'             => 14,</span>
+<span class="cm">//   'avg_render_time_ms' => 287.3,</span>
+<span class="cm">//   'total_bytes'        => 48_392_104,</span>
+<span class="cm">// ]</span></pre>
+      </div>
+
+      <table class="data-table">
+        <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>total</code></td><td>int</td><td>All render jobs in range</td></tr>
+          <tr><td><code>completed</code></td><td>int</td><td>Successfully rendered</td></tr>
+          <tr><td><code>failed</code></td><td>int</td><td>Errored render jobs</td></tr>
+          <tr><td><code>avg_render_time_ms</code></td><td>float</td><td>Mean render duration</td></tr>
+          <tr><td><code>total_bytes</code></td><td>int</td><td>Cumulative output size in bytes</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- ── CONFIG ── -->
+    <section class="section fade-in" id="config">
+      <div class="section-eyebrow ey-base">// 16 · Reference</div>
+      <h2>Configuration</h2>
+      <p class="section-lead">Full annotated reference for <code>config/pdf-studio.php</code>.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">config/pdf-studio.php</span>
+        </div>
+        <pre><span class="kw">return</span> [
+    <span class="cm">// Which driver to use by default</span>
+    <span class="str">'default_driver'</span> => <span class="fn">env</span>(<span class="str">'PDF_STUDIO_DRIVER'</span>, <span class="str">'chromium'</span>),
+
+    <span class="str">'tailwind'</span> => [
+        <span class="str">'binary'</span> => <span class="fn">env</span>(<span class="str">'TAILWIND_BINARY'</span>),
+        <span class="str">'config'</span> => <span class="kw">null</span>,
+    ],
+
+    <span class="str">'preview'</span> => [
+        <span class="str">'enabled'</span>              => <span class="fn">env</span>(<span class="str">'PDF_STUDIO_PREVIEW'</span>, <span class="kw">false</span>),
+        <span class="str">'middleware'</span>           => [<span class="str">'web'</span>, <span class="str">'auth'</span>],
+        <span class="str">'environment_gate'</span>     => <span class="kw">true</span>,
+        <span class="str">'allowed_environments'</span> => [<span class="str">'local'</span>, <span class="str">'staging'</span>, <span class="str">'testing'</span>],
+        <span class="str">'prefix'</span>               => <span class="str">'pdf-studio/preview'</span>,
+    ],
+
+    <span class="str">'logging'</span> => [
+        <span class="str">'enabled'</span> => <span class="fn">env</span>(<span class="str">'PDF_STUDIO_LOGGING'</span>, <span class="kw">false</span>),
+        <span class="str">'channel'</span> => <span class="kw">null</span>,  <span class="cm">// null = default channel</span>
+    ],
+
+    <span class="str">'pro'</span> => [
+        <span class="str">'enabled'</span>    => <span class="fn">env</span>(<span class="str">'PDF_STUDIO_PRO'</span>, <span class="kw">false</span>),
+        <span class="str">'versioning'</span> => [
+            <span class="str">'enabled'</span>      => <span class="kw">true</span>,
+            <span class="str">'max_versions'</span> => <span class="num">50</span>,
+        ],
+        <span class="str">'workspaces'</span> => [
+            <span class="str">'enabled'</span> => <span class="kw">true</span>,
+            <span class="str">'roles'</span>   => [<span class="str">'owner'</span>, <span class="str">'admin'</span>, <span class="str">'member'</span>, <span class="str">'viewer'</span>],
+        ],
+    ],
+
+    <span class="str">'saas'</span> => [
+        <span class="str">'enabled'</span>  => <span class="fn">env</span>(<span class="str">'PDF_STUDIO_SAAS'</span>, <span class="kw">false</span>),
+        <span class="str">'api'</span>      => [
+            <span class="str">'prefix'</span>     => <span class="str">'api/pdf-studio'</span>,
+            <span class="str">'middleware'</span> => [<span class="str">'api'</span>],
+            <span class="str">'rate_limit'</span> => <span class="num">60</span>,
+        ],
+        <span class="str">'metering'</span> => [<span class="str">'enabled'</span> => <span class="kw">true</span>],
+    ],
+];</pre>
+      </div>
+    </section>
+
+    <!-- ── TESTING ── -->
+    <section class="section fade-in" id="testing">
+      <div class="section-eyebrow ey-base">// 17 · Reference</div>
+      <h2>Testing</h2>
+      <p class="section-lead">The <code>fake</code> driver returns minimal valid PDF bytes without any external dependencies — ideal for CI and unit tests.</p>
+
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="terminal-title">Run the test suite</span>
+        </div>
+        <pre><span class="t-prompt">$</span> <span class="t-cmd">composer test</span>          <span class="t-dim"># pest</span>
+<span class="t-prompt">$</span> <span class="t-cmd">composer analyse</span>       <span class="t-dim"># phpstan level 6</span>
+<span class="t-prompt">$</span> <span class="t-cmd">composer lint</span>          <span class="t-dim"># laravel pint</span>
+
+<span class="t-out">  Tests:    261 passed, 7 skipped
+  Duration: 4.23s</span></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP · Testing with fake driver</span>
+        </div>
+        <pre><span class="cm">// In your TestCase or test file</span>
+<span class="fn">config</span>([<span class="str">'pdf-studio.default_driver'</span> => <span class="str">'fake'</span>]);
+
+<span class="cm">// All assertions work normally</span>
+<span class="var">$response</span> = <span class="var">$this</span>-><span class="fn">postJson</span>(<span class="str">'/api/invoices/1/download'</span>);
+<span class="var">$response</span>-><span class="fn">assertOk</span>()
+          -><span class="fn">assertHeader</span>(<span class="str">'Content-Type'</span>, <span class="str">'application/pdf'</span>);</pre>
+      </div>
+    </section>
+
+  </div><!-- /content -->
+
+  <footer class="footer">
+    <div>PDF Studio for Laravel · MIT License · <a href="https://github.com/sarderiftekhar/pdf-studio">GitHub</a></div>
+    <div style="color:var(--border2)">261 tests · PHPStan level 6 · M0–M9 complete</div>
+  </footer>
+
+</div><!-- /main -->
+
+<script>
+  // ── SCROLL SPY ──
+  const navItems = document.querySelectorAll('.nav-item[href^="#"]');
+  const sections = [...navItems].map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+
+  function onScroll() {
+    const scrollY = window.scrollY + 100;
+    let active = sections[0];
+    for (const s of sections) {
+      if (s.offsetTop <= scrollY) active = s;
+    }
+    navItems.forEach(a => {
+      a.classList.toggle('active', a.getAttribute('href') === '#' + active.id);
+    });
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // ── FADE IN ON SCROLL ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
