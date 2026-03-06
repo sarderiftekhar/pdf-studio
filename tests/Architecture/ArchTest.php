@@ -41,3 +41,12 @@ arch('events are simple DTOs')
 arch('preview data provider contract is interface')
     ->expect('PdfStudio\Laravel\Contracts\PreviewDataProviderContract')
     ->toBeInterface();
+
+arch('template registry has register and get methods')
+    ->expect('PdfStudio\Laravel\Templates\TemplateRegistry')
+    ->toHaveMethod('register')
+    ->toHaveMethod('get');
+
+arch('template exceptions extend RuntimeException')
+    ->expect('PdfStudio\Laravel\Exceptions\TemplateNotFoundException')
+    ->toExtend(RuntimeException::class);
