@@ -16,12 +16,18 @@
         "illuminate/support": "^10.0|^11.0|^12.0"
     },
     "require-dev": {
+        "dompdf/dompdf": "^3.1",
+        "laravel/pint": "^1.0",
         "orchestra/testbench": "^8.0|^9.0|^10.0",
         "pestphp/pest": "^2.0|^3.0",
-        "pestphp/pest-plugin-laravel": "^2.0|^3.0",
         "pestphp/pest-plugin-arch": "^2.0|^3.0",
+        "pestphp/pest-plugin-laravel": "^2.0|^3.0",
         "phpstan/phpstan": "^1.10",
-        "laravel/pint": "^1.0"
+        "spatie/browsershot": "^5.2"
+    },
+    "suggest": {
+        "spatie/browsershot": "Required for the Chromium PDF driver (^4.0)",
+        "dompdf/dompdf": "Required for the dompdf PDF driver (^2.0|^3.0)"
     },
     "autoload": {
         "psr-4": {
