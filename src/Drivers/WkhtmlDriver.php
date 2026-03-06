@@ -25,7 +25,7 @@ class WkhtmlDriver implements RendererContract
 
     public function render(string $html, RenderOptions $options): string
     {
-        $args = $this->buildArguments($options);
+        [$args, $tempFiles] = $this->buildArguments($options);
 
         // wkhtmltopdf reads from stdin with '-' and writes to stdout with '-'
         $command = array_merge([$this->binary], $args, ['-', '-']);
@@ -35,6 +35,10 @@ class WkhtmlDriver implements RendererContract
         $process->setInput($html);
 
         $process->run();
+
+        foreach ($tempFiles as $tempFile) {
+            @unlink($tempFile);
+        }
 
         if (!$process->isSuccessful()) {
             $error = $process->getErrorOutput() ?: $process->getOutput();
@@ -52,11 +56,12 @@ class WkhtmlDriver implements RendererContract
     }
 
     /**
-     * @return array<int, string>
+     * @return array{0: array<int, string>, 1: array<int, string>}
      */
     protected function buildArguments(RenderOptions $options): array
     {
         $args = [];
+        $tempFiles = [];
 
         $args[] = '--page-size';
         $args[] = $options->format;
@@ -83,18 +88,24 @@ class WkhtmlDriver implements RendererContract
         }
 
         if ($options->headerHtml !== null) {
+            $headerFile = tempnam(sys_get_temp_dir(), 'pdfstudio_header_') . '.html';
+            file_put_contents($headerFile, $options->headerHtml);
+            $tempFiles[] = $headerFile;
             $args[] = '--header-html';
-            $args[] = $options->headerHtml;
+            $args[] = $headerFile;
         }
 
         if ($options->footerHtml !== null) {
+            $footerFile = tempnam(sys_get_temp_dir(), 'pdfstudio_footer_') . '.html';
+            file_put_contents($footerFile, $options->footerHtml);
+            $tempFiles[] = $footerFile;
             $args[] = '--footer-html';
-            $args[] = $options->footerHtml;
+            $args[] = $footerFile;
         }
 
         $args[] = '--quiet';
 
-        return $args;
+        return [$args, $tempFiles];
     }
 
     public function supports(): DriverCapabilities
