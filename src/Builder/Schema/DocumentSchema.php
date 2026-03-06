@@ -5,7 +5,7 @@ namespace PdfStudio\Laravel\Builder\Schema;
 class DocumentSchema
 {
     /**
-     * @param array<int, Block> $blocks
+     * @param  array<int, Block>  $blocks
      */
     public function __construct(
         public string $version = '1.0',

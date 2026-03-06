@@ -1,8 +1,8 @@
 <?php
 
-use PdfStudio\Laravel\Builder\SchemaValidator;
 use PdfStudio\Laravel\Builder\Schema\DocumentSchema;
 use PdfStudio\Laravel\Builder\Schema\TextBlock;
+use PdfStudio\Laravel\Builder\SchemaValidator;
 use PdfStudio\Laravel\Exceptions\SchemaValidationException;
 
 it('validates a valid schema', function () {

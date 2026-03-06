@@ -12,7 +12,7 @@ class SchemaValidator
 
     public function validate(DocumentSchema $schema): true
     {
-        if (! in_array($schema->version, $this->supportedVersions, true)) {
+        if (!in_array($schema->version, $this->supportedVersions, true)) {
             throw SchemaValidationException::unsupportedVersion($schema->version);
         }
 

@@ -17,7 +17,7 @@ class BuilderPreviewController
         $schemaData = $request->input('schema');
         $format = $request->input('format', 'html');
 
-        if (! is_array($schemaData)) {
+        if (!is_array($schemaData)) {
             abort(422, 'Schema is required and must be an object.');
         }
 

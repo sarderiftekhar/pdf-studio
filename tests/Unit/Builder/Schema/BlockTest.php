@@ -1,11 +1,11 @@
 <?php
 
-use PdfStudio\Laravel\Builder\Schema\TextBlock;
-use PdfStudio\Laravel\Builder\Schema\ImageBlock;
-use PdfStudio\Laravel\Builder\Schema\TableBlock;
 use PdfStudio\Laravel\Builder\Schema\ColumnsBlock;
-use PdfStudio\Laravel\Builder\Schema\SpacerBlock;
 use PdfStudio\Laravel\Builder\Schema\DataBinding;
+use PdfStudio\Laravel\Builder\Schema\ImageBlock;
+use PdfStudio\Laravel\Builder\Schema\SpacerBlock;
+use PdfStudio\Laravel\Builder\Schema\TableBlock;
+use PdfStudio\Laravel\Builder\Schema\TextBlock;
 
 it('creates a text block', function () {
     $block = new TextBlock(content: 'Hello', tag: 'h1', classes: 'text-2xl');

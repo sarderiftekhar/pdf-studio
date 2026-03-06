@@ -1,8 +1,8 @@
 <?php
 
 use PdfStudio\Laravel\Builder\Schema\DocumentSchema;
-use PdfStudio\Laravel\Builder\Schema\TextBlock;
 use PdfStudio\Laravel\Builder\Schema\StyleTokens;
+use PdfStudio\Laravel\Builder\Schema\TextBlock;
 
 it('creates a document schema with blocks', function () {
     $schema = new DocumentSchema(

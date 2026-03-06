@@ -5,8 +5,8 @@ namespace PdfStudio\Laravel\Builder\Schema;
 class TableBlock extends Block
 {
     /**
-     * @param array<int, string> $headers
-     * @param array<int, DataBinding> $cellBindings
+     * @param  array<int, string>  $headers
+     * @param  array<int, DataBinding>  $cellBindings
      */
     public function __construct(
         public array $headers,

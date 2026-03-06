@@ -150,13 +150,13 @@ class PdfStudioServiceProvider extends ServiceProvider
 
     protected function registerBuilderPreviewRoutes(): void
     {
-        if (! $this->app['config']->get('pdf-studio.preview.enabled', false)) {
+        if (!$this->app['config']->get('pdf-studio.preview.enabled', false)) {
             return;
         }
 
         if ($this->app['config']->get('pdf-studio.preview.environment_gate', true)) {
             $allowed = $this->app['config']->get('pdf-studio.preview.allowed_environments', ['local', 'staging', 'testing']);
-            if (! in_array($this->app->environment(), $allowed, true)) {
+            if (!in_array($this->app->environment(), $allowed, true)) {
                 return;
             }
         }

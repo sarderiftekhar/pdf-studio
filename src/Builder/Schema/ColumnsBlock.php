@@ -5,7 +5,7 @@ namespace PdfStudio\Laravel\Builder\Schema;
 class ColumnsBlock extends Block
 {
     /**
-     * @param array<int, array<int, Block>> $columns
+     * @param  array<int, array<int, Block>>  $columns
      */
     public function __construct(
         public array $columns,
