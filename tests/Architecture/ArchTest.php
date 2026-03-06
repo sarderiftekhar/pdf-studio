@@ -74,3 +74,20 @@ arch('access control service implements contract')
 arch('middleware has handle method')
     ->expect('PdfStudio\Laravel\Http\Middleware')
     ->toHaveMethod('handle');
+
+arch('builder schema blocks extend Block')
+    ->expect('PdfStudio\Laravel\Builder\Schema')
+    ->toExtend(\PdfStudio\Laravel\Builder\Schema\Block::class)
+    ->ignoring('PdfStudio\Laravel\Builder\Schema\Block')
+    ->ignoring('PdfStudio\Laravel\Builder\Schema\DocumentSchema')
+    ->ignoring('PdfStudio\Laravel\Builder\Schema\StyleTokens')
+    ->ignoring('PdfStudio\Laravel\Builder\Schema\DataBinding')
+    ->ignoring('PdfStudio\Laravel\Builder\Schema\SchemaVersion');
+
+arch('builder compiler has compile method')
+    ->expect('PdfStudio\Laravel\Builder\Compiler')
+    ->toHaveMethod('compile');
+
+arch('builder exporter has export method')
+    ->expect('PdfStudio\Laravel\Builder\Exporter')
+    ->toHaveMethod('export');
