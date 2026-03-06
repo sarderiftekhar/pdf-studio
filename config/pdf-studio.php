@@ -172,4 +172,24 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | SaaS Features
+    |--------------------------------------------------------------------------
+    |
+    | Enable SaaS-tier features for hosted rendering platform.
+    |
+    */
+    'saas' => [
+        'enabled' => env('PDF_STUDIO_SAAS', false),
+        'api' => [
+            'prefix' => 'api/pdf-studio',
+            'middleware' => ['api'],
+            'rate_limit' => 60,
+        ],
+        'metering' => [
+            'enabled' => true,
+        ],
+    ],
+
 ];
