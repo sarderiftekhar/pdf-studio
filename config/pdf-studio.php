@@ -149,4 +149,27 @@ return [
         'retries' => 3,
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Pro Features
+    |--------------------------------------------------------------------------
+    |
+    | Enable Pro-tier features. Requires running migrations first:
+    | php artisan vendor:publish --tag=pdf-studio-migrations
+    | php artisan migrate
+    |
+    */
+    'pro' => [
+        'enabled' => env('PDF_STUDIO_PRO', false),
+        'versioning' => [
+            'enabled' => true,
+        ],
+        'workspaces' => [
+            'enabled' => true,
+            'user_model' => 'App\\Models\\User',
+            'default_role' => 'member',
+            'roles' => ['owner', 'admin', 'member', 'viewer'],
+        ],
+    ],
+
 ];

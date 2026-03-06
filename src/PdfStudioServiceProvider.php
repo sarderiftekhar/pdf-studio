@@ -66,6 +66,10 @@ class PdfStudioServiceProvider extends ServiceProvider
                 Commands\CacheClearCommand::class,
                 Commands\TemplateListCommand::class,
             ]);
+
+            $this->publishes([
+                __DIR__.'/../database/migrations' => database_path('migrations'),
+            ], 'pdf-studio-migrations');
         }
 
         $this->registerConfigTemplates();
