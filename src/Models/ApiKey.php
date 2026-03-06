@@ -31,6 +31,7 @@ class ApiKey extends Model
         'revoked_at',
     ];
 
+    /** @var array<string, string> */
     protected $casts = [
         'last_used_at' => 'datetime',
         'expires_at' => 'datetime',
