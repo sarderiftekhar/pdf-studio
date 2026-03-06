@@ -22,16 +22,18 @@ class PdfBuilder
 
     public function view(string $view): static
     {
+        $this->context = new RenderContext;
+        $this->driver = null;
         $this->context->viewName = $view;
-        $this->context->rawHtml = null;
 
         return $this;
     }
 
     public function html(string $html): static
     {
+        $this->context = new RenderContext;
+        $this->driver = null;
         $this->context->rawHtml = $html;
-        $this->context->viewName = null;
 
         return $this;
     }

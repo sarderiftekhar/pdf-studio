@@ -13,7 +13,7 @@ class PdfStudioServiceProvider extends ServiceProvider
             'pdf-studio'
         );
 
-        $this->app->singleton(PdfBuilder::class, function ($app) {
+        $this->app->bind(PdfBuilder::class, function ($app) {
             return new PdfBuilder($app);
         });
 
@@ -202,19 +202,19 @@ class PdfStudioServiceProvider extends ServiceProvider
     protected function registerBladeDirectives(): void
     {
         \Illuminate\Support\Facades\Blade::directive('pageBreak', function () {
-            return '<div style="page-break-after: always; break-after: page;"></div>';
+            return '<?php echo \'<div style="page-break-after: always; break-after: page;"></div>\'; ?>';
         });
 
         \Illuminate\Support\Facades\Blade::directive('pageBreakBefore', function () {
-            return '<div style="page-break-before: always; break-before: page;"></div>';
+            return '<?php echo \'<div style="page-break-before: always; break-before: page;"></div>\'; ?>';
         });
 
         \Illuminate\Support\Facades\Blade::directive('avoidBreak', function () {
-            return '<div style="page-break-inside: avoid; break-inside: avoid;">';
+            return '<?php echo \'<div style="page-break-inside: avoid; break-inside: avoid;">\'; ?>';
         });
 
         \Illuminate\Support\Facades\Blade::directive('endAvoidBreak', function () {
-            return '</div>';
+            return '<?php echo \'</div>\'; ?>';
         });
 
         \Illuminate\Support\Facades\Blade::directive('pageNumber', function ($expression) {
@@ -222,19 +222,19 @@ class PdfStudioServiceProvider extends ServiceProvider
         });
 
         \Illuminate\Support\Facades\Blade::directive('showIf', function ($expression) {
-            return "<?php if(!({$expression})): ?><div style=\"display: none;\"><?php else: ?><div><?php endif; ?>";
+            return "<?php if(!({$expression})): echo '<div style=\"display: none;\">'; else: echo '<div>'; endif; ?>";
         });
 
         \Illuminate\Support\Facades\Blade::directive('endShowIf', function () {
-            return '</div>';
+            return '<?php echo \'</div>\'; ?>';
         });
 
         \Illuminate\Support\Facades\Blade::directive('keepTogether', function () {
-            return '<div style="page-break-inside: avoid; break-inside: avoid;">';
+            return '<?php echo \'<div style="page-break-inside: avoid; break-inside: avoid;">\'; ?>';
         });
 
         \Illuminate\Support\Facades\Blade::directive('endKeepTogether', function () {
-            return '</div>';
+            return '<?php echo \'</div>\'; ?>';
         });
     }
 
