@@ -47,6 +47,10 @@ class PdfStudioServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../config/pdf-studio.php' => config_path('pdf-studio.php'),
             ], 'pdf-studio-config');
+
+            $this->commands([
+                Commands\CacheClearCommand::class,
+            ]);
         }
     }
 }
