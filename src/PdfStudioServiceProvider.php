@@ -21,6 +21,10 @@ class PdfStudioServiceProvider extends ServiceProvider
             return new Drivers\DriverManager($app);
         });
 
+        $this->app->singleton(Cache\CssCache::class, function ($app) {
+            return new Cache\CssCache($app);
+        });
+
         $this->app->bind(Pipeline\RenderPipeline::class);
         $this->app->bind(Pipeline\BladeCompiler::class);
         $this->app->bind(Pipeline\PdfRenderer::class);
