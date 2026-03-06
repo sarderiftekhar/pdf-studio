@@ -44,6 +44,7 @@ class RenderJob extends Model
         'render_time_ms',
         'error',
         'completed_at',
+        'created_at',
     ];
 
     /** @var array<string, string> */

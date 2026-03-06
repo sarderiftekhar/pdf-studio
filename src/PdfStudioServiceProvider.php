@@ -56,6 +56,8 @@ class PdfStudioServiceProvider extends ServiceProvider
         );
 
         $this->app->bind(Contracts\UsageMeterContract::class, Services\UsageMeter::class);
+
+        $this->app->bind(Contracts\AnalyticsServiceContract::class, Services\AnalyticsService::class);
     }
 
     public function boot(): void
