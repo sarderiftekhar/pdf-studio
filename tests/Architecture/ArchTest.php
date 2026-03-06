@@ -22,4 +22,5 @@ arch('pipeline stages have handle method')
 arch('drivers implement RendererContract')
     ->expect('PdfStudio\Laravel\Drivers')
     ->toImplement(\PdfStudio\Laravel\Contracts\RendererContract::class)
-    ->ignoring('PdfStudio\Laravel\Drivers\DriverManager');
+    ->ignoring('PdfStudio\Laravel\Drivers\DriverManager')
+    ->ignoring('PdfStudio\Laravel\Drivers\CapabilityValidator');
