@@ -159,6 +159,26 @@ class PdfStudioServiceProvider extends ServiceProvider
         \Illuminate\Support\Facades\Blade::directive('endAvoidBreak', function () {
             return '</div>';
         });
+
+        \Illuminate\Support\Facades\Blade::directive('pageNumber', function ($expression) {
+            return "<?php echo app(\PdfStudio\Laravel\Layout\PageNumberGenerator::class)->footer({$expression}); ?>";
+        });
+
+        \Illuminate\Support\Facades\Blade::directive('showIf', function ($expression) {
+            return "<?php if(!({$expression})): ?><div style=\"display: none;\"><?php else: ?><div><?php endif; ?>";
+        });
+
+        \Illuminate\Support\Facades\Blade::directive('endShowIf', function () {
+            return '</div>';
+        });
+
+        \Illuminate\Support\Facades\Blade::directive('keepTogether', function () {
+            return '<div style="page-break-inside: avoid; break-inside: avoid;">';
+        });
+
+        \Illuminate\Support\Facades\Blade::directive('endKeepTogether', function () {
+            return '</div>';
+        });
     }
 
     protected function registerEventListeners(): void
