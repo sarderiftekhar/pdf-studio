@@ -83,6 +83,7 @@ class PdfStudioServiceProvider extends ServiceProvider
         $this->registerConfigTemplates();
         $this->registerStarterTemplates();
         $this->registerPreviewRoutes();
+        $this->registerBuilderPreviewRoutes();
         $this->registerBladeDirectives();
         $this->registerEventListeners();
     }
@@ -144,6 +145,30 @@ class PdfStudioServiceProvider extends ServiceProvider
             $router->get('{template}', [Preview\PreviewController::class, 'show'])
                 ->where('template', '.*')
                 ->name('pdf-studio.preview');
+        });
+    }
+
+    protected function registerBuilderPreviewRoutes(): void
+    {
+        if (! $this->app['config']->get('pdf-studio.preview.enabled', false)) {
+            return;
+        }
+
+        if ($this->app['config']->get('pdf-studio.preview.environment_gate', true)) {
+            $allowed = $this->app['config']->get('pdf-studio.preview.allowed_environments', ['local', 'staging', 'testing']);
+            if (! in_array($this->app->environment(), $allowed, true)) {
+                return;
+            }
+        }
+
+        $middleware = $this->app['config']->get('pdf-studio.preview.middleware', ['web', 'auth']);
+
+        $this->app['router']->group([
+            'prefix' => 'pdf-studio/builder',
+            'middleware' => $middleware,
+        ], function ($router) {
+            $router->post('preview', [Builder\Preview\BuilderPreviewController::class, 'preview'])
+                ->name('pdf-studio.builder.preview');
         });
     }
 
