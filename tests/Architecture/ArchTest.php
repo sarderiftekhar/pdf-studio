@@ -50,3 +50,11 @@ arch('template registry has register and get methods')
 arch('template exceptions extend RuntimeException')
     ->expect('PdfStudio\Laravel\Exceptions\TemplateNotFoundException')
     ->toExtend(RuntimeException::class);
+
+arch('jobs implement ShouldQueue')
+    ->expect('PdfStudio\Laravel\Jobs')
+    ->toImplement(\Illuminate\Contracts\Queue\ShouldQueue::class);
+
+arch('listeners have handle methods')
+    ->expect('PdfStudio\Laravel\Listeners')
+    ->toHaveMethod('handleStarting');
