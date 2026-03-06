@@ -58,6 +58,7 @@ class PdfStudioServiceProvider extends ServiceProvider
         }
 
         $this->registerPreviewRoutes();
+        $this->registerBladeDirectives();
     }
 
     protected function registerPreviewRoutes(): void
@@ -76,6 +77,25 @@ class PdfStudioServiceProvider extends ServiceProvider
             $router->get('{template}', [Preview\PreviewController::class, 'show'])
                 ->where('template', '.*')
                 ->name('pdf-studio.preview');
+        });
+    }
+
+    protected function registerBladeDirectives(): void
+    {
+        \Illuminate\Support\Facades\Blade::directive('pageBreak', function () {
+            return '<div style="page-break-after: always; break-after: page;"></div>';
+        });
+
+        \Illuminate\Support\Facades\Blade::directive('pageBreakBefore', function () {
+            return '<div style="page-break-before: always; break-before: page;"></div>';
+        });
+
+        \Illuminate\Support\Facades\Blade::directive('avoidBreak', function () {
+            return '<div style="page-break-inside: avoid; break-inside: avoid;">';
+        });
+
+        \Illuminate\Support\Facades\Blade::directive('endAvoidBreak', function () {
+            return '</div>';
         });
     }
 }
