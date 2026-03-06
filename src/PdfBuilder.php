@@ -4,6 +4,7 @@ namespace PdfStudio\Laravel;
 
 use Illuminate\Contracts\Foundation\Application;
 use PdfStudio\Laravel\DTOs\RenderContext;
+use PdfStudio\Laravel\Jobs;
 use PdfStudio\Laravel\Output\PdfResult;
 use PdfStudio\Laravel\Output\StorageResult;
 use PdfStudio\Laravel\Pipeline\RenderPipeline;
@@ -194,5 +195,24 @@ class PdfBuilder
     public function save(string $path, ?string $disk = null): StorageResult
     {
         return $this->render()->save($path, $disk);
+    }
+
+    /**
+     * Dispatch multiple PDF render jobs to the queue.
+     *
+     * @param  array<array{view: string, data?: array<string, mixed>, outputPath: string, driver?: string, disk?: string, options?: array<string, mixed>}>  $items
+     */
+    public function batch(array $items, ?string $driver = null, ?string $disk = null): void
+    {
+        foreach ($items as $item) {
+            Jobs\RenderPdfJob::dispatch(
+                view: $item['view'],
+                data: $item['data'] ?? [],
+                outputPath: $item['outputPath'],
+                disk: $item['disk'] ?? $disk,
+                driver: $item['driver'] ?? $driver,
+                options: $item['options'] ?? [],
+            );
+        }
     }
 }

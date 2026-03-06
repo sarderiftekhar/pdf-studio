@@ -13,6 +13,7 @@ use PdfStudio\Laravel\PdfBuilder;
  * @method static \Illuminate\Http\Response download(string $filename)
  * @method static \Symfony\Component\HttpFoundation\StreamedResponse stream(string $filename)
  * @method static \PdfStudio\Laravel\Output\StorageResult save(string $path, ?string $disk = null)
+ * @method static void batch(array $items, ?string $driver = null, ?string $disk = null)
  *
  * @see PdfBuilder
  */
