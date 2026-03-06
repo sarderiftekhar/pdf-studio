@@ -63,11 +63,12 @@ it('skips cache when disabled', function () {
 });
 
 it('flushes all pdf-studio CSS cache entries', function () {
-    Cache::put('pdf-studio:css:key1', '.a {}');
-    Cache::put('pdf-studio:css:key2', '.b {}');
-
     $cache = app(CssCache::class);
+    $cache->put('pdf-studio:css:key1', '.a {}');
+    $cache->put('pdf-studio:css:key2', '.b {}');
+
     $cache->flush();
 
-    expect($cache->get('pdf-studio:css:key1'))->toBeNull();
+    expect($cache->get('pdf-studio:css:key1'))->toBeNull()
+        ->and($cache->get('pdf-studio:css:key2'))->toBeNull();
 });

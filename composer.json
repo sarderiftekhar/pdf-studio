@@ -1,5 +1,5 @@
 {
-    "name": "pdfstudio/laravel",
+    "name": "sarder/pdfstudio",
     "description": "Design, preview, and generate PDFs using HTML and TailwindCSS in Laravel",
     "keywords": ["laravel", "pdf", "tailwind", "html-to-pdf", "chromium", "dompdf"],
     "license": "MIT",

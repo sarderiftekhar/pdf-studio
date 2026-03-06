@@ -126,6 +126,7 @@ class RenderController
             if (!in_array($view, $allowlist, true)) {
                 abort(403, "View [{$view}] is not permitted.");
             }
+
             return;
         }
 

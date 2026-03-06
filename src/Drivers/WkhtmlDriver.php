@@ -88,7 +88,7 @@ class WkhtmlDriver implements RendererContract
         }
 
         if ($options->headerHtml !== null) {
-            $headerFile = tempnam(sys_get_temp_dir(), 'pdfstudio_header_') . '.html';
+            $headerFile = tempnam(sys_get_temp_dir(), 'pdfstudio_header_').'.html';
             file_put_contents($headerFile, $options->headerHtml);
             $tempFiles[] = $headerFile;
             $args[] = '--header-html';
@@ -96,7 +96,7 @@ class WkhtmlDriver implements RendererContract
         }
 
         if ($options->footerHtml !== null) {
-            $footerFile = tempnam(sys_get_temp_dir(), 'pdfstudio_footer_') . '.html';
+            $footerFile = tempnam(sys_get_temp_dir(), 'pdfstudio_footer_').'.html';
             file_put_contents($footerFile, $options->footerHtml);
             $tempFiles[] = $footerFile;
             $args[] = '--footer-html';

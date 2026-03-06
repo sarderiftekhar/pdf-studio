@@ -32,7 +32,7 @@ Design, preview, and generate PDFs using HTML and TailwindCSS in Laravel.
 ## Installation
 
 ```bash
-composer require pdfstudio/laravel
+composer require sarder/pdfstudio
 ```
 
 Publish the config file:

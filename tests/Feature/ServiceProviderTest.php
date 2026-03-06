@@ -2,12 +2,13 @@
 
 use PdfStudio\Laravel\PdfBuilder;
 
-it('registers PdfBuilder as a singleton', function () {
+it('registers PdfBuilder as a transient binding', function () {
     $builder1 = app(PdfBuilder::class);
     $builder2 = app(PdfBuilder::class);
 
     expect($builder1)->toBeInstanceOf(PdfBuilder::class)
-        ->and($builder1)->toBe($builder2);
+        ->and($builder2)->toBeInstanceOf(PdfBuilder::class)
+        ->and($builder1)->not->toBe($builder2);
 });
 
 it('merges default config', function () {
