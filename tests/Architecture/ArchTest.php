@@ -91,3 +91,24 @@ arch('builder compiler has compile method')
 arch('builder exporter has export method')
     ->expect('PdfStudio\Laravel\Builder\Exporter')
     ->toHaveMethod('export');
+
+arch('api controllers have action methods')
+    ->expect('PdfStudio\Laravel\Http\Controllers\Api')
+    ->toHaveMethod('sync');
+
+arch('render job model extends Eloquent Model')
+    ->expect('PdfStudio\Laravel\Models\RenderJob')
+    ->toExtend(\Illuminate\Database\Eloquent\Model::class);
+
+arch('usage meter implements contract')
+    ->expect('PdfStudio\Laravel\Services\UsageMeter')
+    ->toImplement(\PdfStudio\Laravel\Contracts\UsageMeterContract::class);
+
+arch('analytics service implements contract')
+    ->expect('PdfStudio\Laravel\Services\AnalyticsService')
+    ->toImplement(\PdfStudio\Laravel\Contracts\AnalyticsServiceContract::class);
+
+arch('billable event is final DTO')
+    ->expect('PdfStudio\Laravel\Events\BillableEvent')
+    ->toBeFinal()
+    ->toHaveConstructor();
