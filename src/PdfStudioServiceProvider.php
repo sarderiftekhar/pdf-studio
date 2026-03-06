@@ -16,6 +16,10 @@ class PdfStudioServiceProvider extends ServiceProvider
         $this->app->singleton(PdfBuilder::class, function ($app) {
             return new PdfBuilder($app);
         });
+
+        $this->app->singleton(Drivers\DriverManager::class, function ($app) {
+            return new Drivers\DriverManager($app);
+        });
     }
 
     public function boot(): void

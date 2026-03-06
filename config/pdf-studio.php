@@ -38,6 +38,7 @@ return [
             'orientation' => 'portrait',
             'options' => [],
         ],
+        'fake' => [],
     ],
 
     /*
