@@ -58,6 +58,7 @@ class RenderController
             disk: $job->output_disk,
             driver: $job->driver,
             options: $job->options ?? [],
+            jobId: $job->id,
         );
 
         return new JsonResponse([
