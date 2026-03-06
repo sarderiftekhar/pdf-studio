@@ -8,6 +8,8 @@ Design, preview, and generate PDFs using HTML and TailwindCSS in Laravel.
 
 > **Free and open source.** All features — including template versioning, workspaces, the visual builder, and the hosted rendering API — are available under the MIT license with no key, subscription, or license fee required.
 
+📖 **[Full User Guide](docs/user-guide.html)** — detailed examples, page layouts, framework integrations (Livewire, Vue, React, Node.js, vanilla JS), and troubleshooting.
+
 ---
 
 ## Table of Contents
@@ -625,6 +627,14 @@ config(['pdf-studio.default_driver' => 'fake']);
 ```
 
 ---
+
+## Documentation
+
+The README covers the full API surface. For deeper guidance see the **[User Guide](docs/user-guide.html)**, which includes:
+
+- Page layout examples (paper sizes, margins, headers/footers, multi-column)
+- Framework integration guides — Livewire, Vue 3, React, Node.js, vanilla JavaScript
+- Troubleshooting — Tailwind class issues, image paths, custom fonts, page breaks, driver differences
 
 ## License
 
