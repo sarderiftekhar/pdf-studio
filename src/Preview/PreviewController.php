@@ -19,7 +19,7 @@ class PreviewController extends Controller
 
     public function show(Request $request, string $template): Response|StreamedResponse
     {
-        if (! View::exists($template)) {
+        if (!View::exists($template)) {
             abort(404, "Template [{$template}] not found.");
         }
 
@@ -48,7 +48,7 @@ class PreviewController extends Controller
         /** @var array<string, string> $providers */
         $providers = $this->app['config']->get('pdf-studio.preview.data_providers', []);
 
-        if (! isset($providers[$template])) {
+        if (!isset($providers[$template])) {
             return [];
         }
 

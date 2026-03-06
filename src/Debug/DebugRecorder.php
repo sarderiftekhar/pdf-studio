@@ -17,7 +17,7 @@ class DebugRecorder
 
     public function record(RenderContext $context, string $driver, float $renderTimeMs): void
     {
-        if (! $this->enabled) {
+        if (!$this->enabled) {
             return;
         }
 
