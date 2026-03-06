@@ -24,3 +24,11 @@ arch('drivers implement RendererContract')
     ->toImplement(\PdfStudio\Laravel\Contracts\RendererContract::class)
     ->ignoring('PdfStudio\Laravel\Drivers\DriverManager')
     ->ignoring('PdfStudio\Laravel\Drivers\CapabilityValidator');
+
+arch('cache classes have flush method')
+    ->expect('PdfStudio\Laravel\Cache')
+    ->toHaveMethod('flush');
+
+arch('commands extend Illuminate Command')
+    ->expect('PdfStudio\Laravel\Commands')
+    ->toExtend(\Illuminate\Console\Command::class);
