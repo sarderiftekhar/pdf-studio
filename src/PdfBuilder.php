@@ -4,7 +4,6 @@ namespace PdfStudio\Laravel;
 
 use Illuminate\Contracts\Foundation\Application;
 use PdfStudio\Laravel\DTOs\RenderContext;
-use PdfStudio\Laravel\Jobs;
 use PdfStudio\Laravel\Output\PdfResult;
 use PdfStudio\Laravel\Output\StorageResult;
 use PdfStudio\Laravel\Pipeline\RenderPipeline;

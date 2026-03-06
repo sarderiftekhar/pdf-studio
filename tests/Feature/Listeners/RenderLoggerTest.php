@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Log;
 use PdfStudio\Laravel\Events\RenderCompleted;
 use PdfStudio\Laravel\Events\RenderFailed;
 use PdfStudio\Laravel\Events\RenderStarting;
-use PdfStudio\Laravel\Facades\Pdf;
 use PdfStudio\Laravel\Listeners\RenderLogger;
 
 beforeEach(function () {
