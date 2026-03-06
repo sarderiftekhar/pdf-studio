@@ -62,6 +62,14 @@ class DriverManager
         return new ChromiumDriver($config);
     }
 
+    /**
+     * @param  array<string, mixed>  $config
+     */
+    protected function createDompdfDriver(array $config = []): DompdfDriver
+    {
+        return new DompdfDriver($config);
+    }
+
     public function getDefaultDriver(): string
     {
         return $this->app['config']->get('pdf-studio.default_driver', 'fake');
