@@ -20,6 +20,10 @@ class PdfStudioServiceProvider extends ServiceProvider
         $this->app->singleton(Drivers\DriverManager::class, function ($app) {
             return new Drivers\DriverManager($app);
         });
+
+        $this->app->bind(Pipeline\RenderPipeline::class);
+        $this->app->bind(Pipeline\BladeCompiler::class);
+        $this->app->bind(Pipeline\PdfRenderer::class);
     }
 
     public function boot(): void
