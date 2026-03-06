@@ -89,6 +89,40 @@ class PdfBuilder
         return $this;
     }
 
+    public function template(string $name): static
+    {
+        $registry = $this->app->make(\PdfStudio\Laravel\Templates\TemplateRegistry::class);
+        $definition = $registry->get($name);
+
+        $this->view($definition->view);
+
+        // Apply default options
+        if (isset($definition->defaultOptions['format'])) {
+            $this->format($definition->defaultOptions['format']);
+        }
+        if (isset($definition->defaultOptions['landscape'])) {
+            $this->landscape((bool) $definition->defaultOptions['landscape']);
+        }
+        if (isset($definition->defaultOptions['margins'])) {
+            $margins = $definition->defaultOptions['margins'];
+            $this->margins(
+                $margins['top'] ?? null,
+                $margins['right'] ?? null,
+                $margins['bottom'] ?? null,
+                $margins['left'] ?? null,
+            );
+        }
+
+        // Resolve data provider if configured
+        if ($definition->dataProvider !== null) {
+            /** @var \PdfStudio\Laravel\Contracts\PreviewDataProviderContract $provider */
+            $provider = $this->app->make($definition->dataProvider);
+            $this->data($provider->data());
+        }
+
+        return $this;
+    }
+
     public function getContext(): RenderContext
     {
         return $this->context;

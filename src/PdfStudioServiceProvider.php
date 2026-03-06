@@ -29,6 +29,10 @@ class PdfStudioServiceProvider extends ServiceProvider
             return new Debug\DebugRecorder($app);
         });
 
+        $this->app->singleton(Templates\TemplateRegistry::class, function () {
+            return new Templates\TemplateRegistry;
+        });
+
         $this->app->bind(Pipeline\RenderPipeline::class);
         $this->app->bind(Pipeline\BladeCompiler::class);
         $this->app->bind(Pipeline\PdfRenderer::class);
