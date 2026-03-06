@@ -19,7 +19,7 @@ class DompdfDriver implements RendererContract
      */
     public function __construct(array $config = [])
     {
-        if (! class_exists(Dompdf::class)) {
+        if (!class_exists(Dompdf::class)) {
             throw new DriverException(
                 'The dompdf driver requires dompdf/dompdf. Install it with: composer require dompdf/dompdf'
             );
@@ -51,13 +51,7 @@ class DompdfDriver implements RendererContract
 
         $dompdf->render();
 
-        $output = $dompdf->output();
-
-        if ($output === null) {
-            throw new DriverException('Dompdf failed to generate PDF output.');
-        }
-
-        return $output;
+        return $dompdf->output();
     }
 
     public function supports(): DriverCapabilities

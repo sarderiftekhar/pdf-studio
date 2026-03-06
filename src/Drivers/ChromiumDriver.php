@@ -18,7 +18,7 @@ class ChromiumDriver implements RendererContract
      */
     public function __construct(array $config = [])
     {
-        if (! class_exists(Browsershot::class)) {
+        if (!class_exists(Browsershot::class)) {
             throw new DriverException(
                 'The Chromium driver requires spatie/browsershot. Install it with: composer require spatie/browsershot'
             );
@@ -58,16 +58,16 @@ class ChromiumDriver implements RendererContract
             }
         }
 
-        if (isset($this->config['binary']) && $this->config['binary'] !== null) {
-            $browsershot->setChromePath($this->config['binary']);
+        if (isset($this->config['binary'])) {
+            $browsershot->setChromePath((string) $this->config['binary']);
         }
 
-        if (isset($this->config['node_binary']) && $this->config['node_binary'] !== null) {
-            $browsershot->setNodeBinary($this->config['node_binary']);
+        if (isset($this->config['node_binary'])) {
+            $browsershot->setNodeBinary((string) $this->config['node_binary']);
         }
 
-        if (isset($this->config['npm_binary']) && $this->config['npm_binary'] !== null) {
-            $browsershot->setNpmBinary($this->config['npm_binary']);
+        if (isset($this->config['npm_binary'])) {
+            $browsershot->setNpmBinary((string) $this->config['npm_binary']);
         }
 
         if (isset($this->config['timeout'])) {

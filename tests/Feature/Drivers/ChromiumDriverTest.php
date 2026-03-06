@@ -33,7 +33,7 @@ it('renders HTML to PDF bytes', function () {
     expect($result)->toBeString()
         ->and(strlen($result))->toBeGreaterThan(0)
         ->and(str_starts_with($result, '%PDF'))->toBeTrue();
-})->skip(! class_exists(\Spatie\Browsershot\Browsershot::class), 'Browsershot not installed');
+})->skip(!class_exists(\Spatie\Browsershot\Browsershot::class), 'Browsershot not installed');
 
 it('respects landscape option', function () {
     $driver = new ChromiumDriver;
@@ -43,7 +43,7 @@ it('respects landscape option', function () {
 
     expect($result)->toBeString()
         ->and(str_starts_with($result, '%PDF'))->toBeTrue();
-})->skip(! class_exists(\Spatie\Browsershot\Browsershot::class), 'Browsershot not installed');
+})->skip(!class_exists(\Spatie\Browsershot\Browsershot::class), 'Browsershot not installed');
 
 it('respects format option', function () {
     $driver = new ChromiumDriver;
@@ -53,4 +53,4 @@ it('respects format option', function () {
 
     expect($result)->toBeString()
         ->and(str_starts_with($result, '%PDF'))->toBeTrue();
-})->skip(! class_exists(\Spatie\Browsershot\Browsershot::class), 'Browsershot not installed');
+})->skip(!class_exists(\Spatie\Browsershot\Browsershot::class), 'Browsershot not installed');

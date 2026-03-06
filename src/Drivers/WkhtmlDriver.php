@@ -36,7 +36,7 @@ class WkhtmlDriver implements RendererContract
 
         $process->run();
 
-        if (! $process->isSuccessful()) {
+        if (!$process->isSuccessful()) {
             $error = $process->getErrorOutput() ?: $process->getOutput();
 
             throw new DriverException("wkhtmltopdf rendering failed: {$error}");
