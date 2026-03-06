@@ -114,12 +114,12 @@ function findTailwindBinary(): ?string
         $whichResult = trim($output[0]);
     }
 
-    if (! empty($whichResult)) {
+    if (!empty($whichResult)) {
         $possiblePaths[] = $whichResult;
     }
 
     foreach ($possiblePaths as $path) {
-        if (! empty($path) && is_executable($path)) {
+        if (!empty($path) && is_executable($path)) {
             return $path;
         }
     }

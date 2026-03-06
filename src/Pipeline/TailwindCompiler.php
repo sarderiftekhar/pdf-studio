@@ -81,7 +81,7 @@ class TailwindCompiler implements CssCompilerContract
             $process->setTimeout($this->timeout);
             $process->run();
 
-            if (! $process->isSuccessful()) {
+            if (!$process->isSuccessful()) {
                 $error = $process->getErrorOutput() ?: $process->getOutput();
 
                 throw new RenderException("Tailwind CSS compilation failed: {$error}");
