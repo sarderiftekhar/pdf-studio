@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use PdfStudio\Laravel\Models\RenderJob;
 use PdfStudio\Laravel\PdfBuilder;
+use PdfStudio\Laravel\Templates\TemplateRegistry;
 
 class RenderController
 {
@@ -92,6 +93,7 @@ class RenderController
     protected function configurePdfBuilder(PdfBuilder $pdfBuilder, Request $request): PdfBuilder
     {
         if ($request->has('view')) {
+            $this->assertViewAllowed($request->input('view'));
             $pdfBuilder->view($request->input('view'));
         } elseif ($request->has('html')) {
             $pdfBuilder->html($request->input('html'));
@@ -114,5 +116,24 @@ class RenderController
         }
 
         return $pdfBuilder;
+    }
+
+    protected function assertViewAllowed(string $view): void
+    {
+        // Check explicit allowlist in config first
+        $allowlist = config('pdf-studio.api.allowed_views', []);
+        if (!empty($allowlist)) {
+            if (!in_array($view, $allowlist, true)) {
+                abort(403, "View [{$view}] is not permitted.");
+            }
+            return;
+        }
+
+        // Fall back to registered PDF Studio template views
+        $registry = app(TemplateRegistry::class);
+        $registeredViews = collect($registry->all())->pluck('view')->all();
+        if (!empty($registeredViews) && !in_array($view, $registeredViews, true)) {
+            abort(403, "View [{$view}] is not a registered PDF Studio template view.");
+        }
     }
 }

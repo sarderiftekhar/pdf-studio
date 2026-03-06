@@ -186,6 +186,10 @@ return [
             'prefix' => 'api/pdf-studio',
             'middleware' => ['api'],
             'rate_limit' => 60,
+            // Restrict which Blade views may be rendered via the API.
+            // Leave empty [] to allow only registered template views.
+            // Set to ['pdf.invoice', 'pdf.report'] to allow specific views.
+            'allowed_views' => [],
         ],
         'metering' => [
             'enabled' => true,
