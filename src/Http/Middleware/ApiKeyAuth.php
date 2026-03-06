@@ -19,7 +19,7 @@ class ApiKeyAuth
         $hashedKey = hash('sha256', $token);
         $apiKey = ApiKey::where('key', $hashedKey)->first();
 
-        if ($apiKey === null || ! $apiKey->isActive()) {
+        if ($apiKey === null || !$apiKey->isActive()) {
             abort(401, 'Invalid or inactive API key.');
         }
 

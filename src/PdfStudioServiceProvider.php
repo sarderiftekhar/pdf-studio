@@ -155,7 +155,7 @@ class PdfStudioServiceProvider extends ServiceProvider
 
     protected function registerApiRoutes(): void
     {
-        if (! $this->app['config']->get('pdf-studio.saas.enabled', false)) {
+        if (!$this->app['config']->get('pdf-studio.saas.enabled', false)) {
             return;
         }
 

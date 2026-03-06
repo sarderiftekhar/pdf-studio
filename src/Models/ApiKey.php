@@ -14,6 +14,7 @@ use Illuminate\Support\Str;
  * @property \Illuminate\Support\Carbon|null $last_used_at
  * @property \Illuminate\Support\Carbon|null $expires_at
  * @property \Illuminate\Support\Carbon|null $revoked_at
+ * @property-read Workspace $workspace
  *
  * @mixin \Illuminate\Database\Eloquent\Builder<ApiKey>
  */
