@@ -49,6 +49,11 @@ class PdfStudioServiceProvider extends ServiceProvider
         $this->app->bind(Contracts\CssCompilerContract::class, Pipeline\TailwindCompiler::class);
 
         $this->app->bind(Contracts\AccessControlContract::class, Services\AccessControl::class);
+
+        $this->app->bind(
+            Contracts\TemplateVersionServiceContract::class,
+            Services\TemplateVersionService::class
+        );
     }
 
     public function boot(): void
