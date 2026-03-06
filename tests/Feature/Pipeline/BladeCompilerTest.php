@@ -45,6 +45,7 @@ it('passes context to the next stage', function () {
 
     $compiler->handle($context, function ($ctx) use (&$nextCalled) {
         $nextCalled = true;
+
         return $ctx;
     });
 

@@ -1,6 +1,5 @@
 <?php
 
-use PdfStudio\Laravel\Drivers\DriverManager;
 use PdfStudio\Laravel\DTOs\RenderContext;
 use PdfStudio\Laravel\Pipeline\PdfRenderer;
 
@@ -49,6 +48,7 @@ it('passes context to the next stage', function () {
 
     $renderer->handle($context, function ($ctx) use (&$nextCalled) {
         $nextCalled = true;
+
         return $ctx;
     });
 
