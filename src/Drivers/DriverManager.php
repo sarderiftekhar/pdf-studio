@@ -70,6 +70,14 @@ class DriverManager
         return new DompdfDriver($config);
     }
 
+    /**
+     * @param  array<string, mixed>  $config
+     */
+    protected function createWkhtmltopdfDriver(array $config = []): WkhtmlDriver
+    {
+        return new WkhtmlDriver($config);
+    }
+
     public function getDefaultDriver(): string
     {
         return $this->app['config']->get('pdf-studio.default_driver', 'fake');
