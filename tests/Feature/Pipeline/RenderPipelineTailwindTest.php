@@ -77,12 +77,12 @@ function findTailwindBinaryForPipeline(): ?string
         $whichResult = trim($output[0]);
     }
 
-    if (! empty($whichResult)) {
+    if (!empty($whichResult)) {
         $paths[] = $whichResult;
     }
 
     foreach ($paths as $path) {
-        if (! empty($path) && is_executable($path)) {
+        if (!empty($path) && is_executable($path)) {
             return $path;
         }
     }

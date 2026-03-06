@@ -39,7 +39,7 @@ class CssCache
      */
     public function get(string $key): ?string
     {
-        if (! $this->enabled) {
+        if (!$this->enabled) {
             return null;
         }
 
@@ -52,7 +52,7 @@ class CssCache
      */
     public function put(string $key, string $css): void
     {
-        if (! $this->enabled) {
+        if (!$this->enabled) {
             return;
         }
 
@@ -68,6 +68,6 @@ class CssCache
      */
     public function flush(): void
     {
-        $this->store->flush();
+        $this->store->clear();
     }
 }

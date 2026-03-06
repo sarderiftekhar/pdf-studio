@@ -55,7 +55,7 @@ function findTailwindBinaryForIntegration(): ?string
     ];
 
     foreach ($paths as $path) {
-        if (! empty($path) && is_executable($path)) {
+        if (!empty($path) && is_executable($path)) {
             return $path;
         }
     }
