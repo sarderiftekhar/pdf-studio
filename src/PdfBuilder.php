@@ -108,17 +108,40 @@ class PdfBuilder
     {
         $startTime = microtime(true);
         $driverName = $this->getResolvedDriverName();
+        $html = $this->context->rawHtml ?? $this->context->viewName ?? '';
 
-        $pipeline = $this->app->make(RenderPipeline::class);
-        $context = $pipeline->run($this->context, $driverName);
-
-        $renderTimeMs = (microtime(true) - $startTime) * 1000;
-
-        return new PdfResult(
-            content: $context->pdfContent ?? '',
+        event(new \PdfStudio\Laravel\Events\RenderStarting(
+            html: $html,
             driver: $driverName,
-            renderTimeMs: $renderTimeMs,
-        );
+            viewName: $this->context->viewName,
+        ));
+
+        try {
+            $pipeline = $this->app->make(RenderPipeline::class);
+            $context = $pipeline->run($this->context, $driverName);
+            $renderTimeMs = (microtime(true) - $startTime) * 1000;
+
+            $result = new PdfResult(
+                content: $context->pdfContent ?? '',
+                driver: $driverName,
+                renderTimeMs: $renderTimeMs,
+            );
+
+            event(new \PdfStudio\Laravel\Events\RenderCompleted(
+                driver: $driverName,
+                renderTimeMs: $renderTimeMs,
+                bytes: $result->bytes,
+            ));
+
+            return $result;
+        } catch (\Throwable $e) {
+            event(new \PdfStudio\Laravel\Events\RenderFailed(
+                driver: $driverName,
+                exception: $e,
+            ));
+
+            throw $e;
+        }
     }
 
     public function download(string $filename): \Illuminate\Http\Response
