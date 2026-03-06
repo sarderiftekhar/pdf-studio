@@ -58,6 +58,7 @@ class PdfStudioServiceProvider extends ServiceProvider
 
             $this->commands([
                 Commands\CacheClearCommand::class,
+                Commands\TemplateListCommand::class,
             ]);
         }
 
