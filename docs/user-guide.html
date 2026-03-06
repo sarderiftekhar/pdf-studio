@@ -268,7 +268,7 @@
     margin-bottom: 12px;
   }
   .ey-base { color: var(--amber); }
-  .ey-pro  { color: var(--purple); }
+  .ey-base  { color: var(--purple); }
   .ey-saas { color: var(--pink); }
 
   .section h2 {
@@ -659,8 +659,8 @@
 
   <div class="sidebar-version">
     <div class="badge-row">
-      <span class="badge badge-oss">OSS v1.0</span>
-      <span class="badge badge-pro">Pro</span>
+      <span class="badge badge-oss">v1.1.0 · MIT</span>
+      
       <span class="badge badge-saas">SaaS</span>
     </div>
   </div>
@@ -684,10 +684,10 @@
     </div>
 
     <div class="nav-group">
-      <div class="nav-group-label">Pro Tier</div>
-      <a href="#versioning" class="nav-item"><span class="nav-dot"></span>Template Versioning <span class="nav-badge nb-pro">Pro</span></a>
-      <a href="#workspaces" class="nav-item"><span class="nav-dot"></span>Workspaces <span class="nav-badge nb-pro">Pro</span></a>
-      <a href="#builder" class="nav-item"><span class="nav-dot"></span>Visual Builder <span class="nav-badge nb-pro">Pro</span></a>
+      <div class="nav-group-label">Advanced Features</div>
+      <a href="#versioning" class="nav-item"><span class="nav-dot"></span>Template Versioning</a>
+      <a href="#workspaces" class="nav-item"><span class="nav-dot"></span>Workspaces</a>
+      <a href="#builder" class="nav-item"><span class="nav-dot"></span>Visual Builder</a>
     </div>
 
     <div class="nav-group">
@@ -712,9 +712,10 @@
 
   <!-- HERO -->
   <header class="hero">
-    <div class="hero-eyebrow">Documentation · v1.0</div>
+    <div class="hero-eyebrow">Documentation · v1.1.0</div>
     <h1>PDF <span>Studio</span><br>for Laravel</h1>
     <p class="hero-desc">Design, preview, and generate PDFs using HTML and TailwindCSS. From simple invoices to hosted rendering platforms.</p>
+    <p style="margin-top:0.6rem;font-size:0.82rem;opacity:0.6;letter-spacing:0.03em;">Free &amp; open source · MIT License · All features included</p>
     <div class="hero-stats">
       <div class="stat">
         <div class="stat-num">261</div>
@@ -955,17 +956,17 @@
     &lt;div&gt;This stays together&lt;/div&gt;
 <span class="amb">@endAvoidBreak</span>
 
-<span class="cm">{{-- Pro: Conditional visibility (CSS-based, prints correctly) --}}</span>
+<span class="cm">{{-- Conditional visibility (CSS-based, prints correctly) --}}</span>
 <span class="amb">@showIf</span>(<span class="var">$invoice</span>-><span class="fn">isPaid</span>())
     &lt;span&gt;PAID&lt;/span&gt;
 <span class="amb">@endShowIf</span>
 
-<span class="cm">{{-- Pro: Keep a section on one page --}}</span>
+<span class="cm">{{-- Keep a section on one page --}}</span>
 <span class="amb">@keepTogether</span>
     &lt;table&gt;...&lt;/table&gt;
 <span class="amb">@endKeepTogether</span>
 
-<span class="cm">{{-- Pro: Chromium page number footer --}}</span>
+<span class="cm">{{-- Chromium page number footer --}}</span>
 <span class="amb">@pageNumber</span>([<span class="str">'format'</span> => <span class="str">'Page {page} of {total}'</span>])</pre>
       </div>
     </section>
@@ -1058,15 +1059,15 @@
 
     <!-- ── PRO: VERSIONING ── -->
     <section class="section fade-in" id="versioning">
-      <div class="section-eyebrow ey-pro">// 09 · Pro Tier</div>
+      <div class="section-eyebrow ey-base">// 09 · Advanced</div>
       <h2>Template Versioning</h2>
       <p class="section-lead">Snapshot template definitions at any point, browse history, restore previous versions, and diff changes between versions.</p>
 
-      <div class="callout callout-pro">
-        <span class="callout-icon">🔒</span>
+      <div class="callout callout-info">
+        <span class="callout-icon">ℹ️</span>
         <div class="callout-body">
-          <strong>Requires Pro</strong>
-          Set <code>PDF_STUDIO_PRO=true</code> in <code>.env</code> and run migrations.
+          <strong>Requires migrations</strong>
+          Run <code>php artisan vendor:publish --tag=pdf-studio-migrations &amp;&amp; php artisan migrate</code> to enable this feature.
         </div>
       </div>
 
@@ -1100,7 +1101,7 @@
 
     <!-- ── PRO: WORKSPACES ── -->
     <section class="section fade-in" id="workspaces">
-      <div class="section-eyebrow ey-pro">// 10 · Pro Tier</div>
+      <div class="section-eyebrow ey-base">// 10 · Advanced</div>
       <h2>Workspaces &amp; Access Control</h2>
       <p class="section-lead">Multi-tenant workspace model with role-based access control. Scope your PDF resources to teams and enforce permissions with a middleware.</p>
 
@@ -1151,7 +1152,7 @@
 
     <!-- ── VISUAL BUILDER ── -->
     <section class="section fade-in" id="builder">
-      <div class="section-eyebrow ey-pro">// 11 · Pro Tier</div>
+      <div class="section-eyebrow ey-base">// 11 · Advanced</div>
       <h2>Visual Builder</h2>
       <p class="section-lead">Define document layouts as a typed JSON block schema. Compile to HTML, export to Blade, or preview live via HTTP.</p>
 

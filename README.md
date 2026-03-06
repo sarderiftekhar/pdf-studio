@@ -6,6 +6,8 @@ Design, preview, and generate PDFs using HTML and TailwindCSS in Laravel.
 [![PHPStan](https://img.shields.io/badge/phpstan-level%206-blue)](phpstan.neon)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
+> **Free and open source.** All features — including template versioning, workspaces, the visual builder, and the hosted rendering API — are available under the MIT license with no key, subscription, or license fee required.
+
 ---
 
 ## Table of Contents
@@ -18,8 +20,8 @@ Design, preview, and generate PDFs using HTML and TailwindCSS in Laravel.
 - [Queue / Async Rendering](#queue--async-rendering)
 - [Preview Routes](#preview-routes)
 - [Tailwind CSS](#tailwind-css)
-- [Pro: Template Versioning](#pro-template-versioning)
-- [Pro: Workspaces & Access Control](#pro-workspaces--access-control)
+- [Template Versioning](#template-versioning)
+- [Workspaces & Access Control](#workspaces--access-control)
 - [Visual Builder](#visual-builder)
 - [SaaS: Hosted Rendering API](#saas-hosted-rendering-api)
 - [SaaS: Usage Metering](#saas-usage-metering)
@@ -161,17 +163,17 @@ php artisan pdf-studio:templates
     <div>Keep this together on one page</div>
 @endAvoidBreak
 
-{{-- Pro: Show/hide based on condition (CSS-based, prints correctly) --}}
+{{-- Show/hide based on condition (CSS-based, prints correctly) --}}
 @showIf($invoice->isPaid())
     <span>PAID</span>
 @endShowIf
 
-{{-- Pro: Wrap content to avoid mid-section breaks --}}
+{{-- Wrap content to avoid mid-section breaks --}}
 @keepTogether
     <table>...</table>
 @endKeepTogether
 
-{{-- Pro: Page number footer (Chromium only) --}}
+{{-- Page number footer (Chromium only) --}}
 @pageNumber(['format' => 'Page {page} of {total}'])
 ```
 
@@ -242,9 +244,9 @@ php artisan pdf-studio:cache-clear
 
 ---
 
-## Pro: Template Versioning
+## Template Versioning
 
-> **Requires:** `pdf-studio.pro.enabled = true` and migrations.
+> **Requires:** migrations (`php artisan vendor:publish --tag=pdf-studio-migrations && php artisan migrate`).
 
 Save a snapshot of a template definition at any point:
 
@@ -274,9 +276,9 @@ $changes = $versioning->diff('invoice', fromVersion: 2, toVersion: 3);
 
 ---
 
-## Pro: Workspaces & Access Control
+## Workspaces & Access Control
 
-> **Requires:** `pdf-studio.pro.enabled = true` and migrations.
+> **Requires:** migrations (`php artisan vendor:publish --tag=pdf-studio-migrations && php artisan migrate`).
 
 ```php
 use PdfStudio\Laravel\Models\Workspace;
