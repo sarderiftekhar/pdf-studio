@@ -13,6 +13,9 @@ class CssCache
 
     protected ?int $ttl;
 
+    /** Registry key used to track all PDF Studio CSS cache keys */
+    private const REGISTRY_KEY = 'pdf-studio:css:_registry';
+
     public function __construct(Application $app)
     {
         /** @var string|null $storeName */
@@ -48,7 +51,7 @@ class CssCache
     }
 
     /**
-     * Store compiled CSS.
+     * Store compiled CSS and register the key for scoped flushing.
      */
     public function put(string $key, string $css): void
     {
@@ -61,13 +64,25 @@ class CssCache
         } else {
             $this->store->forever($key, $css);
         }
+
+        /** @var array<string, bool> $registry */
+        $registry = $this->store->get(self::REGISTRY_KEY, []);
+        $registry[$key] = true;
+        $this->store->forever(self::REGISTRY_KEY, $registry);
     }
 
     /**
-     * Flush all PDF Studio CSS cache entries.
+     * Flush only PDF Studio CSS cache entries, leaving all other cache data intact.
      */
     public function flush(): void
     {
-        $this->store->clear();
+        /** @var array<string, bool> $registry */
+        $registry = $this->store->get(self::REGISTRY_KEY, []);
+
+        foreach (array_keys($registry) as $key) {
+            $this->store->forget($key);
+        }
+
+        $this->store->forget(self::REGISTRY_KEY);
     }
 }
