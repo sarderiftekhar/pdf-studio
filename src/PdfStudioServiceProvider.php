@@ -61,8 +61,27 @@ class PdfStudioServiceProvider extends ServiceProvider
             ]);
         }
 
+        $this->registerConfigTemplates();
         $this->registerPreviewRoutes();
         $this->registerBladeDirectives();
+    }
+
+    protected function registerConfigTemplates(): void
+    {
+        /** @var array<string, array<string, mixed>> $templates */
+        $templates = $this->app['config']->get('pdf-studio.templates', []);
+
+        $registry = $this->app->make(Templates\TemplateRegistry::class);
+
+        foreach ($templates as $name => $config) {
+            $registry->register(new DTOs\TemplateDefinition(
+                name: $name,
+                view: $config['view'] ?? '',
+                description: $config['description'] ?? null,
+                defaultOptions: $config['default_options'] ?? [],
+                dataProvider: $config['data_provider'] ?? null,
+            ));
+        }
     }
 
     protected function registerPreviewRoutes(): void
