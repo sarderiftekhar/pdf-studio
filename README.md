@@ -14,6 +14,7 @@ Design, preview, and generate PDFs using HTML and TailwindCSS in Laravel.
 
 ## Table of Contents
 
+- [Requirements](#requirements)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [Drivers](#drivers)
@@ -30,6 +31,23 @@ Design, preview, and generate PDFs using HTML and TailwindCSS in Laravel.
 - [SaaS: Analytics](#saas-analytics)
 - [Configuration Reference](#configuration-reference)
 - [Testing](#testing)
+
+---
+
+## Requirements
+
+- **PHP** >= 8.1
+- **Laravel** 10.x, 11.x, or 12.x
+
+### Optional Dependencies
+
+| Driver | Package | Required For |
+|--------|---------|-------------|
+| Chromium | `spatie/browsershot` ^5.2 | Full CSS/TailwindCSS fidelity (recommended) |
+| dompdf | `dompdf/dompdf` ^2.0\|^3.0 | Zero external dependencies, limited CSS |
+| wkhtmltopdf | System binary | Good CSS fidelity, no Node.js needed |
+
+> **Note:** The Chromium driver requires Node.js and a Chromium/Chrome binary on the server.
 
 ---
 
