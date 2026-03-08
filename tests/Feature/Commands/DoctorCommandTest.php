@@ -9,7 +9,7 @@ it('runs doctor command successfully', function () {
         ->expectsOutputToContain('PDF Studio Diagnostics')
         ->assertExitCode(0)
         ->run();
-})->skip(!file_exists('/usr/local/bin/wkhtmltopdf') && PHP_OS_FAMILY !== 'Linux', 'Optional binaries not available');
+})->skip(fn () => (bool) getenv('CI'), 'Optional binaries not available in CI');
 
 it('runs doctor command and outputs diagnostics', function () {
     $this->artisan('pdf-studio:doctor')
