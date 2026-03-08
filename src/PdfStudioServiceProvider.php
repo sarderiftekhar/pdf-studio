@@ -58,6 +58,19 @@ class PdfStudioServiceProvider extends ServiceProvider
         $this->app->bind(Contracts\UsageMeterContract::class, Services\UsageMeter::class);
 
         $this->app->bind(Contracts\AnalyticsServiceContract::class, Services\AnalyticsService::class);
+
+        $this->app->bind(Testing\PdfFake::class, function ($app) {
+            return new Testing\PdfFake($app);
+        });
+
+        $this->app->singleton(Cache\RenderCache::class, function ($app) {
+            return new Cache\RenderCache($app);
+        });
+
+        $this->app->bind(Contracts\MergerContract::class, Manipulation\PdfMerger::class);
+        $this->app->bind(Contracts\WatermarkerContract::class, Manipulation\PdfWatermarker::class);
+        $this->app->bind(Contracts\AcroFormContract::class, Manipulation\AcroFormFiller::class);
+        $this->app->bind(Contracts\ProtectorContract::class, Manipulation\PdfProtector::class);
     }
 
     public function boot(): void
@@ -77,6 +90,7 @@ class PdfStudioServiceProvider extends ServiceProvider
             $this->commands([
                 Commands\CacheClearCommand::class,
                 Commands\TemplateListCommand::class,
+                Commands\DoctorCommand::class,
             ]);
 
             $this->publishes([

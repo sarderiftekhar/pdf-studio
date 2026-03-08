@@ -4,15 +4,21 @@ namespace PdfStudio\Laravel;
 
 use Illuminate\Contracts\Foundation\Application;
 use PdfStudio\Laravel\DTOs\RenderContext;
+use PdfStudio\Laravel\DTOs\WatermarkOptions;
 use PdfStudio\Laravel\Output\PdfResult;
 use PdfStudio\Laravel\Output\StorageResult;
 use PdfStudio\Laravel\Pipeline\RenderPipeline;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PdfBuilder
 {
     protected RenderContext $context;
 
     protected ?string $driver = null;
+
+    protected ?int $cacheTtl = null;
+
+    protected bool $noCache = false;
 
     public function __construct(
         protected Application $app,
@@ -24,6 +30,8 @@ class PdfBuilder
     {
         $this->context = new RenderContext;
         $this->driver = null;
+        $this->cacheTtl = null;
+        $this->noCache = false;
         $this->context->viewName = $view;
 
         return $this;
@@ -33,6 +41,8 @@ class PdfBuilder
     {
         $this->context = new RenderContext;
         $this->driver = null;
+        $this->cacheTtl = null;
+        $this->noCache = false;
         $this->context->rawHtml = $html;
 
         return $this;
@@ -125,6 +135,180 @@ class PdfBuilder
         return $this;
     }
 
+    // ---- Render Caching (Feature 10) ----
+
+    public function cache(?int $ttl = null): static
+    {
+        $this->cacheTtl = $ttl ?? (int) config('pdf-studio.render_cache.ttl', 3600);
+
+        return $this;
+    }
+
+    public function noCache(): static
+    {
+        $this->noCache = true;
+
+        return $this;
+    }
+
+    // ---- Livewire/Filament (Feature 1) ----
+
+    public function livewireDownload(string $filename): StreamedResponse
+    {
+        $result = $this->render();
+
+        return new StreamedResponse(function () use ($result) {
+            echo $result->content();
+        }, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+            'Content-Length' => (string) $result->bytes,
+        ]);
+    }
+
+    // ---- Watermarking (Feature 5) ----
+
+    public function watermark(
+        string $text,
+        float $opacity = 0.3,
+        int $rotation = -45,
+        string $position = 'center',
+        int $fontSize = 48,
+        string $color = '#999999',
+    ): static {
+        $this->context->options->watermark = new WatermarkOptions(
+            text: $text,
+            opacity: $opacity,
+            rotation: $rotation,
+            position: $position,
+            fontSize: $fontSize,
+            color: $color,
+        );
+
+        return $this;
+    }
+
+    public function watermarkImage(
+        string $imagePath,
+        float $opacity = 0.3,
+        string $position = 'center',
+    ): static {
+        $this->context->options->watermark = new WatermarkOptions(
+            imagePath: $imagePath,
+            opacity: $opacity,
+            position: $position,
+        );
+
+        return $this;
+    }
+
+    /**
+     * Create a standalone watermark builder for existing PDF bytes.
+     */
+    public function watermarkPdf(string $pdfBytes): Manipulation\WatermarkBuilder
+    {
+        return new Manipulation\WatermarkBuilder($this->app, $pdfBytes);
+    }
+
+    // ---- Password Protection (Feature 6) ----
+
+    /**
+     * @param  array<string>  $permissions
+     */
+    public function protect(
+        ?string $userPassword = null,
+        ?string $ownerPassword = null,
+        array $permissions = [],
+    ): static {
+        $this->context->options->userPassword = $userPassword;
+        $this->context->options->ownerPassword = $ownerPassword;
+        $this->context->options->permissions = $permissions;
+
+        return $this;
+    }
+
+    // ---- Auto-Height (Feature 8) ----
+
+    public function contentFit(int $maxHeight = 5000): static
+    {
+        $this->context->options->autoHeight = true;
+        $this->context->options->maxHeight = $maxHeight;
+
+        return $this;
+    }
+
+    public function autoHeight(int $maxHeight = 5000): static
+    {
+        return $this->contentFit($maxHeight);
+    }
+
+    // ---- Header/Footer Per-Page Control (Feature 9) ----
+
+    public function headerExceptFirst(): static
+    {
+        $this->context->options->headerExceptFirst = true;
+
+        return $this;
+    }
+
+    public function footerExceptLast(): static
+    {
+        $this->context->options->footerExceptLast = true;
+
+        return $this;
+    }
+
+    /**
+     * @param  array<int>  $pages
+     */
+    public function headerOnPages(array $pages): static
+    {
+        $this->context->options->headerOnPages = $pages;
+
+        return $this;
+    }
+
+    /**
+     * @param  array<int>  $pages
+     */
+    public function headerExcludePages(array $pages): static
+    {
+        $this->context->options->headerExcludePages = $pages;
+
+        return $this;
+    }
+
+    /**
+     * @param  array<int>  $pages
+     */
+    public function footerExcludePages(array $pages): static
+    {
+        $this->context->options->footerExcludePages = $pages;
+
+        return $this;
+    }
+
+    // ---- PDF Merging (Feature 3) ----
+
+    /**
+     * @param  array<int, string|PdfResult|array{path: string, disk?: string, pages?: string}>  $sources
+     */
+    public function merge(array $sources): PdfResult
+    {
+        $merger = $this->app->make(\PdfStudio\Laravel\Contracts\MergerContract::class);
+
+        return $merger->merge($sources);
+    }
+
+    // ---- AcroForm Fill (Feature 4) ----
+
+    public function acroform(string $pdfPath): Manipulation\AcroFormBuilder
+    {
+        return new Manipulation\AcroFormBuilder($this->app, $pdfPath);
+    }
+
+    // ---- Core Methods ----
+
     public function getContext(): RenderContext
     {
         return $this->context;
@@ -146,6 +330,24 @@ class PdfBuilder
         $driverName = $this->getResolvedDriverName();
         $html = $this->context->rawHtml ?? $this->context->viewName ?? '';
 
+        // Check render cache
+        $renderCache = $this->app->make(Cache\RenderCache::class);
+        $cacheKey = null;
+
+        if ($this->cacheTtl !== null && !$this->noCache) {
+            $cacheKey = $renderCache->key(
+                $this->context->viewName ?? $this->context->rawHtml ?? '',
+                $this->context->data,
+                (array) $this->context->options,
+                $driverName,
+            );
+
+            $cached = $renderCache->get($cacheKey);
+            if ($cached !== null) {
+                return new PdfResult(content: $cached, driver: $driverName, renderTimeMs: 0);
+            }
+        }
+
         event(new \PdfStudio\Laravel\Events\RenderStarting(
             html: $html,
             driver: $driverName,
@@ -155,6 +357,27 @@ class PdfBuilder
         try {
             $pipeline = $this->app->make(RenderPipeline::class);
             $context = $pipeline->run($this->context, $driverName);
+
+            // Post-render: watermark
+            if ($this->context->options->watermark !== null) {
+                $watermarker = $this->app->make(\PdfStudio\Laravel\Contracts\WatermarkerContract::class);
+                $context->pdfContent = $watermarker->apply(
+                    $context->pdfContent ?? '',
+                    $this->context->options->watermark,
+                );
+            }
+
+            // Post-render: password protection
+            if ($this->context->options->userPassword !== null || $this->context->options->ownerPassword !== null) {
+                $protector = $this->app->make(\PdfStudio\Laravel\Contracts\ProtectorContract::class);
+                $context->pdfContent = $protector->protect(
+                    $context->pdfContent ?? '',
+                    $this->context->options->userPassword,
+                    $this->context->options->ownerPassword,
+                    $this->context->options->permissions,
+                );
+            }
+
             $renderTimeMs = (microtime(true) - $startTime) * 1000;
 
             $result = new PdfResult(
@@ -162,6 +385,11 @@ class PdfBuilder
                 driver: $driverName,
                 renderTimeMs: $renderTimeMs,
             );
+
+            // Store in render cache
+            if ($cacheKey !== null) {
+                $renderCache->put($cacheKey, $context->pdfContent ?? '', $this->cacheTtl);
+            }
 
             event(new \PdfStudio\Laravel\Events\RenderCompleted(
                 driver: $driverName,
@@ -188,7 +416,7 @@ class PdfBuilder
         return $this->render()->download($filename);
     }
 
-    public function stream(string $filename): \Symfony\Component\HttpFoundation\StreamedResponse
+    public function stream(string $filename): StreamedResponse
     {
         return $this->render()->stream($filename);
     }

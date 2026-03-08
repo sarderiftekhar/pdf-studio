@@ -151,6 +151,34 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Manipulation
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for PDF manipulation features (merge, watermark, protect,
+    | AcroForm fill). Some features require pdftk installed on the system.
+    |
+    */
+    'manipulation' => [
+        'pdftk_binary' => env('PDF_STUDIO_PDFTK_BINARY', '/usr/bin/pdftk'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Render Caching
+    |--------------------------------------------------------------------------
+    |
+    | Cache rendered PDF output to avoid re-rendering identical content.
+    | Use ->cache(ttl) on PdfBuilder to enable per-call caching.
+    |
+    */
+    'render_cache' => [
+        'enabled' => env('PDF_STUDIO_RENDER_CACHE', false),
+        'store' => null,
+        'ttl' => 3600,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Pro Features
     |--------------------------------------------------------------------------
     |

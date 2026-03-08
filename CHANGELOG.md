@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.0.0] - 2026-03-08
+
+### Added
+- **PDF Merging** — Merge multiple PDFs (file paths, PdfResult objects, Storage paths, raw bytes) with page range selection via `Pdf::merge()`. Requires `setasign/fpdi`.
+- **Watermarking** — Add text or image watermarks to rendered PDFs with configurable opacity, rotation, position, and font size. Chain `->watermark()` / `->watermarkImage()` or use standalone `Pdf::watermarkPdf()` builder. Requires `setasign/fpdi`.
+- **Password Protection** — Protect PDFs with user/owner passwords and permission controls via `->protect()`. Requires `mikehaertl/php-pdftk`.
+- **AcroForm Fill** — Fill PDF form fields programmatically with `Pdf::acroform()` fluent builder, supporting fill, flatten, and field listing. Requires `mikehaertl/php-pdftk`.
+- **Livewire/Filament Compatibility** — `->livewireDownload()` returns a `StreamedResponse` that bypasses Livewire response interception. Added `->toBase64()` alias on `PdfResult`.
+- **Render Result Caching** — Cache rendered PDF output with `->cache(ttl)` and `->noCache()`. SHA-256 keyed by view, data, options, and driver. Configurable store and TTL.
+- **Auto-Height Paper** — `->contentFit()` / `->autoHeight()` automatically sizes paper height to fit content. Supported by Chromium (two-pass), dompdf (custom paper), and wkhtmltopdf (`--page-height`).
+- **Header/Footer Per-Page Control** — `->headerExceptFirst()`, `->footerExceptLast()`, `->headerOnPages()`, `->headerExcludePages()`, `->footerExcludePages()` with JavaScript injection for Chromium and wkhtmltopdf.
+- **PdfFake Testing** — `Pdf::fake()` with fluent assertions: `assertRendered()`, `assertRenderedView()`, `assertRenderedCount()`, `assertDownloaded()`, `assertSavedTo()`, `assertDriverWas()`, `assertContains()`, `assertMerged()`, `assertMergedCount()`, `assertWatermarked()`, `assertProtected()`, `assertNothingRendered()`.
+- **Doctor Command** — `php artisan pdf-studio:doctor` diagnoses PHP version, memory, drivers, binaries, and performs a test render with color-coded output.
+- **Render Cache Clear** — `php artisan pdf-studio:cache-clear --render` clears the render cache separately from CSS cache.
+- New DTOs: `WatermarkOptions`
+- New contracts: `MergerContract`, `WatermarkerContract`, `AcroFormContract`, `ProtectorContract`
+- New exception: `ManipulationException`
+- 106 new tests (367 total, 688 assertions)
+
+### Changed
+- `RenderOptions` DTO extended with auto-height, header/footer per-page, cache, watermark, and protection parameters
+- `DriverCapabilities` DTO extended with `autoHeight` flag
+- `PdfBuilder` expanded with 15 new chainable methods
+- ChromiumDriver refactored with `createBrowsershot()` helper and per-page header/footer JS injection
+- DompdfDriver updated with two-pass auto-height rendering
+- WkhtmlDriver updated with auto-height `--page-height` support and per-page header/footer JS injection
+- PHPStan config updated to ignore optional dependency classes (`setasign/fpdi`, `mikehaertl/php-pdftk`)
+
 ## [1.1.0] - 2026-03-06
 
 ### Fixed

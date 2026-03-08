@@ -28,7 +28,9 @@
     },
     "suggest": {
         "spatie/browsershot": "Required for the Chromium PDF driver (^4.0)",
-        "dompdf/dompdf": "Required for the dompdf PDF driver (^2.0|^3.0)"
+        "dompdf/dompdf": "Required for the dompdf PDF driver (^2.0|^3.0)",
+        "setasign/fpdi": "Required for PDF merging and watermarking (^2.3)",
+        "mikehaertl/php-pdftk": "Required for AcroForm filling and password protection (^4.0)"
     },
     "autoload": {
         "psr-4": {

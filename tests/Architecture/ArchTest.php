@@ -112,3 +112,15 @@ arch('billable event is final DTO')
     ->expect('PdfStudio\Laravel\Events\BillableEvent')
     ->toBeFinal()
     ->toHaveConstructor();
+
+arch('manipulation exception extends RuntimeException')
+    ->expect('PdfStudio\Laravel\Exceptions\ManipulationException')
+    ->toExtend(RuntimeException::class);
+
+arch('testing fake has assertRendered method')
+    ->expect('PdfStudio\Laravel\Testing\PdfFake')
+    ->toHaveMethod('assertRendered');
+
+arch('render cache has flush method')
+    ->expect('PdfStudio\Laravel\Cache\RenderCache')
+    ->toHaveMethod('flush');

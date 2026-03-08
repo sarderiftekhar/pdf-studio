@@ -2,7 +2,7 @@
 
 Design, preview, and generate PDFs using HTML and TailwindCSS in Laravel.
 
-[![Tests](https://img.shields.io/badge/tests-261%20passing-brightgreen)](tests)
+[![Tests](https://img.shields.io/badge/tests-367%20passing-brightgreen)](tests)
 [![PHPStan](https://img.shields.io/badge/phpstan-level%206-blue)](phpstan.neon)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
@@ -29,6 +29,15 @@ Design, preview, and generate PDFs using HTML and TailwindCSS in Laravel.
 - [SaaS: Hosted Rendering API](#saas-hosted-rendering-api)
 - [SaaS: Usage Metering](#saas-usage-metering)
 - [SaaS: Analytics](#saas-analytics)
+- [PDF Merging](#pdf-merging)
+- [Watermarking](#watermarking)
+- [Password Protection](#password-protection)
+- [AcroForm Fill](#acroform-fill)
+- [Livewire / Filament](#livewire--filament)
+- [Render Caching](#render-caching)
+- [Auto-Height Paper](#auto-height-paper)
+- [Header/Footer Per-Page Control](#headerfooter-per-page-control)
+- [Diagnostics](#diagnostics)
 - [Configuration Reference](#configuration-reference)
 - [Testing](#testing)
 
@@ -46,6 +55,13 @@ Design, preview, and generate PDFs using HTML and TailwindCSS in Laravel.
 | Chromium | `spatie/browsershot` ^5.2 | Full CSS/TailwindCSS fidelity (recommended) |
 | dompdf | `dompdf/dompdf` ^2.0\|^3.0 | Zero external dependencies, limited CSS |
 | wkhtmltopdf | System binary | Good CSS fidelity, no Node.js needed |
+
+**PDF Manipulation (optional):**
+
+| Package | Required For |
+|---------|-------------|
+| `setasign/fpdi` ^2.3 | PDF merging, watermarking |
+| `mikehaertl/php-pdftk` ^4.0 | AcroForm fill, password protection |
 
 > **Note:** The Chromium driver requires Node.js and a Chromium/Chrome binary on the server.
 
@@ -578,6 +594,227 @@ $stats = $analytics->getStats(
 
 ---
 
+## PDF Merging
+
+Merge multiple PDFs into a single document. Requires `setasign/fpdi`.
+
+```php
+use PdfStudio\Laravel\Facades\Pdf;
+
+// Merge file paths
+$result = Pdf::merge([
+    storage_path('pdf/cover.pdf'),
+    storage_path('pdf/report.pdf'),
+    storage_path('pdf/appendix.pdf'),
+]);
+
+// Merge PdfResult objects
+$page1 = Pdf::html('<h1>Page 1</h1>')->render();
+$page2 = Pdf::html('<h1>Page 2</h1>')->render();
+$result = Pdf::merge([$page1, $page2]);
+
+// Merge with Storage paths and page ranges
+$result = Pdf::merge([
+    ['path' => 'documents/report.pdf', 'disk' => 's3', 'pages' => '1-3,5'],
+    storage_path('pdf/appendix.pdf'),
+]);
+
+$result->download('merged.pdf');
+```
+
+---
+
+## Watermarking
+
+Add text or image watermarks to rendered PDFs. Requires `setasign/fpdi`.
+
+```php
+// Text watermark
+Pdf::html('<h1>Invoice</h1>')
+    ->watermark('DRAFT', opacity: 0.3, fontSize: 72, position: 'center')
+    ->download('invoice-draft.pdf');
+
+// Image watermark
+Pdf::view('report')
+    ->watermarkImage(storage_path('images/logo.png'), opacity: 0.2, position: 'bottom-right')
+    ->download('report.pdf');
+
+// Watermark an existing PDF
+$result = Pdf::watermarkPdf(file_get_contents('existing.pdf'))
+    ->text('CONFIDENTIAL')
+    ->opacity(0.5)
+    ->rotation(-30)
+    ->apply();
+```
+
+---
+
+## Password Protection
+
+Protect PDFs with user/owner passwords. Requires `mikehaertl/php-pdftk`.
+
+```php
+// Set both passwords
+Pdf::html('<h1>Secret Report</h1>')
+    ->protect(userPassword: 'user123', ownerPassword: 'admin456')
+    ->download('protected.pdf');
+
+// Owner password with restricted permissions
+Pdf::view('contract')
+    ->protect(
+        ownerPassword: 'admin',
+        permissions: ['Printing', 'CopyContents'],
+    )
+    ->save('contracts/signed.pdf');
+```
+
+---
+
+## AcroForm Fill
+
+Fill PDF form fields programmatically. Requires `mikehaertl/php-pdftk`.
+
+```php
+// Fill form fields
+$result = Pdf::acroform(storage_path('forms/application.pdf'))
+    ->fill([
+        'name' => 'John Doe',
+        'email' => 'john@example.com',
+        'date' => '2024-01-15',
+    ])
+    ->flatten()
+    ->output();
+
+$result->download('application-filled.pdf');
+
+// List available form fields
+$fields = Pdf::acroform(storage_path('forms/application.pdf'))->fields();
+// ['name', 'email', 'date', 'signature']
+```
+
+---
+
+## Livewire / Filament
+
+Download PDFs from Livewire components without Livewire intercepting the response:
+
+```php
+// In a Livewire component action
+public function downloadInvoice()
+{
+    return Pdf::view('invoices.show')
+        ->data(['invoice' => $this->invoice])
+        ->livewireDownload('invoice.pdf');
+}
+```
+
+Get base64 content for embedding:
+
+```php
+$result = Pdf::html('<h1>Report</h1>')->render();
+$base64 = $result->toBase64(); // or $result->base64()
+```
+
+---
+
+## Render Caching
+
+Cache rendered PDFs to avoid re-rendering identical content:
+
+```php
+// Cache for 1 hour (3600 seconds)
+$result = Pdf::html('<h1>Report</h1>')->cache(3600)->render();
+
+// Second call returns cached result instantly (renderTimeMs = 0)
+$result2 = Pdf::html('<h1>Report</h1>')->cache(3600)->render();
+
+// Bypass cache for a specific render
+$fresh = Pdf::html('<h1>Report</h1>')->cache(3600)->noCache()->render();
+```
+
+Configure defaults in config:
+
+```php
+// config/pdf-studio.php
+'render_cache' => [
+    'enabled' => true,
+    'store'   => null, // uses default cache store
+    'ttl'     => 3600,
+],
+```
+
+Clear render cache:
+
+```bash
+php artisan pdf-studio:cache-clear --render
+```
+
+---
+
+## Auto-Height Paper
+
+Automatically size the paper height to fit content (no page breaks):
+
+```php
+// Auto-fit content height
+Pdf::html('<h1>Long receipt...</h1>')
+    ->contentFit()
+    ->download('receipt.pdf');
+
+// With maximum height cap (in pixels)
+Pdf::view('receipt')
+    ->contentFit(maxHeight: 3000)
+    ->download('receipt.pdf');
+
+// Alias
+Pdf::html($html)->autoHeight()->render();
+```
+
+Supported by all drivers (Chromium, dompdf, wkhtmltopdf).
+
+---
+
+## Header/Footer Per-Page Control
+
+Control header and footer visibility on specific pages (Chromium and wkhtmltopdf):
+
+```php
+// Hide header on the first page (e.g., cover page)
+Pdf::view('report')
+    ->headerExceptFirst()
+    ->download('report.pdf');
+
+// Hide footer on the last page
+Pdf::view('report')
+    ->footerExceptLast()
+    ->download('report.pdf');
+
+// Show header only on specific pages
+Pdf::view('report')
+    ->headerOnPages([2, 3, 4])
+    ->download('report.pdf');
+
+// Exclude header/footer from specific pages
+Pdf::view('report')
+    ->headerExcludePages([1, 5])
+    ->footerExcludePages([1])
+    ->download('report.pdf');
+```
+
+---
+
+## Diagnostics
+
+Run a health check on your PDF Studio installation:
+
+```bash
+php artisan pdf-studio:doctor
+```
+
+Checks: PHP version, memory limit, Node.js, dompdf, wkhtmltopdf, pdftk, FPDI, Tailwind binary, and performs a test render.
+
+---
+
 ## Configuration Reference
 
 ```php
@@ -634,14 +871,37 @@ composer analyse     # PHPStan level 6
 composer lint        # Laravel Pint
 ```
 
-Use the `fake` driver in tests to avoid real PDF rendering:
+### PdfFake (Testing Assertions)
+
+Use `Pdf::fake()` in tests for fluent assertions without real PDF rendering:
 
 ```php
-// In your TestCase or test file
-config(['pdf-studio.default_driver' => 'fake']);
+use PdfStudio\Laravel\Facades\Pdf;
 
-// The fake driver returns a minimal valid PDF bytes response
-// All assertions on ->render(), ->download(), ->save() work normally
+it('generates an invoice PDF', function () {
+    $fake = Pdf::fake();
+
+    // ... trigger the code that generates a PDF ...
+
+    $fake->assertRendered();
+    $fake->assertRenderedView('invoices.show');
+    $fake->assertRenderedCount(1);
+    $fake->assertDownloaded('invoice.pdf');
+    $fake->assertSavedTo('invoices/inv-001.pdf', 's3');
+    $fake->assertDriverWas('chromium');
+    $fake->assertContains('Invoice');
+    $fake->assertMerged();
+    $fake->assertMergedCount(2);
+    $fake->assertWatermarked();
+    $fake->assertProtected();
+    $fake->assertNothingRendered();
+});
+```
+
+Or use the `fake` driver directly:
+
+```php
+config(['pdf-studio.default_driver' => 'fake']);
 ```
 
 ---
