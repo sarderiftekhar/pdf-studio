@@ -321,6 +321,17 @@ class PdfBuilder
         return new Manipulation\AcroFormBuilder($this->app, $pdfPath);
     }
 
+    // ---- Thumbnail (Feature 7) ----
+
+    public function thumbnail(int $width = 300, string $format = 'png', int $quality = 85, int $page = 1): Thumbnail\ThumbnailResult
+    {
+        $pdfResult = $this->render();
+
+        $generator = $this->app->make(Thumbnail\ThumbnailGenerator::class);
+
+        return $generator->generate($pdfResult->content(), $page, $width, $format, $quality);
+    }
+
     // ---- Core Methods ----
 
     public function getContext(): RenderContext

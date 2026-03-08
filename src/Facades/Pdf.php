@@ -24,6 +24,7 @@ use PdfStudio\Laravel\Testing\PdfFake;
  * @method static \PdfStudio\Laravel\Manipulation\AcroFormBuilder acroform(string $pdfPath)
  * @method static PdfBuilder bootstrap()
  * @method static PdfBuilder tailwind()
+ * @method static \PdfStudio\Laravel\Thumbnail\ThumbnailResult thumbnail(int $width = 300, string $format = 'png', int $quality = 85, int $page = 1)
  *
  * @see PdfBuilder
  */
@@ -35,6 +36,19 @@ class Pdf extends Facade
         static::swap($fake);
 
         return $fake;
+    }
+
+    public static function thumbnailFromFile(string $path, int $page = 1, int $width = 300, string $format = 'png', int $quality = 85): \PdfStudio\Laravel\Thumbnail\ThumbnailResult
+    {
+        $content = file_get_contents($path);
+
+        if ($content === false) {
+            throw new \PdfStudio\Laravel\Exceptions\RenderException("Cannot read file: {$path}");
+        }
+
+        $generator = static::getFacadeApplication()->make(\PdfStudio\Laravel\Thumbnail\ThumbnailGenerator::class);
+
+        return $generator->generate($content, $page, $width, $format, $quality);
     }
 
     protected static function getFacadeAccessor(): string
