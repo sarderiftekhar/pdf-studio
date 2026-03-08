@@ -252,6 +252,14 @@ class PdfStudioServiceProvider extends ServiceProvider
         \Illuminate\Support\Facades\Blade::directive('endKeepTogether', function () {
             return '<?php echo \'</div>\'; ?>';
         });
+
+        \Illuminate\Support\Facades\Blade::directive('barcode', function ($expression) {
+            return "<?php echo app(\PdfStudio\Laravel\Barcode\BarcodeGenerator::class)->generate({$expression}); ?>";
+        });
+
+        \Illuminate\Support\Facades\Blade::directive('qrcode', function ($expression) {
+            return "<?php echo app(\PdfStudio\Laravel\Barcode\QrCodeGenerator::class)->generate({$expression}); ?>";
+        });
     }
 
     protected function registerEventListeners(): void
