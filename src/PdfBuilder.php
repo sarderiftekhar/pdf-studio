@@ -407,6 +407,30 @@ class PdfBuilder
             $pipeline = $this->app->make(RenderPipeline::class);
             $context = $pipeline->run($this->context, $driverName);
 
+            // Two-pass TOC rendering
+            if ($this->context->options->tocOptions !== null) {
+                $tocExtractor = $this->app->make(TableOfContents\TocExtractor::class);
+                $tocRenderer = $this->app->make(TableOfContents\TocRenderer::class);
+                $tocOptions = $this->context->options->tocOptions;
+
+                // Extract headings from the compiled HTML
+                $compiledHtml = $context->styledHtml ?? $context->compiledHtml ?? '';
+                $entries = $tocExtractor->extract($compiledHtml, $tocOptions);
+
+                if (count($entries) > 0) {
+                    // Inject anchors into the HTML
+                    $anchoredHtml = $tocExtractor->injectAnchors($compiledHtml, $tocOptions);
+
+                    // Render TOC HTML (page numbers are 0 for now)
+                    $tocHtml = $tocRenderer->render($entries, $tocOptions);
+
+                    // Prepend TOC to document and re-render
+                    $this->context->styledHtml = $tocHtml.$anchoredHtml;
+                    $this->context->compiledHtml = $tocHtml.$anchoredHtml;
+                    $context = $pipeline->run($this->context, $driverName);
+                }
+            }
+
             // Post-render: watermark
             if ($this->context->options->watermark !== null) {
                 $watermarker = $this->app->make(\PdfStudio\Laravel\Contracts\WatermarkerContract::class);
