@@ -25,6 +25,8 @@ use PdfStudio\Laravel\Testing\PdfFake;
  * @method static PdfBuilder bootstrap()
  * @method static PdfBuilder tailwind()
  * @method static \PdfStudio\Laravel\Thumbnail\ThumbnailResult thumbnail(int $width = 300, string $format = 'png', int $quality = 85, int $page = 1)
+ * @method static PdfBuilder withTableOfContents(int $depth = 6, string $title = 'Table of Contents', string $mode = 'auto')
+ * @method static PdfBuilder withBookmarks()
  *
  * @see PdfBuilder
  */

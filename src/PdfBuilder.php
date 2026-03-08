@@ -332,6 +332,30 @@ class PdfBuilder
         return $generator->generate($pdfResult->content(), $page, $width, $format, $quality);
     }
 
+    // ---- Table of Contents (Feature 13) ----
+
+    public function withTableOfContents(int $depth = 6, string $title = 'Table of Contents', string $mode = 'auto'): static
+    {
+        $this->context->options->tocOptions = new DTOs\TocOptions(
+            depth: $depth,
+            title: $title,
+            mode: $mode,
+        );
+
+        return $this;
+    }
+
+    public function withBookmarks(): static
+    {
+        if ($this->context->options->tocOptions === null) {
+            $this->context->options->tocOptions = new DTOs\TocOptions;
+        }
+
+        $this->context->options->tocOptions->bookmarks = true;
+
+        return $this;
+    }
+
     // ---- Core Methods ----
 
     public function getContext(): RenderContext

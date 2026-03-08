@@ -31,5 +31,6 @@ class RenderOptions
         public ?string $userPassword = null,
         public ?string $ownerPassword = null,
         public array $permissions = [],
+        public ?TocOptions $tocOptions = null,
     ) {}
 }
