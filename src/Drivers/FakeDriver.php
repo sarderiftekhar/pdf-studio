@@ -21,6 +21,7 @@ class FakeDriver implements RendererContract
             headerFooter: true,
             printBackground: true,
             supportedFormats: ['A4', 'Letter', 'Legal'],
+            autoHeight: true,
         );
     }
 }

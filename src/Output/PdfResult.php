@@ -30,6 +30,11 @@ class PdfResult
         return base64_encode($this->content);
     }
 
+    public function toBase64(): string
+    {
+        return $this->base64();
+    }
+
     public function download(string $filename): Response
     {
         return new Response($this->content, 200, [

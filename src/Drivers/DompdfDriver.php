@@ -47,7 +47,28 @@ class DompdfDriver implements RendererContract
 
         $orientation = $options->landscape ? 'landscape' : 'portrait';
         $paper = $this->config['paper'] ?? $options->format;
-        $dompdf->setPaper($paper, $orientation);
+
+        if ($options->autoHeight) {
+            // First pass: render to measure content height
+            $dompdf->setPaper($paper, $orientation);
+            $dompdf->render();
+
+            $canvas = $dompdf->getCanvas();
+            $pageHeight = $canvas->get_height();
+            $pageCount = $canvas->get_page_count();
+            $contentHeight = $pageHeight * $pageCount;
+            $contentHeight = min($contentHeight, $options->maxHeight);
+
+            // Second pass: render with custom paper size matching content height
+            // dompdf paper size is in points (1 point = 1/72 inch)
+            $widthPt = $canvas->get_width();
+
+            $dompdf = new Dompdf($dompdfOptions);
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper([0, 0, $widthPt, $contentHeight], $orientation);
+        } else {
+            $dompdf->setPaper($paper, $orientation);
+        }
 
         $dompdf->render();
 
@@ -62,6 +83,7 @@ class DompdfDriver implements RendererContract
             headerFooter: false,
             printBackground: false,
             supportedFormats: ['A4', 'Letter', 'Legal', 'A3', 'A5'],
+            autoHeight: true,
         );
     }
 }

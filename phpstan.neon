@@ -6,3 +6,10 @@ parameters:
     paths:
         - src
     tmpDir: build/phpstan
+    ignoreErrors:
+        # Optional dependencies (in composer.json suggest)
+        - '#class setasign\\Fpdi\\Fpdi#'
+        - '#class mikehaertl\\pdftk\\Pdf#'
+        - '#has invalid type setasign\\Fpdi\\Fpdi#'
+        # tempnam() can return false, which gets appended to the array
+        - '#by-ref type of method PdfStudio\\Laravel\\Manipulation\\PdfMerger::resolveSourcePath#'

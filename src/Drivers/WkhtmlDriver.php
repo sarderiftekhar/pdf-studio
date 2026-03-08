@@ -58,13 +58,26 @@ class WkhtmlDriver implements RendererContract
     /**
      * @return array{0: array<int, string>, 1: array<int, string>}
      */
+    /**
+     * @return array{0: array<int, string>, 1: array<int, string>}
+     */
     protected function buildArguments(RenderOptions $options): array
     {
         $args = [];
         $tempFiles = [];
 
-        $args[] = '--page-size';
-        $args[] = $options->format;
+        if ($options->autoHeight) {
+            // Use custom page height for auto-height mode
+            $widthMm = $options->landscape ? 297 : 210;
+            $args[] = '--page-width';
+            $args[] = (string) $widthMm;
+            $args[] = '--page-height';
+            $args[] = (string) $options->maxHeight;
+            $args[] = '--disable-smart-shrinking';
+        } else {
+            $args[] = '--page-size';
+            $args[] = $options->format;
+        }
 
         if ($options->landscape) {
             $args[] = '--orientation';
@@ -88,16 +101,18 @@ class WkhtmlDriver implements RendererContract
         }
 
         if ($options->headerHtml !== null) {
+            $headerHtml = $this->injectPerPageControl($options->headerHtml, $options, 'header');
             $headerFile = tempnam(sys_get_temp_dir(), 'pdfstudio_header_').'.html';
-            file_put_contents($headerFile, $options->headerHtml);
+            file_put_contents($headerFile, $headerHtml);
             $tempFiles[] = $headerFile;
             $args[] = '--header-html';
             $args[] = $headerFile;
         }
 
         if ($options->footerHtml !== null) {
+            $footerHtml = $this->injectPerPageControl($options->footerHtml, $options, 'footer');
             $footerFile = tempnam(sys_get_temp_dir(), 'pdfstudio_footer_').'.html';
-            file_put_contents($footerFile, $options->footerHtml);
+            file_put_contents($footerFile, $footerHtml);
             $tempFiles[] = $footerFile;
             $args[] = '--footer-html';
             $args[] = $footerFile;
@@ -108,6 +123,65 @@ class WkhtmlDriver implements RendererContract
         return [$args, $tempFiles];
     }
 
+    /**
+     * Inject JavaScript into header/footer HTML for per-page visibility control.
+     * wkhtmltopdf passes page/topage query parameters to header/footer HTML.
+     */
+    protected function injectPerPageControl(string $html, RenderOptions $options, string $type): string
+    {
+        $conditions = [];
+
+        if ($type === 'header') {
+            if ($options->headerExceptFirst) {
+                $conditions[] = 'page === 1';
+            }
+            if (!empty($options->headerExcludePages)) {
+                $pages = json_encode($options->headerExcludePages);
+                $conditions[] = "{$pages}.indexOf(page) !== -1";
+            }
+            if ($options->headerOnPages !== null) {
+                $pages = json_encode($options->headerOnPages);
+                $conditions[] = "{$pages}.indexOf(page) === -1";
+            }
+        }
+
+        if ($type === 'footer') {
+            if ($options->footerExceptLast) {
+                $conditions[] = 'page === topage';
+            }
+            if (!empty($options->footerExcludePages)) {
+                $pages = json_encode($options->footerExcludePages);
+                $conditions[] = "{$pages}.indexOf(page) !== -1";
+            }
+        }
+
+        if (empty($conditions)) {
+            return $html;
+        }
+
+        $hideCondition = implode(' || ', $conditions);
+
+        // wkhtmltopdf passes page info as query parameters
+        $script = <<<JS
+        <script>
+        (function() {
+            var params = new URLSearchParams(window.location.search);
+            var page = parseInt(params.get('page') || '1');
+            var topage = parseInt(params.get('topage') || '1');
+            if ({$hideCondition}) {
+                document.body.style.display = 'none';
+            }
+        })();
+        </script>
+        JS;
+
+        if (str_contains($html, '</head>')) {
+            return str_replace('</head>', $script.'</head>', $html);
+        }
+
+        return $html.$script;
+    }
+
     public function supports(): DriverCapabilities
     {
         return new DriverCapabilities(
@@ -116,6 +190,7 @@ class WkhtmlDriver implements RendererContract
             headerFooter: true,
             printBackground: true,
             supportedFormats: ['A4', 'Letter', 'Legal', 'A3', 'A5'],
+            autoHeight: true,
         );
     }
 }

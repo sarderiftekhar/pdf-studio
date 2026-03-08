@@ -4,6 +4,7 @@ namespace PdfStudio\Laravel\Facades;
 
 use Illuminate\Support\Facades\Facade;
 use PdfStudio\Laravel\PdfBuilder;
+use PdfStudio\Laravel\Testing\PdfFake;
 
 /**
  * @method static PdfBuilder view(string $view)
@@ -14,11 +15,26 @@ use PdfStudio\Laravel\PdfBuilder;
  * @method static \Symfony\Component\HttpFoundation\StreamedResponse stream(string $filename)
  * @method static \PdfStudio\Laravel\Output\StorageResult save(string $path, ?string $disk = null)
  * @method static void batch(array<int, array<string, mixed>> $items, ?string $driver = null, ?string $disk = null)
+ * @method static \PdfStudio\Laravel\Output\PdfResult merge(array<int, string|\PdfStudio\Laravel\Output\PdfResult|array<string, mixed>> $sources)
+ * @method static PdfBuilder watermark(string $text, float $opacity = 0.3, int $rotation = -45, string $position = 'center', int $fontSize = 48, string $color = '#999999')
+ * @method static PdfBuilder protect(?string $userPassword = null, ?string $ownerPassword = null, array<string> $permissions = [])
+ * @method static PdfBuilder contentFit(int $maxHeight = 5000)
+ * @method static PdfBuilder cache(?int $ttl = null)
+ * @method static \Symfony\Component\HttpFoundation\StreamedResponse livewireDownload(string $filename)
+ * @method static \PdfStudio\Laravel\Manipulation\AcroFormBuilder acroform(string $pdfPath)
  *
  * @see PdfBuilder
  */
 class Pdf extends Facade
 {
+    public static function fake(): PdfFake
+    {
+        $fake = static::getFacadeApplication()->make(PdfFake::class);
+        static::swap($fake);
+
+        return $fake;
+    }
+
     protected static function getFacadeAccessor(): string
     {
         return PdfBuilder::class;

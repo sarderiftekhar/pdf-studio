@@ -13,5 +13,6 @@ class DriverCapabilities
         public bool $headerFooter = false,
         public bool $printBackground = true,
         public array $supportedFormats = ['A4', 'Letter', 'Legal'],
+        public bool $autoHeight = false,
     ) {}
 }
