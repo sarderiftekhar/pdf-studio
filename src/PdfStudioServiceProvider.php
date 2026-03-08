@@ -37,6 +37,8 @@ class PdfStudioServiceProvider extends ServiceProvider
         $this->app->bind(Pipeline\BladeCompiler::class);
         $this->app->bind(Pipeline\PdfRenderer::class);
 
+        $this->app->bind(Pipeline\BootstrapInjector::class);
+
         $this->app->bind(Pipeline\TailwindCompiler::class, function ($app) {
             return new Pipeline\TailwindCompiler(
                 cache: $app->make(Cache\CssCache::class),

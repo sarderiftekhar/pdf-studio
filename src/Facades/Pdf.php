@@ -22,6 +22,8 @@ use PdfStudio\Laravel\Testing\PdfFake;
  * @method static PdfBuilder cache(?int $ttl = null)
  * @method static \Symfony\Component\HttpFoundation\StreamedResponse livewireDownload(string $filename)
  * @method static \PdfStudio\Laravel\Manipulation\AcroFormBuilder acroform(string $pdfPath)
+ * @method static PdfBuilder bootstrap()
+ * @method static PdfBuilder tailwind()
  *
  * @see PdfBuilder
  */

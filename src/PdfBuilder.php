@@ -65,6 +65,20 @@ class PdfBuilder
         return $this;
     }
 
+    public function bootstrap(): static
+    {
+        $this->context->cssFramework = 'bootstrap';
+
+        return $this;
+    }
+
+    public function tailwind(): static
+    {
+        $this->context->cssFramework = 'tailwind';
+
+        return $this;
+    }
+
     public function format(string $format): static
     {
         $this->context->options->format = $format;
