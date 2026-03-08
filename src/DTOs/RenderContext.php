@@ -16,6 +16,7 @@ class RenderContext
         public ?string $styledHtml = null,
         public ?string $pdfContent = null,
         public ?RenderOptions $options = null,
+        public ?string $cssFramework = null,
     ) {
         $this->options ??= new RenderOptions;
     }
