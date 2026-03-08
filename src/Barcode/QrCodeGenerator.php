@@ -16,7 +16,7 @@ class QrCodeGenerator
      */
     public function generate(string $data, array $options = []): string
     {
-        if (! class_exists(QRCode::class)) {
+        if (!class_exists(QRCode::class)) {
             throw new RenderException(
                 'The chillerlan/php-qrcode package is required for QR code generation. '
                 .'Install it with: composer require chillerlan/php-qrcode'

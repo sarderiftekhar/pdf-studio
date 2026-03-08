@@ -1,7 +1,7 @@
 <?php
 
-use PdfStudio\Laravel\TableOfContents\TocExtractor;
 use PdfStudio\Laravel\DTOs\TocOptions;
+use PdfStudio\Laravel\TableOfContents\TocExtractor;
 
 it('extracts headings from HTML', function () {
     $html = '<h1>Title</h1><p>content</p><h2>Section A</h2><h3>Subsection</h3><h2>Section B</h2>';

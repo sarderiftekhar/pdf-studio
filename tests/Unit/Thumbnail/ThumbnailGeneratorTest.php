@@ -1,8 +1,8 @@
 <?php
 
-use PdfStudio\Laravel\Thumbnail\ThumbnailGenerator;
-use PdfStudio\Laravel\Thumbnail\ImagickStrategy;
 use PdfStudio\Laravel\Thumbnail\ChromiumStrategy;
+use PdfStudio\Laravel\Thumbnail\ImagickStrategy;
+use PdfStudio\Laravel\Thumbnail\ThumbnailGenerator;
 
 it('resolves imagick strategy when available', function () {
     $generator = new ThumbnailGenerator(strategy: 'imagick');

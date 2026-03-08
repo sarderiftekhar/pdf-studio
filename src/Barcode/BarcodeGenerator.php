@@ -2,9 +2,9 @@
 
 namespace PdfStudio\Laravel\Barcode;
 
+use PdfStudio\Laravel\Exceptions\RenderException;
 use Picqer\Barcode\BarcodeGenerator as PicqerBarcodeGenerator;
 use Picqer\Barcode\BarcodeGeneratorSVG;
-use PdfStudio\Laravel\Exceptions\RenderException;
 
 class BarcodeGenerator
 {
@@ -13,7 +13,7 @@ class BarcodeGenerator
      */
     public function generate(string $type, string $value, array $options = []): string
     {
-        if (! class_exists(BarcodeGeneratorSVG::class)) {
+        if (!class_exists(BarcodeGeneratorSVG::class)) {
             throw new RenderException(
                 'The picqer/php-barcode-generator package is required for barcode generation. '
                 .'Install it with: composer require picqer/php-barcode-generator'

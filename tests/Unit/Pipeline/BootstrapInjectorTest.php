@@ -1,7 +1,7 @@
 <?php
 
-use PdfStudio\Laravel\Pipeline\BootstrapInjector;
 use PdfStudio\Laravel\DTOs\RenderContext;
+use PdfStudio\Laravel\Pipeline\BootstrapInjector;
 
 it('sets compiledCss to bootstrap CSS content', function () {
     $injector = new BootstrapInjector;

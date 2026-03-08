@@ -1,7 +1,6 @@
 <?php
 
 use PdfStudio\Laravel\PdfBuilder;
-use PdfStudio\Laravel\DTOs\RenderContext;
 
 it('sets cssFramework to bootstrap via fluent API', function () {
     $builder = app(PdfBuilder::class);
