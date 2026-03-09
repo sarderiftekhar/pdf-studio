@@ -17,6 +17,7 @@
         "illuminate/support": "^11.0|^12.0"
     },
     "require-dev": {
+        "chillerlan/php-qrcode": "^5.0",
         "dompdf/dompdf": "^3.1",
         "laravel/pint": "^1.0",
         "orchestra/testbench": "^9.0|^10.0",
@@ -24,6 +25,7 @@
         "pestphp/pest-plugin-arch": "^2.0|^3.0",
         "pestphp/pest-plugin-laravel": "^2.0|^3.0",
         "phpstan/phpstan": "^1.10",
+        "picqer/php-barcode-generator": "^3.0",
         "spatie/browsershot": "^5.2"
     },
     "suggest": {
