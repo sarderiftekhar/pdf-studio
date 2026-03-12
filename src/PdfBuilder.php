@@ -499,11 +499,29 @@ class PdfBuilder
     }
 
     /**
+     * @return array<int, array{index: int, start: int, end: int, pages: int, range: string}>
+     */
+    public function chunkPlan(string $pdfContent, int $pagesPerChunk): array
+    {
+        $chunker = $this->app->make(Manipulation\PdfChunker::class);
+
+        return $chunker->chunkPlan($pdfContent, $pagesPerChunk);
+    }
+
+    /**
      * @return array<int, string>
      */
     public function chunkRangesFile(string $path, int $pagesPerChunk): array
     {
         return $this->chunkRanges($this->readPdfFile($path), $pagesPerChunk);
+    }
+
+    /**
+     * @return array<int, array{index: int, start: int, end: int, pages: int, range: string}>
+     */
+    public function chunkPlanFile(string $path, int $pagesPerChunk): array
+    {
+        return $this->chunkPlan($this->readPdfFile($path), $pagesPerChunk);
     }
 
     /**

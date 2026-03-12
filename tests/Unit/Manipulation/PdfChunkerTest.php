@@ -76,3 +76,23 @@ it('returns computed chunk ranges without splitting', function () {
 
     expect($chunker->chunkRanges('%PDF-fake', 3))->toBe(['1-3', '4-6', '7-8']);
 });
+
+it('returns a structured chunk plan without splitting', function () {
+    $pageCounter = new class extends PdfPageCounter
+    {
+        public function count(string $pdfContent): int
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+
+            return 8;
+        }
+    };
+
+    $chunker = new PdfChunker(new class extends PdfSplitter {}, $pageCounter);
+
+    expect($chunker->chunkPlan('%PDF-fake', 3))->toBe([
+        ['index' => 1, 'start' => 1, 'end' => 3, 'pages' => 3, 'range' => '1-3'],
+        ['index' => 2, 'start' => 4, 'end' => 6, 'pages' => 3, 'range' => '4-6'],
+        ['index' => 3, 'start' => 7, 'end' => 8, 'pages' => 2, 'range' => '7-8'],
+    ]);
+});

@@ -301,6 +301,29 @@ it('plans chunk ranges for an existing pdf through the builder', function () {
     expect(Pdf::chunkRanges('%PDF-fake', 4))->toBe(['1-4', '5-8', '9-9']);
 });
 
+it('builds a chunk plan for an existing pdf through the builder', function () {
+    $chunker = new class
+    {
+        public function chunkPlan(string $pdfContent, int $pagesPerChunk): array
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+            expect($pagesPerChunk)->toBe(4);
+
+            return [
+                ['index' => 1, 'start' => 1, 'end' => 4, 'pages' => 4, 'range' => '1-4'],
+                ['index' => 2, 'start' => 5, 'end' => 8, 'pages' => 4, 'range' => '5-8'],
+            ];
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfChunker::class, $chunker);
+
+    expect(Pdf::chunkPlan('%PDF-fake', 4))->toBe([
+        ['index' => 1, 'start' => 1, 'end' => 4, 'pages' => 4, 'range' => '1-4'],
+        ['index' => 2, 'start' => 5, 'end' => 8, 'pages' => 4, 'range' => '5-8'],
+    ]);
+});
+
 it('chunks an existing pdf file through the builder', function () {
     $pdfPath = tempnam(sys_get_temp_dir(), 'pdfstudio_chunk_file_');
     file_put_contents($pdfPath, '%PDF-fake');
@@ -346,6 +369,34 @@ it('plans chunk ranges for an existing pdf file through the builder', function (
     $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfChunker::class, $chunker);
 
     expect(Pdf::chunkRangesFile($pdfPath, 4))->toBe(['1-4', '5-8']);
+
+    @unlink($pdfPath);
+});
+
+it('builds a chunk plan for an existing pdf file through the builder', function () {
+    $pdfPath = tempnam(sys_get_temp_dir(), 'pdfstudio_chunk_plan_file_');
+    file_put_contents($pdfPath, '%PDF-fake');
+
+    $chunker = new class
+    {
+        public function chunkPlan(string $pdfContent, int $pagesPerChunk): array
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+            expect($pagesPerChunk)->toBe(4);
+
+            return [
+                ['index' => 1, 'start' => 1, 'end' => 4, 'pages' => 4, 'range' => '1-4'],
+                ['index' => 2, 'start' => 5, 'end' => 6, 'pages' => 2, 'range' => '5-6'],
+            ];
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfChunker::class, $chunker);
+
+    expect(Pdf::chunkPlanFile($pdfPath, 4))->toBe([
+        ['index' => 1, 'start' => 1, 'end' => 4, 'pages' => 4, 'range' => '1-4'],
+        ['index' => 2, 'start' => 5, 'end' => 6, 'pages' => 2, 'range' => '5-6'],
+    ]);
 
     @unlink($pdfPath);
 });

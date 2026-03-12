@@ -46,6 +46,34 @@ class PdfChunker
         return $ranges;
     }
 
+    /**
+     * @return array<int, array{index: int, start: int, end: int, pages: int, range: string}>
+     */
+    public function chunkPlan(string $pdfContent, int $pagesPerChunk): array
+    {
+        if ($pagesPerChunk < 1) {
+            throw new ManipulationException('PDF chunking requires at least one page per chunk.');
+        }
+
+        $pageCount = $this->pageCount($pdfContent);
+        $plan = [];
+        $index = 1;
+
+        for ($start = 1; $start <= $pageCount; $start += $pagesPerChunk) {
+            $end = min($start + $pagesPerChunk - 1, $pageCount);
+            $plan[] = [
+                'index' => $index,
+                'start' => $start,
+                'end' => $end,
+                'pages' => $end - $start + 1,
+                'range' => "{$start}-{$end}",
+            ];
+            $index++;
+        }
+
+        return $plan;
+    }
+
     protected function pageCount(string $pdfContent): int
     {
         return $this->pageCounter->count($pdfContent);
