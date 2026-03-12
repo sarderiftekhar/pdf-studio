@@ -165,6 +165,22 @@ it('flattens an existing pdf through the builder', function () {
         ->and($result->driver)->toBe('pdftk-flattener');
 });
 
+it('counts pages in an existing pdf through the builder', function () {
+    $counter = new class
+    {
+        public function count(string $pdfContent): int
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+
+            return 9;
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfPageCounter::class, $counter);
+
+    expect(Pdf::pageCount('%PDF-fake'))->toBe(9);
+});
+
 it('chunks an existing pdf through the builder', function () {
     $chunker = new class
     {

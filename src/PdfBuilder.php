@@ -444,6 +444,13 @@ class PdfBuilder
         return $flattener->flatten($pdfContent);
     }
 
+    public function pageCount(string $pdfContent): int
+    {
+        $counter = $this->app->make(Manipulation\PdfPageCounter::class);
+
+        return $counter->count($pdfContent);
+    }
+
     /**
      * @return array<int, PdfResult>
      */

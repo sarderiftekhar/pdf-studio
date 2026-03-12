@@ -28,6 +28,7 @@ use PdfStudio\Laravel\Testing\PdfFake;
  * @method static \PdfStudio\Laravel\Output\PdfResult compose(array<int, array<string, mixed>> $documents, ?string $driver = null)
  * @method static array<int, \PdfStudio\Laravel\Output\PdfResult> split(string $pdfContent, array<int, string> $ranges)
  * @method static \PdfStudio\Laravel\Output\PdfResult flattenPdf(string $pdfContent)
+ * @method static int pageCount(string $pdfContent)
  * @method static array<int, \PdfStudio\Laravel\Output\PdfResult> chunk(string $pdfContent, int $pagesPerChunk)
  * @method static \PdfStudio\Laravel\Output\PdfResult embedFiles(string $pdfContent, array<int, array<string, mixed>> $files)
  * @method static \Illuminate\Http\Response download(string $filename)
