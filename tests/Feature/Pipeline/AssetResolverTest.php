@@ -61,3 +61,33 @@ it('leaves remote assets alone when remote loading is enabled', function () {
 
     expect($result->compiledHtml)->toContain('https://example.com/logo.png');
 });
+
+it('allows remote assets from explicitly allowed hosts', function () {
+    config([
+        'pdf-studio.assets.allow_remote' => true,
+        'pdf-studio.assets.allowed_hosts' => ['assets.example.com'],
+    ]);
+
+    $resolver = app(AssetResolver::class);
+    $context = new RenderContext(
+        compiledHtml: '<html><body><img src="https://assets.example.com/logo.png"></body></html>',
+    );
+
+    $result = $resolver->handle($context, fn ($ctx) => $ctx);
+
+    expect($result->compiledHtml)->toContain('https://assets.example.com/logo.png');
+});
+
+it('blocks remote assets from hosts outside the allowlist', function () {
+    config([
+        'pdf-studio.assets.allow_remote' => true,
+        'pdf-studio.assets.allowed_hosts' => ['assets.example.com'],
+    ]);
+
+    $resolver = app(AssetResolver::class);
+    $context = new RenderContext(
+        compiledHtml: '<html><body><img src="https://cdn.example.com/logo.png"></body></html>',
+    );
+
+    $resolver->handle($context, fn ($ctx) => $ctx);
+})->throws(RenderException::class, 'Remote asset host is not allowed');

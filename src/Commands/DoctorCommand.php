@@ -104,7 +104,11 @@ class DoctorCommand extends Command
 
         $assetPolicy = (bool) config('pdf-studio.assets.allow_remote', true) ? 'remote assets allowed' : 'remote assets blocked';
         $inlineLocal = (bool) config('pdf-studio.assets.inline_local', true) ? 'inline local assets enabled' : 'inline local assets disabled';
-        $this->line("  <info>[INFO]</info> Asset policy: {$assetPolicy}; {$inlineLocal}");
+        $allowedHosts = config('pdf-studio.assets.allowed_hosts', []);
+        $hostSummary = is_array($allowedHosts) && $allowedHosts !== []
+            ? '; allowed remote hosts: '.implode(', ', array_filter($allowedHosts, 'is_string'))
+            : '';
+        $this->line("  <info>[INFO]</info> Asset policy: {$assetPolicy}; {$inlineLocal}{$hostSummary}");
 
         $allPassed = $this->checkConfiguredFonts() && $allPassed;
 

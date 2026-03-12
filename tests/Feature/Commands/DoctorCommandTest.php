@@ -86,6 +86,17 @@ it('reports asset policy settings', function () {
         ->expectsOutputToContain('Asset policy: remote assets blocked; inline local assets enabled');
 });
 
+it('reports allowed remote asset hosts when configured', function () {
+    config([
+        'pdf-studio.assets.allow_remote' => true,
+        'pdf-studio.assets.inline_local' => true,
+        'pdf-studio.assets.allowed_hosts' => ['assets.example.com', 'cdn.example.com'],
+    ]);
+
+    $this->artisan('pdf-studio:doctor')
+        ->expectsOutputToContain('allowed remote hosts: assets.example.com, cdn.example.com');
+});
+
 it('reports gotenberg reachability when it is the default driver', function () {
     config([
         'pdf-studio.default_driver' => 'gotenberg',

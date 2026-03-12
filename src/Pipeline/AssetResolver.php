@@ -164,6 +164,18 @@ class AssetResolver
         if (!$this->allowRemoteAssets()) {
             throw new RenderException("Remote asset loading is disabled for [{$source}].");
         }
+
+        $allowedHosts = $this->allowedRemoteHosts();
+
+        if ($allowedHosts === []) {
+            return;
+        }
+
+        $host = parse_url($source, PHP_URL_HOST);
+
+        if (!is_string($host) || $host === '' || !in_array(strtolower($host), $allowedHosts, true)) {
+            throw new RenderException("Remote asset host is not allowed for [{$source}].");
+        }
     }
 
     protected function inlineLocalAssets(): bool
@@ -174,6 +186,20 @@ class AssetResolver
     protected function allowRemoteAssets(): bool
     {
         return (bool) $this->app['config']->get('pdf-studio.assets.allow_remote', true);
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected function allowedRemoteHosts(): array
+    {
+        /** @var array<int, mixed> $hosts */
+        $hosts = $this->app['config']->get('pdf-studio.assets.allowed_hosts', []);
+
+        return array_values(array_map(
+            static fn (string $host): string => strtolower($host),
+            array_filter($hosts, static fn ($host): bool => is_string($host) && $host !== '')
+        ));
     }
 
     protected function resolveLocalPath(string $source): ?string

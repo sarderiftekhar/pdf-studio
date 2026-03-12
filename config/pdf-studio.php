@@ -119,6 +119,7 @@ return [
     'assets' => [
         'inline_local' => true,
         'allow_remote' => true,
+        'allowed_hosts' => [],
     ],
 
     /*
