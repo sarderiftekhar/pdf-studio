@@ -165,6 +165,31 @@ it('flattens an existing pdf through the builder', function () {
         ->and($result->driver)->toBe('pdftk-flattener');
 });
 
+it('chunks an existing pdf through the builder', function () {
+    $chunker = new class
+    {
+        public function chunk(string $pdfContent, int $pagesPerChunk): array
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+            expect($pagesPerChunk)->toBe(2);
+
+            return [
+                new PdfResult(content: 'CHUNK_1', driver: 'fpdi-splitter', renderTimeMs: 0),
+                new PdfResult(content: 'CHUNK_2', driver: 'fpdi-splitter', renderTimeMs: 0),
+            ];
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfChunker::class, $chunker);
+
+    $results = Pdf::chunk('%PDF-fake', 2);
+
+    expect($results)->toHaveCount(2)
+        ->and($results[0])->toBeInstanceOf(PdfResult::class)
+        ->and($results[0]->content())->toBe('CHUNK_1')
+        ->and($results[1]->content())->toBe('CHUNK_2');
+});
+
 it('embeds files into an existing pdf through the builder', function () {
     $embedder = new class
     {

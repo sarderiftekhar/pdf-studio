@@ -1,0 +1,55 @@
+<?php
+
+use PdfStudio\Laravel\Exceptions\ManipulationException;
+use PdfStudio\Laravel\Manipulation\PdfChunker;
+use PdfStudio\Laravel\Manipulation\PdfSplitter;
+use PdfStudio\Laravel\Output\PdfResult;
+
+it('throws when chunk size is invalid', function () {
+    $chunker = new PdfChunker(new class extends PdfSplitter {});
+
+    $chunker->chunk('%PDF-fake', 0);
+})->throws(ManipulationException::class, 'at least one page per chunk');
+
+it('delegates computed page ranges to the splitter', function () {
+    $splitter = new class extends PdfSplitter
+    {
+        /** @var array<int, string> */
+        public array $capturedRanges = [];
+
+        public function split(string $pdfContent, array $ranges): array
+        {
+            $this->capturedRanges = $ranges;
+
+            return array_map(
+                static fn (string $range): PdfResult => new PdfResult(
+                    content: "CHUNK_{$range}",
+                    driver: 'fpdi-splitter',
+                    renderTimeMs: 0,
+                ),
+                $ranges
+            );
+        }
+    };
+
+    $chunker = new class($splitter) extends PdfChunker
+    {
+        protected function ensureFpdiAvailable(): void
+        {
+        }
+
+        protected function pageCount(string $pdfContent): int
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+
+            return 7;
+        }
+    };
+
+    $results = $chunker->chunk('%PDF-fake', 3);
+
+    expect($splitter->capturedRanges)->toBe(['1-3', '4-6', '7-7'])
+        ->and($results)->toHaveCount(3)
+        ->and($results[0]->content())->toBe('CHUNK_1-3')
+        ->and($results[2]->content())->toBe('CHUNK_7-7');
+});

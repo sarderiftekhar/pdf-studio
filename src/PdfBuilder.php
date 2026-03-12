@@ -445,6 +445,16 @@ class PdfBuilder
     }
 
     /**
+     * @return array<int, PdfResult>
+     */
+    public function chunk(string $pdfContent, int $pagesPerChunk): array
+    {
+        $chunker = $this->app->make(Manipulation\PdfChunker::class);
+
+        return $chunker->chunk($pdfContent, $pagesPerChunk);
+    }
+
+    /**
      * @param  array<int, array{path: string, name?: string|null, mime?: string|null}>  $files
      */
     public function embedFiles(string $pdfContent, array $files): PdfResult
