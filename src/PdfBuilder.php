@@ -489,7 +489,7 @@ class PdfBuilder
     }
 
     /**
-     * @return array{valid: bool, page_count: int|null}
+     * @return array{valid: bool, page_count: int|null, byte_size: int}
      */
     public function inspectPdf(string $pdfContent): array
     {
@@ -499,7 +499,7 @@ class PdfBuilder
     }
 
     /**
-     * @return array{valid: bool, page_count: int|null}
+     * @return array{valid: bool, page_count: int|null, byte_size: int}
      */
     public function inspectPdfFile(string $path): array
     {

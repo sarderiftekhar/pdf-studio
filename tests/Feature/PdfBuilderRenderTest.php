@@ -345,6 +345,7 @@ it('inspects in-memory pdf content through the builder', function () {
             return [
                 'valid' => true,
                 'page_count' => 9,
+                'byte_size' => 9,
             ];
         }
     };
@@ -354,6 +355,7 @@ it('inspects in-memory pdf content through the builder', function () {
     expect(Pdf::inspectPdf('%PDF-fake'))->toBe([
         'valid' => true,
         'page_count' => 9,
+        'byte_size' => 9,
     ]);
 });
 
@@ -370,6 +372,7 @@ it('inspects a pdf file through the builder', function () {
             return [
                 'valid' => true,
                 'page_count' => 11,
+                'byte_size' => 9,
             ];
         }
     };
@@ -379,6 +382,7 @@ it('inspects a pdf file through the builder', function () {
     expect(Pdf::inspectPdfFile($pdfPath))->toBe([
         'valid' => true,
         'page_count' => 11,
+        'byte_size' => 9,
     ]);
 
     @unlink($pdfPath);

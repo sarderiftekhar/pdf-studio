@@ -28,6 +28,7 @@ it('returns invalid with no page count for non-pdf content', function () {
     expect($inspector->inspect('not-a-pdf'))->toBe([
         'valid' => false,
         'page_count' => null,
+        'byte_size' => strlen('not-a-pdf'),
     ]);
 });
 
@@ -56,6 +57,7 @@ it('returns valid with page count for pdf content', function () {
     expect($inspector->inspect('%PDF-fake'))->toBe([
         'valid' => true,
         'page_count' => 6,
+        'byte_size' => strlen('%PDF-fake'),
     ]);
 });
 
@@ -80,5 +82,6 @@ it('returns valid with null page count when page counting is unavailable', funct
     expect($inspector->inspect('%PDF-fake'))->toBe([
         'valid' => true,
         'page_count' => null,
+        'byte_size' => strlen('%PDF-fake'),
     ]);
 });

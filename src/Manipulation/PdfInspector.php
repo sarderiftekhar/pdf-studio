@@ -15,16 +15,18 @@ class PdfInspector
     }
 
     /**
-     * @return array{valid: bool, page_count: int|null}
+     * @return array{valid: bool, page_count: int|null, byte_size: int}
      */
     public function inspect(string $content): array
     {
         $valid = $this->validator->isPdf($content);
+        $byteSize = strlen($content);
 
         if (!$valid) {
             return [
                 'valid' => false,
                 'page_count' => null,
+                'byte_size' => $byteSize,
             ];
         }
 
@@ -37,6 +39,7 @@ class PdfInspector
         return [
             'valid' => true,
             'page_count' => $pageCount,
+            'byte_size' => $byteSize,
         ];
     }
 }
