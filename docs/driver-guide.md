@@ -229,6 +229,8 @@ Mitigations:
 - use `compose()` to render sections separately
 - use remote renderers for isolation if app nodes are resource-constrained
 - prefer simpler layouts for very long reports
+- use `pageCount()` first when you need to plan downstream batching or export stages
+- use `chunk()` for fixed-size page grouping before storage, transport, or review workflows
 - split, flatten, or embed files into existing PDFs when downstream workflows need smaller stages or bundled source material
 
 ## Practical Recipes
@@ -252,6 +254,18 @@ Pdf::view('reports.full')
     ->waitForNetworkIdle()
     ->waitDelay(500)
     ->download('report.pdf');
+```
+
+### Large-document staging
+
+```php
+$pdf = Pdf::view('reports.annual')
+    ->driver('gotenberg')
+    ->render();
+
+$pageCount = Pdf::pageCount($pdf->content());
+
+$chunks = Pdf::chunk($pdf->content(), 50);
 ```
 
 ### Archival or print-native workflow

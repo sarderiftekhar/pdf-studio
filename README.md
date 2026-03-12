@@ -753,6 +753,10 @@ $result->download('merged.pdf');
 Operate on existing PDF bytes after rendering or on PDFs produced outside PDF Studio:
 
 ```php
+$totalPages = Pdf::pageCount($pdfBytes);
+
+$chunks = Pdf::chunk($pdfBytes, 25);
+
 $parts = Pdf::split($pdfBytes, ['1-2', '3-5']);
 
 $flattened = Pdf::flattenPdf($pdfBytes);
@@ -764,7 +768,7 @@ $embedded = Pdf::embedFiles($pdfBytes, [[
 ]]);
 ```
 
-`split()` returns an array of `PdfResult` instances. `flattenPdf()` and `embedFiles()` return a single `PdfResult`.
+`pageCount()` returns an integer. `split()` and `chunk()` return arrays of `PdfResult` instances. `flattenPdf()` and `embedFiles()` return a single `PdfResult`.
 
 ---
 
