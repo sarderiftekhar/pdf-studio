@@ -130,6 +130,7 @@ echo $result->renderTimeMs; // render duration
 Detailed driver selection and troubleshooting guide:
 
 - [Driver Guide](docs/driver-guide.md)
+- [Existing PDF Workflows](docs/existing-pdf-workflows.md)
 
 | Driver | Runtime | Node | CSS Fidelity | Best For |
 |--------|---------|------|--------------|----------|
@@ -749,6 +750,10 @@ $result->download('merged.pdf');
 ---
 
 ## PDF Post-Processing
+
+Detailed guide:
+
+- [Existing PDF Workflows](docs/existing-pdf-workflows.md)
 
 Operate on existing PDF bytes after rendering or on PDFs produced outside PDF Studio:
 

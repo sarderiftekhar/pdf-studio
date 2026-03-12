@@ -2,6 +2,8 @@
 
 This guide explains when to choose each PDF Studio driver, what each driver supports well, and where users commonly run into trouble.
 
+For editing and inspection of PDFs that already exist, see [Existing PDF Workflows](./existing-pdf-workflows.md).
+
 ## Quick Recommendation
 
 Use this default decision tree:
