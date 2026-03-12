@@ -788,7 +788,7 @@ $chunkPlan = Pdf::chunkPlanFile(storage_path('app/reports/annual.pdf'), 25);
 $fileChunks = Pdf::chunkFile(storage_path('app/reports/annual.pdf'), 25);
 ```
 
-`isPdf()` and `isPdfFile()` provide a cheap preflight check before queueing or manipulating uploaded content. `inspectPdf()` and `inspectPdfFile()` provide a combined summary with validity and page-count information when available. `assertPdf()` and `assertPdfFile()` provide a fail-fast validation path when invalid input should stop the workflow immediately. `pageCount()` and `pageCountFile()` return integers. `chunkRanges()` / `chunkRangesFile()` return plain page-range strings. `chunkPlan()` / `chunkPlanFile()` return structured planning metadata per chunk. `split()`, `chunk()`, and `chunkFile()` execute the staged split into `PdfResult` outputs. `flattenPdf()` / `flattenPdfFile()` and `embedFiles()` / `embedFilesIntoFile()` return a single `PdfResult`.
+`isPdf()` and `isPdfFile()` provide a cheap preflight check before queueing or manipulating uploaded content. `inspectPdf()` and `inspectPdfFile()` provide a combined summary with validity, page-count information when available, and `byte_size` for transport/storage planning. `assertPdf()` and `assertPdfFile()` provide a fail-fast validation path when invalid input should stop the workflow immediately. `pageCount()` and `pageCountFile()` return integers. `chunkRanges()` / `chunkRangesFile()` return plain page-range strings. `chunkPlan()` / `chunkPlanFile()` return structured planning metadata per chunk. `split()`, `chunk()`, and `chunkFile()` execute the staged split into `PdfResult` outputs. `flattenPdf()` / `flattenPdfFile()` and `embedFiles()` / `embedFilesIntoFile()` return a single `PdfResult`.
 
 ---
 
