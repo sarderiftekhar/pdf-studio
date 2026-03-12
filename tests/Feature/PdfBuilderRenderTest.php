@@ -164,3 +164,33 @@ it('flattens an existing pdf through the builder', function () {
         ->and($result->content())->toBe('FLATTENED_PDF')
         ->and($result->driver)->toBe('pdftk-flattener');
 });
+
+it('embeds files into an existing pdf through the builder', function () {
+    $embedder = new class
+    {
+        public function embed(string $pdfContent, array $files): PdfResult
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+            expect($files)->toHaveCount(1);
+            expect($files[0]['name'])->toBe('report.csv');
+
+            return new PdfResult(
+                content: 'EMBEDDED_PDF',
+                driver: 'gotenberg-embedder',
+                renderTimeMs: 0,
+            );
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfEmbedder::class, $embedder);
+
+    $result = Pdf::embedFiles('%PDF-fake', [[
+        'path' => '/tmp/report.csv',
+        'name' => 'report.csv',
+        'mime' => 'text/csv',
+    ]]);
+
+    expect($result)->toBeInstanceOf(PdfResult::class)
+        ->and($result->content())->toBe('EMBEDDED_PDF')
+        ->and($result->driver)->toBe('gotenberg-embedder');
+});

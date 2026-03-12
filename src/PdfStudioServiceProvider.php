@@ -85,6 +85,7 @@ class PdfStudioServiceProvider extends ServiceProvider
         $this->app->bind(Contracts\ProtectorContract::class, Manipulation\PdfProtector::class);
         $this->app->bind(Manipulation\PdfFlattener::class);
         $this->app->bind(Manipulation\PdfSplitter::class);
+        $this->app->bind(Manipulation\PdfEmbedder::class);
 
         $this->app->bind(Thumbnail\ThumbnailGenerator::class, function ($app) {
             return new Thumbnail\ThumbnailGenerator(
