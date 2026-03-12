@@ -32,6 +32,8 @@ use PdfStudio\Laravel\Testing\PdfFake;
  * @method static \PdfStudio\Laravel\Output\PdfResult reorderPagesFile(string $path, array<int, int> $pages)
  * @method static \PdfStudio\Laravel\Output\PdfResult removePages(string $pdfContent, array<int, int> $pages)
  * @method static \PdfStudio\Laravel\Output\PdfResult removePagesFile(string $path, array<int, int> $pages)
+ * @method static \PdfStudio\Laravel\Output\PdfResult rotatePages(string $pdfContent, int $degrees, ?array<int, int> $pages = null)
+ * @method static \PdfStudio\Laravel\Output\PdfResult rotatePagesFile(string $path, int $degrees, ?array<int, int> $pages = null)
  * @method static \PdfStudio\Laravel\Output\PdfResult flattenPdf(string $pdfContent)
  * @method static \PdfStudio\Laravel\Output\PdfResult flattenPdfFile(string $path)
  * @method static bool isPdf(string $pdfContent)

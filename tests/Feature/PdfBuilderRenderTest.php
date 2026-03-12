@@ -258,6 +258,51 @@ it('removes pages from an existing pdf file through the builder', function () {
     @unlink($pdfPath);
 });
 
+it('rotates pages in an existing pdf through the builder', function () {
+    $rotator = new class
+    {
+        public function rotate(string $pdfContent, int $degrees, ?array $pages = null): PdfResult
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+            expect($degrees)->toBe(90);
+            expect($pages)->toBe([1, 3]);
+
+            return new PdfResult(content: 'ROTATED_PDF', driver: 'fpdi-page-rotator', renderTimeMs: 0);
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfPageRotator::class, $rotator);
+
+    $result = Pdf::rotatePages('%PDF-fake', 90, [1, 3]);
+
+    expect($result->content())->toBe('ROTATED_PDF');
+});
+
+it('rotates pages in an existing pdf file through the builder', function () {
+    $pdfPath = tempnam(sys_get_temp_dir(), 'pdfstudio_rotate_file_');
+    file_put_contents($pdfPath, '%PDF-fake');
+
+    $rotator = new class
+    {
+        public function rotate(string $pdfContent, int $degrees, ?array $pages = null): PdfResult
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+            expect($degrees)->toBe(180);
+            expect($pages)->toBeNull();
+
+            return new PdfResult(content: 'ROTATED_FILE_PDF', driver: 'fpdi-page-rotator', renderTimeMs: 0);
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfPageRotator::class, $rotator);
+
+    $result = Pdf::rotatePagesFile($pdfPath, 180);
+
+    expect($result->content())->toBe('ROTATED_FILE_PDF');
+
+    @unlink($pdfPath);
+});
+
 it('flattens an existing pdf through the builder', function () {
     $flattener = new class
     {

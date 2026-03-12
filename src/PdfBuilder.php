@@ -482,6 +482,24 @@ class PdfBuilder
         return $this->removePages($this->readPdfFile($path), $pages);
     }
 
+    /**
+     * @param  array<int, int>|null  $pages
+     */
+    public function rotatePages(string $pdfContent, int $degrees, ?array $pages = null): PdfResult
+    {
+        $rotator = $this->app->make(Manipulation\PdfPageRotator::class);
+
+        return $rotator->rotate($pdfContent, $degrees, $pages);
+    }
+
+    /**
+     * @param  array<int, int>|null  $pages
+     */
+    public function rotatePagesFile(string $path, int $degrees, ?array $pages = null): PdfResult
+    {
+        return $this->rotatePages($this->readPdfFile($path), $degrees, $pages);
+    }
+
     public function flattenPdf(string $pdfContent): PdfResult
     {
         $flattener = $this->app->make(Manipulation\PdfFlattener::class);
