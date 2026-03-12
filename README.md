@@ -30,6 +30,7 @@ Design, preview, and generate PDFs using HTML and TailwindCSS in Laravel.
 - [SaaS: Usage Metering](#saas-usage-metering)
 - [SaaS: Analytics](#saas-analytics)
 - [PDF Merging](#pdf-merging)
+- [PDF Post-Processing](#pdf-post-processing)
 - [Watermarking](#watermarking)
 - [Password Protection](#password-protection)
 - [AcroForm Fill](#acroform-fill)
@@ -387,10 +388,19 @@ Asset policy can inline local assets and optionally block remote ones up front:
 'assets' => [
     'inline_local' => true,
     'allow_remote' => false,
+    'allowed_hosts' => [
+        'assets.example.com',
+        'cdn.example.com',
+    ],
 ],
 ```
 
-This helps avoid renderer-specific failures around local file paths, missing images, or remote asset fetches.
+This helps avoid renderer-specific failures around local file paths, missing images, font files, or remote asset fetches. The resolver covers:
+
+- `<img src="...">`
+- `<link rel="stylesheet" href="...">`
+- CSS `url(...)` references inside linked stylesheets
+- CSS `url(...)` references inside inline `<style>` blocks
 
 ---
 
@@ -735,6 +745,26 @@ $result = Pdf::merge([
 
 $result->download('merged.pdf');
 ```
+
+---
+
+## PDF Post-Processing
+
+Operate on existing PDF bytes after rendering or on PDFs produced outside PDF Studio:
+
+```php
+$parts = Pdf::split($pdfBytes, ['1-2', '3-5']);
+
+$flattened = Pdf::flattenPdf($pdfBytes);
+
+$embedded = Pdf::embedFiles($pdfBytes, [[
+    'path' => storage_path('app/reports/source.csv'),
+    'name' => 'source.csv',
+    'mime' => 'text/csv',
+]]);
+```
+
+`split()` returns an array of `PdfResult` instances. `flattenPdf()` and `embedFiles()` return a single `PdfResult`.
 
 ---
 

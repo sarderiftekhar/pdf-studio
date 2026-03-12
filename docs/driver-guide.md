@@ -198,6 +198,7 @@ Mitigations:
 - enable local asset inlining
 - set `assets.allow_remote=false` unless remote fetches are required
 - if remote assets are needed, use `assets.allowed_hosts`
+- remember that PDF Studio now resolves CSS `url(...)` assets in linked stylesheets and inline `<style>` blocks, not just `<img>` tags
 - prefer stable absolute URLs or inline assets for remote renderers
 
 ### Async Content and Charts
@@ -228,7 +229,7 @@ Mitigations:
 - use `compose()` to render sections separately
 - use remote renderers for isolation if app nodes are resource-constrained
 - prefer simpler layouts for very long reports
-- split or flatten existing PDFs when downstream workflows need smaller stages
+- split, flatten, or embed files into existing PDFs when downstream workflows need smaller stages or bundled source material
 
 ## Practical Recipes
 
