@@ -48,6 +48,7 @@ class AssetResolver
         }
 
         $this->resolveImageSources($dom);
+        $this->resolveInlineStyles($dom);
         $this->resolveStylesheets($dom);
 
         return (string) $dom->saveHTML();
@@ -55,7 +56,7 @@ class AssetResolver
 
     protected function containsResolvableAssets(string $html): bool
     {
-        return preg_match('/<(img|link)\b/i', $html) === 1;
+        return preg_match('/<(img|link|style)\b/i', $html) === 1;
     }
 
     protected function resolveImageSources(\DOMDocument $dom): void
@@ -138,12 +139,33 @@ class AssetResolver
                 continue;
             }
 
-            $style = $dom->createElement('style', $css);
+            $style = $dom->createElement('style');
+            $style->appendChild($dom->createTextNode($this->resolveCssAssetUrls($css, dirname($path))));
             $replacements[] = [$link, $style];
         }
 
         foreach ($replacements as [$link, $style]) {
             $link->parentNode?->replaceChild($style, $link);
+        }
+    }
+
+    protected function resolveInlineStyles(\DOMDocument $dom): void
+    {
+        /** @var \DOMNodeList<\DOMElement> $styles */
+        $styles = $dom->getElementsByTagName('style');
+
+        foreach ($styles as $style) {
+            $css = $style->textContent;
+
+            if ($css === '') {
+                continue;
+            }
+
+            while ($style->firstChild !== null) {
+                $style->removeChild($style->firstChild);
+            }
+
+            $style->appendChild($dom->createTextNode($this->resolveCssAssetUrls($css)));
         }
     }
 
@@ -202,12 +224,16 @@ class AssetResolver
         ));
     }
 
-    protected function resolveLocalPath(string $source): ?string
+    protected function resolveLocalPath(string $source, ?string $basePath = null): ?string
     {
         $candidates = [];
 
         if (str_starts_with($source, '/')) {
             $candidates[] = $source;
+        }
+
+        if (is_string($basePath) && $basePath !== '') {
+            $candidates[] = rtrim($basePath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.ltrim($source, DIRECTORY_SEPARATOR);
         }
 
         $candidates[] = $this->app->basePath($source);
@@ -220,6 +246,46 @@ class AssetResolver
         }
 
         return null;
+    }
+
+    protected function resolveCssAssetUrls(string $css, ?string $basePath = null): string
+    {
+        return (string) preg_replace_callback(
+            '/url\(([^)]+)\)/i',
+            function (array $matches) use ($basePath): string {
+                $rawSource = trim($matches[1]);
+                $source = trim($rawSource, " \t\n\r\0\x0B'\"");
+
+                if ($source === '' || $this->isIgnoredSource($source)) {
+                    return $matches[0];
+                }
+
+                if ($this->isRemoteUrl($source)) {
+                    $this->assertRemoteAllowed($source);
+
+                    return $matches[0];
+                }
+
+                if (!$this->inlineLocalAssets()) {
+                    return $matches[0];
+                }
+
+                $path = $this->resolveLocalPath($source, $basePath);
+
+                if ($path === null) {
+                    return $matches[0];
+                }
+
+                $dataUri = $this->toDataUri($path);
+
+                if ($dataUri === null) {
+                    return $matches[0];
+                }
+
+                return "url('{$dataUri}')";
+            },
+            $css
+        );
     }
 
     protected function toDataUri(string $path): ?string
@@ -243,6 +309,11 @@ class AssetResolver
             'gif' => 'image/gif',
             'svg' => 'image/svg+xml',
             'webp' => 'image/webp',
+            'woff' => 'font/woff',
+            'woff2' => 'font/woff2',
+            'ttf' => 'font/ttf',
+            'otf' => 'font/otf',
+            'eot' => 'application/vnd.ms-fontobject',
             'css' => 'text/css',
             default => 'application/octet-stream',
         };

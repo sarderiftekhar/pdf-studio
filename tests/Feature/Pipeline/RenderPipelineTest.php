@@ -57,3 +57,20 @@ it('resolves local image assets before rendering', function () {
 
     @unlink($imagePath);
 });
+
+it('resolves local css url assets before rendering', function () {
+    $imagePath = tempnam(sys_get_temp_dir(), 'pdfstudio_pipeline_style_asset_').'.png';
+    file_put_contents($imagePath, 'fake-image');
+
+    $pipeline = app(RenderPipeline::class);
+    $context = new RenderContext(
+        rawHtml: '<html><head><style>.hero{background-image:url("'.$imagePath.'");}</style></head><body><div class="hero">Styled</div></body></html>',
+    );
+
+    $result = $pipeline->run($context, 'fake');
+
+    expect($result->pdfContent)->toContain('data:image/png;base64,')
+        ->and($result->pdfContent)->toContain('background-image');
+
+    @unlink($imagePath);
+});
