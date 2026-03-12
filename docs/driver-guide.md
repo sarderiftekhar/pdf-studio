@@ -229,6 +229,7 @@ Mitigations:
 - use `compose()` to render sections separately
 - use remote renderers for isolation if app nodes are resource-constrained
 - prefer simpler layouts for very long reports
+- use `isPdf()` or `isPdfFile()` before downstream manipulation when files come from uploads or external systems
 - use `pageCount()` first when you need to plan downstream batching or export stages
 - use `chunk()` for fixed-size page grouping before storage, transport, or review workflows
 - split, flatten, or embed files into existing PDFs when downstream workflows need smaller stages or bundled source material
@@ -263,6 +264,8 @@ $pdf = Pdf::view('reports.annual')
     ->driver('gotenberg')
     ->render();
 
+$looksValid = Pdf::isPdf($pdf->content());
+
 $pageCount = Pdf::pageCount($pdf->content());
 
 $ranges = Pdf::chunkRanges($pdf->content(), 50);
@@ -270,6 +273,8 @@ $ranges = Pdf::chunkRanges($pdf->content(), 50);
 $plan = Pdf::chunkPlan($pdf->content(), 50);
 
 $chunks = Pdf::chunk($pdf->content(), 50);
+
+$storedLooksValid = Pdf::isPdfFile(storage_path('app/reports/annual.pdf'));
 
 $storedRanges = Pdf::chunkRangesFile(storage_path('app/reports/annual.pdf'), 50);
 

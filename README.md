@@ -753,6 +753,8 @@ $result->download('merged.pdf');
 Operate on existing PDF bytes after rendering or on PDFs produced outside PDF Studio:
 
 ```php
+$isPdf = Pdf::isPdf($pdfBytes);
+
 $totalPages = Pdf::pageCount($pdfBytes);
 
 $chunks = Pdf::chunk($pdfBytes, 25);
@@ -767,6 +769,8 @@ $embedded = Pdf::embedFiles($pdfBytes, [[
     'mime' => 'text/csv',
 ]]);
 
+$isStoredPdf = Pdf::isPdfFile(storage_path('app/reports/annual.pdf'));
+
 $totalPages = Pdf::pageCountFile(storage_path('app/reports/annual.pdf'));
 
 $plannedRanges = Pdf::chunkRangesFile(storage_path('app/reports/annual.pdf'), 25);
@@ -776,7 +780,7 @@ $chunkPlan = Pdf::chunkPlanFile(storage_path('app/reports/annual.pdf'), 25);
 $fileChunks = Pdf::chunkFile(storage_path('app/reports/annual.pdf'), 25);
 ```
 
-`pageCount()` and `pageCountFile()` return integers. `chunkRanges()` / `chunkRangesFile()` return plain page-range strings. `chunkPlan()` / `chunkPlanFile()` return structured planning metadata per chunk. `split()`, `chunk()`, and `chunkFile()` execute the staged split into `PdfResult` outputs. `flattenPdf()` / `flattenPdfFile()` and `embedFiles()` / `embedFilesIntoFile()` return a single `PdfResult`.
+`isPdf()` and `isPdfFile()` provide a cheap preflight check before queueing or manipulating uploaded content. `pageCount()` and `pageCountFile()` return integers. `chunkRanges()` / `chunkRangesFile()` return plain page-range strings. `chunkPlan()` / `chunkPlanFile()` return structured planning metadata per chunk. `split()`, `chunk()`, and `chunkFile()` execute the staged split into `PdfResult` outputs. `flattenPdf()` / `flattenPdfFile()` and `embedFiles()` / `embedFilesIntoFile()` return a single `PdfResult`.
 
 ---
 
