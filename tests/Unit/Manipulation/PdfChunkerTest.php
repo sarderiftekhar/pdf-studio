@@ -52,3 +52,27 @@ it('delegates computed page ranges to the splitter', function () {
         ->and($results[0]->content())->toBe('CHUNK_1-3')
         ->and($results[2]->content())->toBe('CHUNK_7-7');
 });
+
+it('returns computed chunk ranges without splitting', function () {
+    $pageCounter = new class extends PdfPageCounter
+    {
+        public function count(string $pdfContent): int
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+
+            return 8;
+        }
+    };
+
+    $splitter = new class extends PdfSplitter
+    {
+        public function split(string $pdfContent, array $ranges): array
+        {
+            throw new RuntimeException('split should not be called');
+        }
+    };
+
+    $chunker = new PdfChunker($splitter, $pageCounter);
+
+    expect($chunker->chunkRanges('%PDF-fake', 3))->toBe(['1-3', '4-6', '7-8']);
+});

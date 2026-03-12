@@ -21,6 +21,16 @@ class PdfChunker
      */
     public function chunk(string $pdfContent, int $pagesPerChunk): array
     {
+        $ranges = $this->chunkRanges($pdfContent, $pagesPerChunk);
+
+        return $this->splitter->split($pdfContent, $ranges);
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function chunkRanges(string $pdfContent, int $pagesPerChunk): array
+    {
         if ($pagesPerChunk < 1) {
             throw new ManipulationException('PDF chunking requires at least one page per chunk.');
         }
@@ -33,7 +43,7 @@ class PdfChunker
             $ranges[] = "{$start}-{$end}";
         }
 
-        return $this->splitter->split($pdfContent, $ranges);
+        return $ranges;
     }
 
     protected function pageCount(string $pdfContent): int

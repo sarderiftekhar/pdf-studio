@@ -206,6 +206,23 @@ it('chunks an existing pdf through the builder', function () {
         ->and($results[1]->content())->toBe('CHUNK_2');
 });
 
+it('plans chunk ranges for an existing pdf through the builder', function () {
+    $chunker = new class
+    {
+        public function chunkRanges(string $pdfContent, int $pagesPerChunk): array
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+            expect($pagesPerChunk)->toBe(4);
+
+            return ['1-4', '5-8', '9-9'];
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfChunker::class, $chunker);
+
+    expect(Pdf::chunkRanges('%PDF-fake', 4))->toBe(['1-4', '5-8', '9-9']);
+});
+
 it('embeds files into an existing pdf through the builder', function () {
     $embedder = new class
     {
