@@ -42,6 +42,8 @@ use PdfStudio\Laravel\Testing\PdfFake;
  * @method static void assertPdfFile(string $path, string $label = 'file')
  * @method static array{valid: bool, page_count: int|null, byte_size: int} inspectPdf(string $pdfContent)
  * @method static array{valid: bool, page_count: int|null, byte_size: int} inspectPdfFile(string $path)
+ * @method static array<string, string> readPdfMetadata(string $pdfContent)
+ * @method static array<string, string> readPdfMetadataFile(string $path)
  * @method static int pageCount(string $pdfContent)
  * @method static int pageCountFile(string $path)
  * @method static array<int, \PdfStudio\Laravel\Output\PdfResult> chunk(string $pdfContent, int $pagesPerChunk)

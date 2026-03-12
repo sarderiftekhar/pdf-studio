@@ -560,6 +560,24 @@ class PdfBuilder
         return $this->inspectPdf($this->readPdfFile($path));
     }
 
+    /**
+     * @return array<string, string>
+     */
+    public function readPdfMetadata(string $pdfContent): array
+    {
+        $reader = $this->app->make(Manipulation\PdfMetadataReader::class);
+
+        return $reader->read($pdfContent);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function readPdfMetadataFile(string $path): array
+    {
+        return $this->readPdfMetadata($this->readPdfFile($path));
+    }
+
     public function pageCountFile(string $path): int
     {
         return $this->pageCount($this->readPdfFile($path));

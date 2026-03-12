@@ -519,6 +519,53 @@ it('inspects a pdf file through the builder', function () {
     @unlink($pdfPath);
 });
 
+it('reads pdf metadata through the builder', function () {
+    $reader = new class
+    {
+        public function read(string $pdfContent): array
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+
+            return [
+                'Title' => 'Annual Report',
+                'Author' => 'PDF Studio',
+            ];
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfMetadataReader::class, $reader);
+
+    expect(Pdf::readPdfMetadata('%PDF-fake'))->toBe([
+        'Title' => 'Annual Report',
+        'Author' => 'PDF Studio',
+    ]);
+});
+
+it('reads pdf metadata from a file through the builder', function () {
+    $pdfPath = tempnam(sys_get_temp_dir(), 'pdfstudio_metadata_file_');
+    file_put_contents($pdfPath, '%PDF-fake');
+
+    $reader = new class
+    {
+        public function read(string $pdfContent): array
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+
+            return [
+                'Title' => 'Stored Report',
+            ];
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfMetadataReader::class, $reader);
+
+    expect(Pdf::readPdfMetadataFile($pdfPath))->toBe([
+        'Title' => 'Stored Report',
+    ]);
+
+    @unlink($pdfPath);
+});
+
 it('chunks an existing pdf through the builder', function () {
     $chunker = new class
     {

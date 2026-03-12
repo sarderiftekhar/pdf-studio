@@ -87,6 +87,7 @@ class PdfStudioServiceProvider extends ServiceProvider
         $this->app->bind(Manipulation\PdfPageCounter::class);
         $this->app->bind(Manipulation\PdfValidator::class);
         $this->app->bind(Manipulation\PdfInspector::class);
+        $this->app->bind(Manipulation\PdfMetadataReader::class);
         $this->app->bind(Manipulation\PdfPageEditor::class);
         $this->app->bind(Manipulation\PdfPageRotator::class);
         $this->app->bind(Manipulation\PdfSplitter::class);
