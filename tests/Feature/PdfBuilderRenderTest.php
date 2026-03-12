@@ -172,6 +172,92 @@ it('splits an existing pdf file through the builder', function () {
     @unlink($pdfPath);
 });
 
+it('reorders pages in an existing pdf through the builder', function () {
+    $editor = new class
+    {
+        public function reorder(string $pdfContent, array $pages): PdfResult
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+            expect($pages)->toBe([3, 1, 2]);
+
+            return new PdfResult(content: 'REORDERED_PDF', driver: 'fpdi-page-editor', renderTimeMs: 0);
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfPageEditor::class, $editor);
+
+    $result = Pdf::reorderPages('%PDF-fake', [3, 1, 2]);
+
+    expect($result->content())->toBe('REORDERED_PDF');
+});
+
+it('reorders pages in an existing pdf file through the builder', function () {
+    $pdfPath = tempnam(sys_get_temp_dir(), 'pdfstudio_reorder_file_');
+    file_put_contents($pdfPath, '%PDF-fake');
+
+    $editor = new class
+    {
+        public function reorder(string $pdfContent, array $pages): PdfResult
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+            expect($pages)->toBe([2, 1]);
+
+            return new PdfResult(content: 'REORDERED_FILE_PDF', driver: 'fpdi-page-editor', renderTimeMs: 0);
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfPageEditor::class, $editor);
+
+    $result = Pdf::reorderPagesFile($pdfPath, [2, 1]);
+
+    expect($result->content())->toBe('REORDERED_FILE_PDF');
+
+    @unlink($pdfPath);
+});
+
+it('removes pages from an existing pdf through the builder', function () {
+    $editor = new class
+    {
+        public function remove(string $pdfContent, array $pages): PdfResult
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+            expect($pages)->toBe([2, 4]);
+
+            return new PdfResult(content: 'TRIMMED_PDF', driver: 'fpdi-page-editor', renderTimeMs: 0);
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfPageEditor::class, $editor);
+
+    $result = Pdf::removePages('%PDF-fake', [2, 4]);
+
+    expect($result->content())->toBe('TRIMMED_PDF');
+});
+
+it('removes pages from an existing pdf file through the builder', function () {
+    $pdfPath = tempnam(sys_get_temp_dir(), 'pdfstudio_remove_file_');
+    file_put_contents($pdfPath, '%PDF-fake');
+
+    $editor = new class
+    {
+        public function remove(string $pdfContent, array $pages): PdfResult
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+            expect($pages)->toBe([1]);
+
+            return new PdfResult(content: 'TRIMMED_FILE_PDF', driver: 'fpdi-page-editor', renderTimeMs: 0);
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfPageEditor::class, $editor);
+
+    $result = Pdf::removePagesFile($pdfPath, [1]);
+
+    expect($result->content())->toBe('TRIMMED_FILE_PDF');
+
+    @unlink($pdfPath);
+});
+
 it('flattens an existing pdf through the builder', function () {
     $flattener = new class
     {

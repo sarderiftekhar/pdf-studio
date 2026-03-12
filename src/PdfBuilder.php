@@ -446,6 +446,42 @@ class PdfBuilder
         return $this->split($this->readPdfFile($path), $ranges);
     }
 
+    /**
+     * @param  array<int, int>  $pages
+     */
+    public function reorderPages(string $pdfContent, array $pages): PdfResult
+    {
+        $editor = $this->app->make(Manipulation\PdfPageEditor::class);
+
+        return $editor->reorder($pdfContent, $pages);
+    }
+
+    /**
+     * @param  array<int, int>  $pages
+     */
+    public function reorderPagesFile(string $path, array $pages): PdfResult
+    {
+        return $this->reorderPages($this->readPdfFile($path), $pages);
+    }
+
+    /**
+     * @param  array<int, int>  $pages
+     */
+    public function removePages(string $pdfContent, array $pages): PdfResult
+    {
+        $editor = $this->app->make(Manipulation\PdfPageEditor::class);
+
+        return $editor->remove($pdfContent, $pages);
+    }
+
+    /**
+     * @param  array<int, int>  $pages
+     */
+    public function removePagesFile(string $path, array $pages): PdfResult
+    {
+        return $this->removePages($this->readPdfFile($path), $pages);
+    }
+
     public function flattenPdf(string $pdfContent): PdfResult
     {
         $flattener = $this->app->make(Manipulation\PdfFlattener::class);
