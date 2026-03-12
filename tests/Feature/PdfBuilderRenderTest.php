@@ -335,6 +335,55 @@ it('asserts a pdf file through the builder', function () {
     expect(true)->toBeTrue();
 });
 
+it('inspects in-memory pdf content through the builder', function () {
+    $inspector = new class
+    {
+        public function inspect(string $pdfContent): array
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+
+            return [
+                'valid' => true,
+                'page_count' => 9,
+            ];
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfInspector::class, $inspector);
+
+    expect(Pdf::inspectPdf('%PDF-fake'))->toBe([
+        'valid' => true,
+        'page_count' => 9,
+    ]);
+});
+
+it('inspects a pdf file through the builder', function () {
+    $pdfPath = tempnam(sys_get_temp_dir(), 'pdfstudio_inspect_pdf_file_');
+    file_put_contents($pdfPath, '%PDF-fake');
+
+    $inspector = new class
+    {
+        public function inspect(string $pdfContent): array
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+
+            return [
+                'valid' => true,
+                'page_count' => 11,
+            ];
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfInspector::class, $inspector);
+
+    expect(Pdf::inspectPdfFile($pdfPath))->toBe([
+        'valid' => true,
+        'page_count' => 11,
+    ]);
+
+    @unlink($pdfPath);
+});
+
 it('chunks an existing pdf through the builder', function () {
     $chunker = new class
     {

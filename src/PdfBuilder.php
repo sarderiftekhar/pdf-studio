@@ -488,6 +488,24 @@ class PdfBuilder
         $this->assertPdf($this->readPdfFile($path), $label);
     }
 
+    /**
+     * @return array{valid: bool, page_count: int|null}
+     */
+    public function inspectPdf(string $pdfContent): array
+    {
+        $inspector = $this->app->make(Manipulation\PdfInspector::class);
+
+        return $inspector->inspect($pdfContent);
+    }
+
+    /**
+     * @return array{valid: bool, page_count: int|null}
+     */
+    public function inspectPdfFile(string $path): array
+    {
+        return $this->inspectPdf($this->readPdfFile($path));
+    }
+
     public function pageCountFile(string $path): int
     {
         return $this->pageCount($this->readPdfFile($path));
