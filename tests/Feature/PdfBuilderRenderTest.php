@@ -165,6 +165,34 @@ it('flattens an existing pdf through the builder', function () {
         ->and($result->driver)->toBe('pdftk-flattener');
 });
 
+it('flattens an existing pdf file through the builder', function () {
+    $pdfPath = tempnam(sys_get_temp_dir(), 'pdfstudio_flatten_file_');
+    file_put_contents($pdfPath, '%PDF-fake');
+
+    $flattener = new class
+    {
+        public function flatten(string $pdfContent): PdfResult
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+
+            return new PdfResult(
+                content: 'FLATTENED_PDF_FILE',
+                driver: 'pdftk-flattener',
+                renderTimeMs: 0,
+            );
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfFlattener::class, $flattener);
+
+    $result = Pdf::flattenPdfFile($pdfPath);
+
+    expect($result)->toBeInstanceOf(PdfResult::class)
+        ->and($result->content())->toBe('FLATTENED_PDF_FILE');
+
+    @unlink($pdfPath);
+});
+
 it('counts pages in an existing pdf through the builder', function () {
     $counter = new class
     {
@@ -179,6 +207,27 @@ it('counts pages in an existing pdf through the builder', function () {
     $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfPageCounter::class, $counter);
 
     expect(Pdf::pageCount('%PDF-fake'))->toBe(9);
+});
+
+it('counts pages in an existing pdf file through the builder', function () {
+    $pdfPath = tempnam(sys_get_temp_dir(), 'pdfstudio_page_count_file_');
+    file_put_contents($pdfPath, '%PDF-fake');
+
+    $counter = new class
+    {
+        public function count(string $pdfContent): int
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+
+            return 11;
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfPageCounter::class, $counter);
+
+    expect(Pdf::pageCountFile($pdfPath))->toBe(11);
+
+    @unlink($pdfPath);
 });
 
 it('chunks an existing pdf through the builder', function () {
@@ -223,6 +272,55 @@ it('plans chunk ranges for an existing pdf through the builder', function () {
     expect(Pdf::chunkRanges('%PDF-fake', 4))->toBe(['1-4', '5-8', '9-9']);
 });
 
+it('chunks an existing pdf file through the builder', function () {
+    $pdfPath = tempnam(sys_get_temp_dir(), 'pdfstudio_chunk_file_');
+    file_put_contents($pdfPath, '%PDF-fake');
+
+    $chunker = new class
+    {
+        public function chunk(string $pdfContent, int $pagesPerChunk): array
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+            expect($pagesPerChunk)->toBe(2);
+
+            return [
+                new PdfResult(content: 'CHUNK_FILE_1', driver: 'fpdi-splitter', renderTimeMs: 0),
+            ];
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfChunker::class, $chunker);
+
+    $results = Pdf::chunkFile($pdfPath, 2);
+
+    expect($results)->toHaveCount(1)
+        ->and($results[0]->content())->toBe('CHUNK_FILE_1');
+
+    @unlink($pdfPath);
+});
+
+it('plans chunk ranges for an existing pdf file through the builder', function () {
+    $pdfPath = tempnam(sys_get_temp_dir(), 'pdfstudio_chunk_ranges_file_');
+    file_put_contents($pdfPath, '%PDF-fake');
+
+    $chunker = new class
+    {
+        public function chunkRanges(string $pdfContent, int $pagesPerChunk): array
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+            expect($pagesPerChunk)->toBe(4);
+
+            return ['1-4', '5-8'];
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfChunker::class, $chunker);
+
+    expect(Pdf::chunkRangesFile($pdfPath, 4))->toBe(['1-4', '5-8']);
+
+    @unlink($pdfPath);
+});
+
 it('embeds files into an existing pdf through the builder', function () {
     $embedder = new class
     {
@@ -251,4 +349,37 @@ it('embeds files into an existing pdf through the builder', function () {
     expect($result)->toBeInstanceOf(PdfResult::class)
         ->and($result->content())->toBe('EMBEDDED_PDF')
         ->and($result->driver)->toBe('gotenberg-embedder');
+});
+
+it('embeds files into an existing pdf file through the builder', function () {
+    $pdfPath = tempnam(sys_get_temp_dir(), 'pdfstudio_embed_file_');
+    file_put_contents($pdfPath, '%PDF-fake');
+
+    $embedder = new class
+    {
+        public function embed(string $pdfContent, array $files): PdfResult
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+            expect($files)->toHaveCount(1);
+
+            return new PdfResult(
+                content: 'EMBEDDED_PDF_FILE',
+                driver: 'gotenberg-embedder',
+                renderTimeMs: 0,
+            );
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfEmbedder::class, $embedder);
+
+    $result = Pdf::embedFilesIntoFile($pdfPath, [[
+        'path' => '/tmp/report.csv',
+        'name' => 'report.csv',
+        'mime' => 'text/csv',
+    ]]);
+
+    expect($result)->toBeInstanceOf(PdfResult::class)
+        ->and($result->content())->toBe('EMBEDDED_PDF_FILE');
+
+    @unlink($pdfPath);
 });

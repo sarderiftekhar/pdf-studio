@@ -444,11 +444,21 @@ class PdfBuilder
         return $flattener->flatten($pdfContent);
     }
 
+    public function flattenPdfFile(string $path): PdfResult
+    {
+        return $this->flattenPdf($this->readPdfFile($path));
+    }
+
     public function pageCount(string $pdfContent): int
     {
         $counter = $this->app->make(Manipulation\PdfPageCounter::class);
 
         return $counter->count($pdfContent);
+    }
+
+    public function pageCountFile(string $path): int
+    {
+        return $this->pageCount($this->readPdfFile($path));
     }
 
     /**
@@ -462,6 +472,14 @@ class PdfBuilder
     }
 
     /**
+     * @return array<int, PdfResult>
+     */
+    public function chunkFile(string $path, int $pagesPerChunk): array
+    {
+        return $this->chunk($this->readPdfFile($path), $pagesPerChunk);
+    }
+
+    /**
      * @return array<int, string>
      */
     public function chunkRanges(string $pdfContent, int $pagesPerChunk): array
@@ -472,6 +490,14 @@ class PdfBuilder
     }
 
     /**
+     * @return array<int, string>
+     */
+    public function chunkRangesFile(string $path, int $pagesPerChunk): array
+    {
+        return $this->chunkRanges($this->readPdfFile($path), $pagesPerChunk);
+    }
+
+    /**
      * @param  array<int, array{path: string, name?: string|null, mime?: string|null}>  $files
      */
     public function embedFiles(string $pdfContent, array $files): PdfResult
@@ -479,6 +505,14 @@ class PdfBuilder
         $embedder = $this->app->make(Manipulation\PdfEmbedder::class);
 
         return $embedder->embed($pdfContent, $files);
+    }
+
+    /**
+     * @param  array<int, array{path: string, name?: string|null, mime?: string|null}>  $files
+     */
+    public function embedFilesIntoFile(string $path, array $files): PdfResult
+    {
+        return $this->embedFiles($this->readPdfFile($path), $files);
     }
 
     /**
@@ -517,6 +551,17 @@ class PdfBuilder
         }
 
         return $this->merge($results);
+    }
+
+    protected function readPdfFile(string $path): string
+    {
+        $content = file_get_contents($path);
+
+        if ($content === false) {
+            throw new \PdfStudio\Laravel\Exceptions\RenderException("Cannot read file: {$path}");
+        }
+
+        return $content;
     }
 
     // ---- AcroForm Fill (Feature 4) ----
