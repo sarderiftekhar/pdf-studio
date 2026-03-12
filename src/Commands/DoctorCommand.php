@@ -48,8 +48,12 @@ class DoctorCommand extends Command
 
         $cloudflareAccountId = (string) config('pdf-studio.drivers.cloudflare.account_id', '');
         $cloudflareToken = (string) config('pdf-studio.drivers.cloudflare.api_token', '');
+        $cloudflareBaseUrl = (string) config('pdf-studio.drivers.cloudflare.base_url', '');
         if ($cloudflareAccountId !== '' && $cloudflareToken !== '') {
             $this->line("  <info>[INFO]</info> Cloudflare Browser Rendering configured (account {$cloudflareAccountId})");
+            if ($cloudflareBaseUrl !== '') {
+                $this->line("  <info>[INFO]</info> Cloudflare API base URL ({$cloudflareBaseUrl})");
+            }
         } else {
             $this->warn('  [SKIP] Cloudflare Browser Rendering credentials not configured');
         }
@@ -109,6 +113,8 @@ class DoctorCommand extends Command
             ? '; allowed remote hosts: '.implode(', ', array_filter($allowedHosts, 'is_string'))
             : '';
         $this->line("  <info>[INFO]</info> Asset policy: {$assetPolicy}; {$inlineLocal}{$hostSummary}");
+
+        $this->reportExistingPdfCapabilities($gotenbergUrl);
 
         $allPassed = $this->checkConfiguredFonts() && $allPassed;
 
@@ -245,6 +251,39 @@ class DoctorCommand extends Command
         }
 
         return $allPassed;
+    }
+
+    protected function reportExistingPdfCapabilities(string $gotenbergUrl): void
+    {
+        $fpdiAvailable = class_exists(\setasign\Fpdi\Fpdi::class);
+        $pdftkAvailable = class_exists(\mikehaertl\pdftk\Pdf::class);
+        $gotenbergConfigured = $gotenbergUrl !== '';
+
+        $inspection = ['isPdf', 'inspectPdf'];
+        if ($fpdiAvailable) {
+            $inspection[] = 'pageCount';
+            $inspection[] = 'chunkPlan';
+        }
+
+        $editing = [];
+        if ($fpdiAvailable) {
+            $editing[] = 'split';
+            $editing[] = 'chunk';
+            $editing[] = 'reorderPages';
+            $editing[] = 'removePages';
+        }
+        if ($pdftkAvailable) {
+            $editing[] = 'flattenPdf';
+        }
+        if ($gotenbergConfigured) {
+            $editing[] = 'embedFiles';
+        }
+
+        $inspectionSummary = implode(', ', $inspection);
+        $editingSummary = $editing === [] ? 'none' : implode(', ', $editing);
+
+        $this->line("  <info>[INFO]</info> Existing PDF inspection helpers: {$inspectionSummary}");
+        $this->line("  <info>[INFO]</info> Existing PDF editing helpers: {$editingSummary}");
     }
 
     protected function binaryExists(string $path): bool

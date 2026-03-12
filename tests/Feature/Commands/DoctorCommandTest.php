@@ -60,10 +60,12 @@ it('reports cloudflare browser rendering configuration when present', function (
     config([
         'pdf-studio.drivers.cloudflare.account_id' => 'acc_123',
         'pdf-studio.drivers.cloudflare.api_token' => 'token_123',
+        'pdf-studio.drivers.cloudflare.base_url' => 'https://api.cloudflare.com/client/v4',
     ]);
 
     $this->artisan('pdf-studio:doctor')
-        ->expectsOutputToContain('Cloudflare Browser Rendering configured');
+        ->expectsOutputToContain('Cloudflare Browser Rendering configured')
+        ->expectsOutputToContain('Cloudflare API base URL');
 });
 
 it('checks pdftk availability', function () {
@@ -95,6 +97,16 @@ it('reports allowed remote asset hosts when configured', function () {
 
     $this->artisan('pdf-studio:doctor')
         ->expectsOutputToContain('allowed remote hosts: assets.example.com, cdn.example.com');
+});
+
+it('reports existing pdf capability summaries', function () {
+    config([
+        'pdf-studio.drivers.gotenberg.url' => 'http://127.0.0.1:3000',
+    ]);
+
+    $this->artisan('pdf-studio:doctor')
+        ->expectsOutputToContain('Existing PDF inspection helpers:')
+        ->expectsOutputToContain('Existing PDF editing helpers:');
 });
 
 it('reports gotenberg reachability when it is the default driver', function () {
