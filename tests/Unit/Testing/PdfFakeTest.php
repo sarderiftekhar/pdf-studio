@@ -127,6 +127,19 @@ it('returns the last render payload for inspection', function () {
         ->and($lastRender['output'])->toContain('reports.monthly');
 });
 
+it('asserts metadata attachments and pdf variant', function () {
+    $fake = new PdfFake($this->app);
+    $fake->html('<h1>Test</h1>')
+        ->metadata(['title' => 'Report'])
+        ->attachFile('/tmp/report.csv', 'report.csv', 'text/csv')
+        ->pdfVariant('pdf/ua-1')
+        ->render();
+
+    $fake->assertHasMetadata(['title' => 'Report']);
+    $fake->assertHasAttachment('/tmp/report.csv', 'report.csv');
+    $fake->assertPdfVariant('pdf/ua-1');
+});
+
 it('fails assertRenderedView when view not rendered', function () {
     $fake = new PdfFake($this->app);
     $fake->html('<h1>Test</h1>')->render();

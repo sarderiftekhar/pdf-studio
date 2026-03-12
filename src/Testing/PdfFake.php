@@ -197,6 +197,52 @@ class PdfFake extends PdfBuilder
         return $this;
     }
 
+    /**
+     * @param  array<string, scalar|null>  $metadata
+     */
+    public function assertHasMetadata(array $metadata): static
+    {
+        $lastRender = $this->lastRender();
+
+        Assert::assertEquals(
+            $metadata,
+            $lastRender['options']->metadata,
+            'Expected rendered PDF metadata to match the provided array.'
+        );
+
+        return $this;
+    }
+
+    public function assertPdfVariant(string $variant): static
+    {
+        $lastRender = $this->lastRender();
+
+        Assert::assertSame(
+            $variant,
+            $lastRender['options']->pdfVariant,
+            "Expected PDF variant [{$variant}] to be used."
+        );
+
+        return $this;
+    }
+
+    public function assertHasAttachment(string $path, ?string $name = null): static
+    {
+        $lastRender = $this->lastRender();
+
+        $matched = collect($lastRender['options']->attachments)->contains(function (array $attachment) use ($path, $name) {
+            if (($attachment['path'] ?? null) !== $path) {
+                return false;
+            }
+
+            return $name === null || ($attachment['name'] ?? null) === $name;
+        });
+
+        Assert::assertTrue($matched, "Expected rendered PDF to include attachment [{$path}].");
+
+        return $this;
+    }
+
     public function assertMerged(): static
     {
         Assert::assertNotEmpty($this->merges, 'Expected at least one PDF merge, but none occurred.');
