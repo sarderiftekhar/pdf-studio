@@ -254,6 +254,23 @@ it('checks whether in-memory content looks like a pdf through the builder', func
     expect(Pdf::isPdf('%PDF-fake'))->toBeTrue();
 });
 
+it('asserts in-memory pdf content through the builder', function () {
+    $validator = new class
+    {
+        public function assertPdf(string $pdfContent, string $label = 'content'): void
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+            expect($label)->toBe('upload');
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfValidator::class, $validator);
+
+    Pdf::assertPdf('%PDF-fake', 'upload');
+
+    expect(true)->toBeTrue();
+});
+
 it('counts pages in an existing pdf file through the builder', function () {
     $pdfPath = tempnam(sys_get_temp_dir(), 'pdfstudio_page_count_file_');
     file_put_contents($pdfPath, '%PDF-fake');
@@ -294,6 +311,28 @@ it('checks whether a pdf file looks like a pdf through the builder', function ()
     expect(Pdf::isPdfFile($pdfPath))->toBeTrue();
 
     @unlink($pdfPath);
+});
+
+it('asserts a pdf file through the builder', function () {
+    $pdfPath = tempnam(sys_get_temp_dir(), 'pdfstudio_assert_pdf_file_');
+    file_put_contents($pdfPath, '%PDF-fake');
+
+    $validator = new class
+    {
+        public function assertPdf(string $pdfContent, string $label = 'content'): void
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+            expect($label)->toBe('source file');
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfValidator::class, $validator);
+
+    Pdf::assertPdfFile($pdfPath, 'source file');
+
+    @unlink($pdfPath);
+
+    expect(true)->toBeTrue();
 });
 
 it('chunks an existing pdf through the builder', function () {
