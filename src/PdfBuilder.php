@@ -93,6 +93,116 @@ class PdfBuilder
         return $this;
     }
 
+    public function pageRanges(string $pageRanges): static
+    {
+        $this->context->options->pageRanges = $pageRanges;
+
+        return $this;
+    }
+
+    public function preferCssPageSize(bool $prefer = true): static
+    {
+        $this->context->options->preferCssPageSize = $prefer;
+
+        return $this;
+    }
+
+    public function scale(float $scale): static
+    {
+        $this->context->options->scale = $scale;
+
+        return $this;
+    }
+
+    public function waitForFonts(bool $wait = true): static
+    {
+        $this->context->options->waitForFonts = $wait;
+
+        return $this;
+    }
+
+    public function waitUntil(string $event): static
+    {
+        $this->context->options->waitUntil = $event;
+
+        return $this;
+    }
+
+    public function waitForNetworkIdle(bool $strict = true): static
+    {
+        $this->context->options->waitUntil = $strict ? 'networkidle0' : 'networkidle2';
+
+        return $this;
+    }
+
+    public function waitDelay(int $milliseconds): static
+    {
+        $this->context->options->waitDelayMs = $milliseconds;
+
+        return $this;
+    }
+
+    /**
+     * @param  array<string, mixed>  $options
+     */
+    public function waitForSelector(string $selector, array $options = []): static
+    {
+        $this->context->options->waitForSelector = $selector;
+        $this->context->options->waitForSelectorOptions = $options;
+
+        return $this;
+    }
+
+    public function waitForFunction(string $function, int $timeout = 0): static
+    {
+        $this->context->options->waitForFunction = $function;
+        $this->context->options->waitForFunctionTimeout = $timeout;
+
+        return $this;
+    }
+
+    public function taggedPdf(bool $tagged = true): static
+    {
+        $this->context->options->taggedPdf = $tagged;
+
+        return $this;
+    }
+
+    public function outline(bool $outline = true): static
+    {
+        $this->context->options->outline = $outline;
+
+        return $this;
+    }
+
+    /**
+     * @param  array<string, scalar|null>  $metadata
+     */
+    public function metadata(array $metadata): static
+    {
+        $this->context->options->metadata = $metadata;
+
+        return $this;
+    }
+
+    public function pdfVariant(string $variant): static
+    {
+        $this->context->options->pdfVariant = $variant;
+
+        return $this;
+    }
+
+    public function attachFile(string $path, ?string $name = null, ?string $mime = null): static
+    {
+        $this->context->options->attachments[] = array_filter([
+            'name' => $name ?? basename($path),
+            'path' => $path,
+            'mime' => $mime,
+        ], static fn ($value): bool => $value !== null);
+
+        return $this;
+    }
+
     public function margins(
         ?int $top = null,
         ?int $right = null,

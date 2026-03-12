@@ -21,6 +21,8 @@ it('records renders with html', function () {
 
     $fake->assertRendered();
     $fake->assertContains('<h1>Hello</h1>');
+    $fake->assertContainsHtml('<h1>Hello</h1>');
+    $fake->assertContainsText('Hello');
 });
 
 it('tracks render count', function () {
@@ -43,6 +45,7 @@ it('tracks save path and disk', function () {
     $fake->html('<h1>Test</h1>')->save('reports/test.pdf', 's3');
 
     $fake->assertSavedTo('reports/test.pdf', 's3');
+    $fake->assertSaved('reports/test.pdf', 's3');
 });
 
 it('tracks save path without disk', function () {
@@ -98,6 +101,30 @@ it('returns PdfResult from render', function () {
     expect($result)->toBeInstanceOf(PdfResult::class)
         ->and($result->content())->toContain('FAKE_PDF')
         ->and($result->renderTimeMs)->toBe(0.0);
+});
+
+it('returns the last render payload for inspection', function () {
+    $fake = new PdfFake($this->app);
+    $fake->html('<p>First</p>')->render();
+    $fake->view('reports.monthly')
+        ->data(['month' => 'March'])
+        ->driver('dompdf')
+        ->metadata(['title' => 'Monthly Report'])
+        ->attachFile('/tmp/report.csv', 'report.csv', 'text/csv')
+        ->pdfVariant('pdf/a-2b')
+        ->render();
+
+    $lastRender = $fake->lastRender();
+
+    expect($lastRender['view'])->toBe('reports.monthly')
+        ->and($lastRender['driver'])->toBe('dompdf')
+        ->and($lastRender['data'])->toBe(['month' => 'March'])
+        ->and($lastRender['options']->metadata)->toBe(['title' => 'Monthly Report'])
+        ->and($lastRender['options']->attachments)->toBe([
+            ['name' => 'report.csv', 'path' => '/tmp/report.csv', 'mime' => 'text/csv'],
+        ])
+        ->and($lastRender['options']->pdfVariant)->toBe('pdf/a-2b')
+        ->and($lastRender['output'])->toContain('reports.monthly');
 });
 
 it('fails assertRenderedView when view not rendered', function () {

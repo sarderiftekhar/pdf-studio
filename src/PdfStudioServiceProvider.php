@@ -33,9 +33,19 @@ class PdfStudioServiceProvider extends ServiceProvider
             return new Templates\TemplateRegistry;
         });
 
+        $this->app->singleton(Fonts\FontRegistry::class, function ($app) {
+            return new Fonts\FontRegistry($app);
+        });
+
+        $this->app->singleton(Fonts\FontCssGenerator::class, function ($app) {
+            return new Fonts\FontCssGenerator($app->make(Fonts\FontRegistry::class));
+        });
+
         $this->app->bind(Pipeline\RenderPipeline::class);
         $this->app->bind(Pipeline\BladeCompiler::class);
         $this->app->bind(Pipeline\PdfRenderer::class);
+        $this->app->bind(Pipeline\CssInjector::class);
+        $this->app->bind(Pipeline\AssetResolver::class);
 
         $this->app->bind(Pipeline\BootstrapInjector::class);
 

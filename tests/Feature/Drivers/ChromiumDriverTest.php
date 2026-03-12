@@ -20,8 +20,81 @@ it('reports correct capabilities', function () {
         ->and($caps->customMargins)->toBeTrue()
         ->and($caps->headerFooter)->toBeTrue()
         ->and($caps->printBackground)->toBeTrue()
+        ->and($caps->pageRanges)->toBeTrue()
+        ->and($caps->preferCssPageSize)->toBeTrue()
+        ->and($caps->scale)->toBeTrue()
+        ->and($caps->waitForFonts)->toBeTrue()
+        ->and($caps->waitUntil)->toBeTrue()
+        ->and($caps->waitDelay)->toBeTrue()
+        ->and($caps->waitForSelector)->toBeTrue()
+        ->and($caps->waitForFunction)->toBeTrue()
+        ->and($caps->taggedPdf)->toBeTrue()
+        ->and($caps->outline)->toBeTrue()
         ->and($caps->supportedFormats)->toContain('A4')
         ->and($caps->supportedFormats)->toContain('Letter');
+});
+
+it('applies advanced PDF options to browsershot', function () {
+    $driver = new class extends ChromiumDriver
+    {
+        public function browsershotForTest(string $html, RenderOptions $options): \Spatie\Browsershot\Browsershot
+        {
+            return $this->createBrowsershot($html, $options);
+        }
+    };
+
+    $options = new RenderOptions(
+        pageRanges: '1-3',
+        preferCssPageSize: true,
+        scale: 0.9,
+        waitForFonts: true,
+        waitUntil: 'networkidle2',
+        waitDelayMs: 750,
+        waitForSelector: '#ready',
+        waitForSelectorOptions: ['visible' => true],
+        waitForFunction: 'window.__PDF_READY === true',
+        waitForFunctionTimeout: 5000,
+        taggedPdf: true,
+        outline: true,
+    );
+
+    $browsershot = $driver->browsershotForTest('<html><body><h1>Test</h1></body></html>', $options);
+
+    $additionalOptions = (function () {
+        $property = new ReflectionProperty($this, 'additionalOptions');
+        $property->setAccessible(true);
+
+        return $property->getValue($this);
+    })->call($browsershot);
+
+    $scale = (function () {
+        $property = new ReflectionProperty($this, 'scale');
+        $property->setAccessible(true);
+
+        return $property->getValue($this);
+    })->call($browsershot);
+
+    $taggedPdf = (function () {
+        $property = new ReflectionProperty($this, 'taggedPdf');
+        $property->setAccessible(true);
+
+        return $property->getValue($this);
+    })->call($browsershot);
+
+    expect($additionalOptions)->toMatchArray([
+        'pageRanges' => '1-3',
+        'preferCSSPageSize' => true,
+        'waitForFonts' => true,
+        'waitUntil' => 'networkidle2',
+        'delay' => 750,
+        'waitForSelector' => '#ready',
+        'waitForSelectorOptions' => ['visible' => true],
+        'function' => 'window.__PDF_READY === true',
+        'functionTimeout' => 5000,
+        'outline' => true,
+    ])
+        ->and($scale)->toBe(0.9)
+        ->and($taggedPdf)->toBeTrue();
 });
 
 it('renders HTML to PDF bytes', function () {

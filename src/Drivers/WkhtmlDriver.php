@@ -191,6 +191,8 @@ class WkhtmlDriver implements RendererContract
             printBackground: true,
             supportedFormats: ['A4', 'Letter', 'Legal', 'A3', 'A5'],
             autoHeight: true,
+            waitUntil: false,
+            waitDelay: false,
         );
     }
 }

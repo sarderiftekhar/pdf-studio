@@ -65,6 +65,14 @@ class DriverManager
     /**
      * @param  array<string, mixed>  $config
      */
+    protected function createGotenbergDriver(array $config = []): GotenbergDriver
+    {
+        return new GotenbergDriver($config);
+    }
+
+    /**
+     * @param  array<string, mixed>  $config
+     */
     protected function createDompdfDriver(array $config = []): DompdfDriver
     {
         return new DompdfDriver($config);
@@ -76,6 +84,14 @@ class DriverManager
     protected function createWkhtmltopdfDriver(array $config = []): WkhtmlDriver
     {
         return new WkhtmlDriver($config);
+    }
+
+    /**
+     * @param  array<string, mixed>  $config
+     */
+    protected function createWeasyprintDriver(array $config = []): WeasyPrintDriver
+    {
+        return new WeasyPrintDriver($config);
     }
 
     public function getDefaultDriver(): string

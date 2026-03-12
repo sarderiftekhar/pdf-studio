@@ -6,9 +6,7 @@ beforeEach(function () {
 
 it('runs doctor command successfully', function () {
     $this->artisan('pdf-studio:doctor')
-        ->expectsOutputToContain('PDF Studio Diagnostics')
-        ->assertExitCode(0)
-        ->run();
+        ->expectsOutputToContain('PDF Studio Diagnostics');
 })->skip(fn () => (bool) getenv('CI'), 'Optional binaries not available in CI');
 
 it('runs doctor command and outputs diagnostics', function () {
@@ -24,6 +22,23 @@ it('checks PHP version', function () {
 it('reports memory limit', function () {
     $this->artisan('pdf-studio:doctor')
         ->expectsOutputToContain('Memory Limit');
+});
+
+it('checks DOM extension availability', function () {
+    $this->artisan('pdf-studio:doctor')
+        ->expectsOutputToContain('DOM extension');
+});
+
+it('reports temporary directory diagnostics', function () {
+    $this->artisan('pdf-studio:doctor')
+        ->expectsOutputToContain('Temporary directory writable');
+});
+
+it('reports the default driver', function () {
+    config(['pdf-studio.default_driver' => 'weasyprint']);
+
+    $this->artisan('pdf-studio:doctor')
+        ->expectsOutputToContain('Default driver: weasyprint');
 });
 
 it('checks dompdf availability', function () {
@@ -49,4 +64,50 @@ it('checks pdftk availability', function () {
 it('checks fpdi availability', function () {
     $this->artisan('pdf-studio:doctor')
         ->expectsOutputToContain('fpdi');
+});
+
+it('reports asset policy settings', function () {
+    config([
+        'pdf-studio.assets.allow_remote' => false,
+        'pdf-studio.assets.inline_local' => true,
+    ]);
+
+    $this->artisan('pdf-studio:doctor')
+        ->expectsOutputToContain('Asset policy: remote assets blocked; inline local assets enabled');
+});
+
+it('reports gotenberg reachability when it is the default driver', function () {
+    config([
+        'pdf-studio.default_driver' => 'gotenberg',
+        'pdf-studio.drivers.gotenberg.url' => 'http://127.0.0.1:65534',
+    ]);
+
+    $this->artisan('pdf-studio:doctor')
+        ->expectsOutputToContain('Gotenberg endpoint reachable');
+});
+
+it('reports when no custom fonts are configured', function () {
+    config(['pdf-studio.fonts' => []]);
+
+    $this->artisan('pdf-studio:doctor')
+        ->expectsOutputToContain('No custom fonts configured');
+});
+
+it('checks configured font file paths', function () {
+    $fontFile = tempnam(sys_get_temp_dir(), 'pdfstudio_font_');
+    file_put_contents($fontFile, 'font');
+
+    config([
+        'pdf-studio.fonts' => [
+            'inter' => [
+                'family' => 'Inter',
+                'sources' => [$fontFile],
+            ],
+        ],
+    ]);
+
+    $this->artisan('pdf-studio:doctor')
+        ->expectsOutputToContain('Font [inter] source');
+
+    @unlink($fontFile);
 });

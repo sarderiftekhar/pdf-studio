@@ -3,6 +3,8 @@
 use PdfStudio\Laravel\Contracts\RendererContract;
 use PdfStudio\Laravel\Drivers\DriverManager;
 use PdfStudio\Laravel\Drivers\FakeDriver;
+use PdfStudio\Laravel\Drivers\GotenbergDriver;
+use PdfStudio\Laravel\Drivers\WeasyPrintDriver;
 use PdfStudio\Laravel\Exceptions\DriverException;
 
 beforeEach(function () {
@@ -23,6 +25,26 @@ it('resolves a named driver', function () {
     $driver = $manager->driver('fake');
 
     expect($driver)->toBeInstanceOf(FakeDriver::class);
+});
+
+it('resolves gotenberg driver when configured', function () {
+    $this->app['config']->set('pdf-studio.drivers.gotenberg.url', 'http://gotenberg.test');
+
+    $manager = app(DriverManager::class);
+
+    $driver = $manager->driver('gotenberg');
+
+    expect($driver)->toBeInstanceOf(GotenbergDriver::class);
+});
+
+it('resolves weasyprint driver when configured', function () {
+    $this->app['config']->set('pdf-studio.drivers.weasyprint.binary', 'weasyprint');
+
+    $manager = app(DriverManager::class);
+
+    $driver = $manager->driver('weasyprint');
+
+    expect($driver)->toBeInstanceOf(WeasyPrintDriver::class);
 });
 
 it('throws on unknown driver', function () {

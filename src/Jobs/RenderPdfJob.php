@@ -25,6 +25,7 @@ class RenderPdfJob implements ShouldQueue
      */
     public function __construct(
         public string $view,
+        public ?string $html = null,
         public array $data = [],
         public string $outputPath = '',
         public ?string $disk = null,
@@ -44,7 +45,13 @@ class RenderPdfJob implements ShouldQueue
 
         try {
             $builder = $app->make(PdfBuilder::class);
-            $builder->view($this->view)->data($this->data);
+            if ($this->html !== null) {
+                $builder->html($this->html);
+            } else {
+                $builder->view($this->view);
+            }
+
+            $builder->data($this->data);
 
             if ($this->driver !== null) {
                 $builder->driver($this->driver);
