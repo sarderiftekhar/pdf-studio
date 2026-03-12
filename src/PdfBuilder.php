@@ -424,6 +424,44 @@ class PdfBuilder
         return $merger->merge($sources);
     }
 
+    /**
+     * Render multiple sections independently and merge them into one PDF.
+     *
+     * @param  array<int, array{view?: string, html?: string, data?: array<string, mixed>, driver?: string, options?: array<string, mixed>}>  $documents
+     */
+    public function compose(array $documents, ?string $driver = null): PdfResult
+    {
+        $results = [];
+
+        foreach ($documents as $document) {
+            $builder = $this->app->make(self::class);
+
+            if (isset($document['view'])) {
+                $builder->view($document['view']);
+            } elseif (isset($document['html'])) {
+                $builder->html($document['html']);
+            } else {
+                throw new \InvalidArgumentException('Each composed document must define either [view] or [html].');
+            }
+
+            if (isset($document['data']) && is_array($document['data'])) {
+                $builder->data($document['data']);
+            }
+
+            $builder->applyArrayOptions($document['options'] ?? []);
+
+            if (isset($document['driver'])) {
+                $builder->driver($document['driver']);
+            } elseif ($driver !== null) {
+                $builder->driver($driver);
+            }
+
+            $results[] = $builder->render();
+        }
+
+        return $this->merge($results);
+    }
+
     // ---- AcroForm Fill (Feature 4) ----
 
     public function acroform(string $pdfPath): Manipulation\AcroFormBuilder
@@ -625,6 +663,98 @@ class PdfBuilder
                 driver: $item['driver'] ?? $driver,
                 options: $item['options'] ?? [],
             );
+        }
+    }
+
+    /**
+     * @param  array<string, mixed>  $options
+     */
+    protected function applyArrayOptions(array $options): void
+    {
+        if (isset($options['format'])) {
+            $this->format((string) $options['format']);
+        }
+
+        if (isset($options['landscape'])) {
+            $this->landscape((bool) $options['landscape']);
+        }
+
+        if (isset($options['margins']) && is_array($options['margins'])) {
+            $margins = $options['margins'];
+            $this->margins(
+                $margins['top'] ?? null,
+                $margins['right'] ?? null,
+                $margins['bottom'] ?? null,
+                $margins['left'] ?? null,
+            );
+        }
+
+        if (isset($options['pageRanges'])) {
+            $this->pageRanges((string) $options['pageRanges']);
+        }
+
+        if (isset($options['preferCssPageSize'])) {
+            $this->preferCssPageSize((bool) $options['preferCssPageSize']);
+        }
+
+        if (isset($options['scale'])) {
+            $this->scale((float) $options['scale']);
+        }
+
+        if (isset($options['waitForFonts'])) {
+            $this->waitForFonts((bool) $options['waitForFonts']);
+        }
+
+        if (isset($options['waitUntil'])) {
+            $this->waitUntil((string) $options['waitUntil']);
+        }
+
+        if (isset($options['waitDelayMs'])) {
+            $this->waitDelay((int) $options['waitDelayMs']);
+        }
+
+        if (isset($options['waitForSelector'])) {
+            $this->waitForSelector(
+                (string) $options['waitForSelector'],
+                is_array($options['waitForSelectorOptions'] ?? null) ? $options['waitForSelectorOptions'] : [],
+            );
+        }
+
+        if (isset($options['waitForFunction'])) {
+            $this->waitForFunction(
+                (string) $options['waitForFunction'],
+                (int) ($options['waitForFunctionTimeout'] ?? 0),
+            );
+        }
+
+        if (isset($options['taggedPdf'])) {
+            $this->taggedPdf((bool) $options['taggedPdf']);
+        }
+
+        if (isset($options['outline'])) {
+            $this->outline((bool) $options['outline']);
+        }
+
+        if (isset($options['metadata']) && is_array($options['metadata'])) {
+            $this->metadata($options['metadata']);
+        }
+
+        if (isset($options['pdfVariant'])) {
+            $this->pdfVariant((string) $options['pdfVariant']);
+        }
+
+        if (isset($options['attachments']) && is_array($options['attachments'])) {
+            foreach ($options['attachments'] as $attachment) {
+                if (!is_array($attachment) || !isset($attachment['path'])) {
+                    continue;
+                }
+
+                $this->attachFile(
+                    (string) $attachment['path'],
+                    isset($attachment['name']) ? (string) $attachment['name'] : null,
+                    isset($attachment['mime']) ? (string) $attachment['mime'] : null,
+                );
+            }
         }
     }
 }

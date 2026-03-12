@@ -25,6 +25,7 @@ use PdfStudio\Laravel\Testing\PdfFake;
  * @method static PdfBuilder pdfVariant(string $variant)
  * @method static PdfBuilder attachFile(string $path, ?string $name = null, ?string $mime = null)
  * @method static \PdfStudio\Laravel\Output\PdfResult render()
+ * @method static \PdfStudio\Laravel\Output\PdfResult compose(array<int, array<string, mixed>> $documents, ?string $driver = null)
  * @method static \Illuminate\Http\Response download(string $filename)
  * @method static \Symfony\Component\HttpFoundation\StreamedResponse stream(string $filename)
  * @method static \PdfStudio\Laravel\Output\StorageResult save(string $path, ?string $disk = null)

@@ -73,3 +73,50 @@ it('passes render options through to the driver', function () {
 
     expect($result)->toBeInstanceOf(PdfResult::class);
 });
+
+it('composes multiple documents and merges them', function () {
+    $merger = new class implements \PdfStudio\Laravel\Contracts\MergerContract
+    {
+        public array $sources = [];
+
+        public function merge(array $sources): PdfResult
+        {
+            $this->sources = $sources;
+
+            return new PdfResult(
+                content: 'FAKE_COMPOSED_PDF',
+                driver: 'fake-merger',
+                renderTimeMs: 0,
+            );
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Contracts\MergerContract::class, $merger);
+
+    $result = Pdf::compose([
+        [
+            'html' => '<h1>Cover</h1>',
+        ],
+        [
+            'view' => 'pdf-test::simple',
+            'data' => ['name' => 'Composed'],
+            'options' => [
+                'format' => 'Letter',
+                'metadata' => ['title' => 'Section Two'],
+            ],
+        ],
+    ], 'fake');
+
+    expect($result)->toBeInstanceOf(PdfResult::class)
+        ->and($result->content())->toBe('FAKE_COMPOSED_PDF')
+        ->and($merger->sources)->toHaveCount(2)
+        ->and($merger->sources[0])->toBeInstanceOf(PdfResult::class)
+        ->and($merger->sources[1])->toBeInstanceOf(PdfResult::class)
+        ->and($merger->sources[1]->content())->toContain('Hello Composed');
+});
+
+it('throws when composed document input is invalid', function () {
+    Pdf::compose([
+        ['data' => ['name' => 'Missing source']],
+    ]);
+})->throws(\InvalidArgumentException::class, 'either [view] or [html]');
