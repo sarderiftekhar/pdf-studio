@@ -766,9 +766,15 @@ $embedded = Pdf::embedFiles($pdfBytes, [[
     'name' => 'source.csv',
     'mime' => 'text/csv',
 ]]);
+
+$totalPages = Pdf::pageCountFile(storage_path('app/reports/annual.pdf'));
+
+$plannedRanges = Pdf::chunkRangesFile(storage_path('app/reports/annual.pdf'), 25);
+
+$fileChunks = Pdf::chunkFile(storage_path('app/reports/annual.pdf'), 25);
 ```
 
-`pageCount()` returns an integer. `split()` and `chunk()` return arrays of `PdfResult` instances. `flattenPdf()` and `embedFiles()` return a single `PdfResult`.
+`pageCount()` and `pageCountFile()` return integers. `split()`, `chunk()`, `chunkFile()`, and `chunkRangesFile()` help plan or execute staged workflows for large PDFs. `flattenPdf()` / `flattenPdfFile()` and `embedFiles()` / `embedFilesIntoFile()` return a single `PdfResult`.
 
 ---
 

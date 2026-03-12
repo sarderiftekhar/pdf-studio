@@ -265,7 +265,11 @@ $pdf = Pdf::view('reports.annual')
 
 $pageCount = Pdf::pageCount($pdf->content());
 
+$ranges = Pdf::chunkRanges($pdf->content(), 50);
+
 $chunks = Pdf::chunk($pdf->content(), 50);
+
+$storedRanges = Pdf::chunkRangesFile(storage_path('app/reports/annual.pdf'), 50);
 ```
 
 ### Archival or print-native workflow
