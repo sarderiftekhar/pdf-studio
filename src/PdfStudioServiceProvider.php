@@ -85,6 +85,7 @@ class PdfStudioServiceProvider extends ServiceProvider
         $this->app->bind(Contracts\ProtectorContract::class, Manipulation\PdfProtector::class);
         $this->app->bind(Manipulation\PdfFlattener::class);
         $this->app->bind(Manipulation\PdfPageCounter::class);
+        $this->app->bind(Manipulation\PdfValidator::class);
         $this->app->bind(Manipulation\PdfSplitter::class);
         $this->app->bind(Manipulation\PdfChunker::class);
         $this->app->bind(Manipulation\PdfEmbedder::class);

@@ -238,6 +238,22 @@ it('counts pages in an existing pdf through the builder', function () {
     expect(Pdf::pageCount('%PDF-fake'))->toBe(9);
 });
 
+it('checks whether in-memory content looks like a pdf through the builder', function () {
+    $validator = new class
+    {
+        public function isPdf(string $pdfContent): bool
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+
+            return true;
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfValidator::class, $validator);
+
+    expect(Pdf::isPdf('%PDF-fake'))->toBeTrue();
+});
+
 it('counts pages in an existing pdf file through the builder', function () {
     $pdfPath = tempnam(sys_get_temp_dir(), 'pdfstudio_page_count_file_');
     file_put_contents($pdfPath, '%PDF-fake');
@@ -255,6 +271,27 @@ it('counts pages in an existing pdf file through the builder', function () {
     $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfPageCounter::class, $counter);
 
     expect(Pdf::pageCountFile($pdfPath))->toBe(11);
+
+    @unlink($pdfPath);
+});
+
+it('checks whether a pdf file looks like a pdf through the builder', function () {
+    $pdfPath = tempnam(sys_get_temp_dir(), 'pdfstudio_is_pdf_file_');
+    file_put_contents($pdfPath, '%PDF-fake');
+
+    $validator = new class
+    {
+        public function isPdf(string $pdfContent): bool
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+
+            return true;
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfValidator::class, $validator);
+
+    expect(Pdf::isPdfFile($pdfPath))->toBeTrue();
 
     @unlink($pdfPath);
 });

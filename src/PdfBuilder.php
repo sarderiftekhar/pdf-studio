@@ -465,6 +465,18 @@ class PdfBuilder
         return $counter->count($pdfContent);
     }
 
+    public function isPdf(string $pdfContent): bool
+    {
+        $validator = $this->app->make(Manipulation\PdfValidator::class);
+
+        return $validator->isPdf($pdfContent);
+    }
+
+    public function isPdfFile(string $path): bool
+    {
+        return $this->isPdf($this->readPdfFile($path));
+    }
+
     public function pageCountFile(string $path): int
     {
         return $this->pageCount($this->readPdfFile($path));
