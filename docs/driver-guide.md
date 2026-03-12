@@ -230,6 +230,7 @@ Mitigations:
 - use remote renderers for isolation if app nodes are resource-constrained
 - prefer simpler layouts for very long reports
 - use `isPdf()` or `isPdfFile()` before downstream manipulation when files come from uploads or external systems
+- use `assertPdf()` or `assertPdfFile()` when invalid input should fail the job immediately instead of branching
 - use `pageCount()` first when you need to plan downstream batching or export stages
 - use `chunk()` for fixed-size page grouping before storage, transport, or review workflows
 - split, flatten, or embed files into existing PDFs when downstream workflows need smaller stages or bundled source material
@@ -266,6 +267,8 @@ $pdf = Pdf::view('reports.annual')
 
 $looksValid = Pdf::isPdf($pdf->content());
 
+Pdf::assertPdf($pdf->content(), 'rendered annual report');
+
 $pageCount = Pdf::pageCount($pdf->content());
 
 $ranges = Pdf::chunkRanges($pdf->content(), 50);
@@ -275,6 +278,8 @@ $plan = Pdf::chunkPlan($pdf->content(), 50);
 $chunks = Pdf::chunk($pdf->content(), 50);
 
 $storedLooksValid = Pdf::isPdfFile(storage_path('app/reports/annual.pdf'));
+
+Pdf::assertPdfFile(storage_path('app/reports/annual.pdf'), 'stored annual report');
 
 $storedRanges = Pdf::chunkRangesFile(storage_path('app/reports/annual.pdf'), 50);
 
