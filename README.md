@@ -771,10 +771,12 @@ $totalPages = Pdf::pageCountFile(storage_path('app/reports/annual.pdf'));
 
 $plannedRanges = Pdf::chunkRangesFile(storage_path('app/reports/annual.pdf'), 25);
 
+$chunkPlan = Pdf::chunkPlanFile(storage_path('app/reports/annual.pdf'), 25);
+
 $fileChunks = Pdf::chunkFile(storage_path('app/reports/annual.pdf'), 25);
 ```
 
-`pageCount()` and `pageCountFile()` return integers. `split()`, `chunk()`, `chunkFile()`, and `chunkRangesFile()` help plan or execute staged workflows for large PDFs. `flattenPdf()` / `flattenPdfFile()` and `embedFiles()` / `embedFilesIntoFile()` return a single `PdfResult`.
+`pageCount()` and `pageCountFile()` return integers. `chunkRanges()` / `chunkRangesFile()` return plain page-range strings. `chunkPlan()` / `chunkPlanFile()` return structured planning metadata per chunk. `split()`, `chunk()`, and `chunkFile()` execute the staged split into `PdfResult` outputs. `flattenPdf()` / `flattenPdfFile()` and `embedFiles()` / `embedFilesIntoFile()` return a single `PdfResult`.
 
 ---
 
