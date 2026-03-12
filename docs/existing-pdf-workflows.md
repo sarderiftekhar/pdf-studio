@@ -6,8 +6,8 @@ This guide covers PDF Studio's APIs for inspecting and editing PDFs that already
 
 The existing-PDF workflow surface falls into three groups:
 
-- inspect: validate, summarize, and plan work without changing the document
-- edit pages: split, chunk, reorder, remove, flatten, and embed files
+- inspect: validate, summarize, read metadata, and plan work without changing the document
+- edit pages: split, chunk, reorder, rotate, remove, flatten, and embed files
 - choose source type: use byte-string helpers for in-memory PDFs or `*File()` helpers for storage-backed workflows
 
 ## Inspect
@@ -22,6 +22,8 @@ $isPdf = Pdf::isPdf($bytes);
 $summary = Pdf::inspectPdf($bytes);
 // ['valid' => true, 'page_count' => 42, 'byte_size' => 182304]
 
+$metadata = Pdf::readPdfMetadata($bytes);
+
 Pdf::assertPdf($bytes, 'uploaded report');
 ```
 
@@ -31,6 +33,8 @@ File-based variants avoid reading the file in your own code:
 $isPdf = Pdf::isPdfFile(storage_path('app/reports/annual.pdf'));
 
 $summary = Pdf::inspectPdfFile(storage_path('app/reports/annual.pdf'));
+
+$metadata = Pdf::readPdfMetadataFile(storage_path('app/reports/annual.pdf'));
 
 Pdf::assertPdfFile(storage_path('app/reports/annual.pdf'), 'stored annual report');
 ```
@@ -75,10 +79,12 @@ $parts = Pdf::split($bytes, ['1-2', '3-5']);
 $chunks = Pdf::chunk($bytes, 25);
 ```
 
-Reorder or remove pages:
+Reorder, rotate, or remove pages:
 
 ```php
 $reordered = Pdf::reorderPages($bytes, [3, 1, 2]);
+
+$rotated = Pdf::rotatePages($bytes, 90, [1, 3]);
 
 $trimmed = Pdf::removePages($bytes, [2, 4]);
 ```
@@ -101,8 +107,10 @@ Every one of those has a file-based variant:
 Pdf::splitFile($path, ['1-2', '3-5']);
 Pdf::chunkFile($path, 25);
 Pdf::reorderPagesFile($path, [3, 1, 2]);
+Pdf::rotatePagesFile($path, 180);
 Pdf::removePagesFile($path, [2, 4]);
 Pdf::flattenPdfFile($path);
+Pdf::readPdfMetadataFile($path);
 Pdf::embedFilesIntoFile($path, $files);
 ```
 
@@ -120,13 +128,14 @@ For large reports generated in your own app:
 1. render the PDF once
 2. inspect and size it
 3. chunk or split it if transport/storage/review constraints require that
-4. reorder/remove/flatten/embed as a final post-processing step
+4. reorder/rotate/remove/flatten/embed as a final post-processing step
 
 ## Tooling
 
 These helpers depend on different underlying tools:
 
-- FPDI-backed: `pageCount`, `chunk`, `chunkRanges`, `chunkPlan`, `split`, `reorderPages`, `removePages`
+- basic parser-backed: `readPdfMetadata`
+- FPDI-backed: `pageCount`, `chunk`, `chunkRanges`, `chunkPlan`, `split`, `reorderPages`, `rotatePages`, `removePages`
 - pdftk-backed: `flattenPdf`
 - Gotenberg-backed: `embedFiles`
 
