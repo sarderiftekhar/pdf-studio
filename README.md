@@ -126,6 +126,10 @@ echo $result->renderTimeMs; // render duration
 
 ## Drivers
 
+Detailed driver selection and troubleshooting guide:
+
+- [Driver Guide](docs/driver-guide.md)
+
 | Driver | Runtime | Node | CSS Fidelity | Best For |
 |--------|---------|------|--------------|----------|
 | `chromium` (default) | Local Chrome + Browsershot | Yes | Full | High-fidelity local rendering |
