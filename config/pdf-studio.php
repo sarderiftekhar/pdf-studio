@@ -40,6 +40,12 @@ return [
             'timeout' => 60,
             'options' => [],
         ],
+        'cloudflare' => [
+            'account_id' => env('PDF_STUDIO_CLOUDFLARE_ACCOUNT_ID', ''),
+            'api_token' => env('PDF_STUDIO_CLOUDFLARE_API_TOKEN', ''),
+            'base_url' => env('PDF_STUDIO_CLOUDFLARE_BASE_URL', 'https://api.cloudflare.com/client/v4'),
+            'timeout' => 30,
+        ],
         'gotenberg' => [
             'url' => env('PDF_STUDIO_GOTENBERG_URL', 'http://127.0.0.1:3000'),
             'timeout' => 60,

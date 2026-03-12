@@ -65,6 +65,14 @@ class DriverManager
     /**
      * @param  array<string, mixed>  $config
      */
+    protected function createCloudflareDriver(array $config = []): CloudflareDriver
+    {
+        return new CloudflareDriver($config);
+    }
+
+    /**
+     * @param  array<string, mixed>  $config
+     */
     protected function createGotenbergDriver(array $config = []): GotenbergDriver
     {
         return new GotenbergDriver($config);

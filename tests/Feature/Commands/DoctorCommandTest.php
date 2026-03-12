@@ -56,6 +56,16 @@ it('checks Node.js availability', function () {
         ->expectsOutputToContain('Node.js');
 });
 
+it('reports cloudflare browser rendering configuration when present', function () {
+    config([
+        'pdf-studio.drivers.cloudflare.account_id' => 'acc_123',
+        'pdf-studio.drivers.cloudflare.api_token' => 'token_123',
+    ]);
+
+    $this->artisan('pdf-studio:doctor')
+        ->expectsOutputToContain('Cloudflare Browser Rendering configured');
+});
+
 it('checks pdftk availability', function () {
     $this->artisan('pdf-studio:doctor')
         ->expectsOutputToContain('pdftk');

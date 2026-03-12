@@ -46,6 +46,14 @@ class DoctorCommand extends Command
         // Chromium / Node
         $allPassed = $this->checkBinary('Node.js', 'node', '--version') && $allPassed;
 
+        $cloudflareAccountId = (string) config('pdf-studio.drivers.cloudflare.account_id', '');
+        $cloudflareToken = (string) config('pdf-studio.drivers.cloudflare.api_token', '');
+        if ($cloudflareAccountId !== '' && $cloudflareToken !== '') {
+            $this->line("  <info>[INFO]</info> Cloudflare Browser Rendering configured (account {$cloudflareAccountId})");
+        } else {
+            $this->warn('  [SKIP] Cloudflare Browser Rendering credentials not configured');
+        }
+
         // Gotenberg endpoint
         $gotenbergUrl = (string) config('pdf-studio.drivers.gotenberg.url', '');
         if ($gotenbergUrl !== '') {

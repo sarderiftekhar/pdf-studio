@@ -1,6 +1,7 @@
 <?php
 
 use PdfStudio\Laravel\Contracts\RendererContract;
+use PdfStudio\Laravel\Drivers\CloudflareDriver;
 use PdfStudio\Laravel\Drivers\DriverManager;
 use PdfStudio\Laravel\Drivers\FakeDriver;
 use PdfStudio\Laravel\Drivers\GotenbergDriver;
@@ -35,6 +36,17 @@ it('resolves gotenberg driver when configured', function () {
     $driver = $manager->driver('gotenberg');
 
     expect($driver)->toBeInstanceOf(GotenbergDriver::class);
+});
+
+it('resolves cloudflare driver when configured', function () {
+    $this->app['config']->set('pdf-studio.drivers.cloudflare.account_id', 'acc_123');
+    $this->app['config']->set('pdf-studio.drivers.cloudflare.api_token', 'token_123');
+
+    $manager = app(DriverManager::class);
+
+    $driver = $manager->driver('cloudflare');
+
+    expect($driver)->toBeInstanceOf(CloudflareDriver::class);
 });
 
 it('resolves weasyprint driver when configured', function () {
