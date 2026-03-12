@@ -142,3 +142,25 @@ it('splits an existing pdf through the builder', function () {
         ->and($results[0]->content())->toBe('PART_1')
         ->and($results[1]->content())->toBe('PART_2');
 });
+
+it('flattens an existing pdf through the builder', function () {
+    $flattener = new class
+    {
+        public function flatten(string $pdfContent): PdfResult
+        {
+            return new PdfResult(
+                content: 'FLATTENED_PDF',
+                driver: 'pdftk-flattener',
+                renderTimeMs: 0,
+            );
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfFlattener::class, $flattener);
+
+    $result = Pdf::flattenPdf('%PDF-fake');
+
+    expect($result)->toBeInstanceOf(PdfResult::class)
+        ->and($result->content())->toBe('FLATTENED_PDF')
+        ->and($result->driver)->toBe('pdftk-flattener');
+});

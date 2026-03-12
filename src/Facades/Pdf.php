@@ -27,6 +27,7 @@ use PdfStudio\Laravel\Testing\PdfFake;
  * @method static \PdfStudio\Laravel\Output\PdfResult render()
  * @method static \PdfStudio\Laravel\Output\PdfResult compose(array<int, array<string, mixed>> $documents, ?string $driver = null)
  * @method static array<int, \PdfStudio\Laravel\Output\PdfResult> split(string $pdfContent, array<int, string> $ranges)
+ * @method static \PdfStudio\Laravel\Output\PdfResult flattenPdf(string $pdfContent)
  * @method static \Illuminate\Http\Response download(string $filename)
  * @method static \Symfony\Component\HttpFoundation\StreamedResponse stream(string $filename)
  * @method static \PdfStudio\Laravel\Output\StorageResult save(string $path, ?string $disk = null)

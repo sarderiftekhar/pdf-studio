@@ -437,6 +437,13 @@ class PdfBuilder
         return $splitter->split($pdfContent, $ranges);
     }
 
+    public function flattenPdf(string $pdfContent): PdfResult
+    {
+        $flattener = $this->app->make(Manipulation\PdfFlattener::class);
+
+        return $flattener->flatten($pdfContent);
+    }
+
     /**
      * Render multiple sections independently and merge them into one PDF.
      *
