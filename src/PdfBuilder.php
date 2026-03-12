@@ -437,6 +437,15 @@ class PdfBuilder
         return $splitter->split($pdfContent, $ranges);
     }
 
+    /**
+     * @param  array<int, string>  $ranges
+     * @return array<int, PdfResult>
+     */
+    public function splitFile(string $path, array $ranges): array
+    {
+        return $this->split($this->readPdfFile($path), $ranges);
+    }
+
     public function flattenPdf(string $pdfContent): PdfResult
     {
         $flattener = $this->app->make(Manipulation\PdfFlattener::class);

@@ -143,6 +143,35 @@ it('splits an existing pdf through the builder', function () {
         ->and($results[1]->content())->toBe('PART_2');
 });
 
+it('splits an existing pdf file through the builder', function () {
+    $pdfPath = tempnam(sys_get_temp_dir(), 'pdfstudio_split_file_');
+    file_put_contents($pdfPath, '%PDF-fake');
+
+    $splitter = new class
+    {
+        public function split(string $pdfContent, array $ranges): array
+        {
+            expect($pdfContent)->toBe('%PDF-fake');
+            expect($ranges)->toBe(['1-2', '3-4']);
+
+            return [
+                new PdfResult(content: 'FILE_PART_1', driver: 'fpdi-splitter', renderTimeMs: 0),
+                new PdfResult(content: 'FILE_PART_2', driver: 'fpdi-splitter', renderTimeMs: 0),
+            ];
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfSplitter::class, $splitter);
+
+    $results = Pdf::splitFile($pdfPath, ['1-2', '3-4']);
+
+    expect($results)->toHaveCount(2)
+        ->and($results[0]->content())->toBe('FILE_PART_1')
+        ->and($results[1]->content())->toBe('FILE_PART_2');
+
+    @unlink($pdfPath);
+});
+
 it('flattens an existing pdf through the builder', function () {
     $flattener = new class
     {
