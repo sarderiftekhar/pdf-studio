@@ -425,6 +425,19 @@ class PdfBuilder
     }
 
     /**
+     * Split an existing PDF into multiple PdfResult parts by page ranges.
+     *
+     * @param  array<int, string>  $ranges
+     * @return array<int, PdfResult>
+     */
+    public function split(string $pdfContent, array $ranges): array
+    {
+        $splitter = $this->app->make(Manipulation\PdfSplitter::class);
+
+        return $splitter->split($pdfContent, $ranges);
+    }
+
+    /**
      * Render multiple sections independently and merge them into one PDF.
      *
      * @param  array<int, array{view?: string, html?: string, data?: array<string, mixed>, driver?: string, options?: array<string, mixed>}>  $documents

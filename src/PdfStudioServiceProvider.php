@@ -83,6 +83,7 @@ class PdfStudioServiceProvider extends ServiceProvider
         $this->app->bind(Contracts\WatermarkerContract::class, Manipulation\PdfWatermarker::class);
         $this->app->bind(Contracts\AcroFormContract::class, Manipulation\AcroFormFiller::class);
         $this->app->bind(Contracts\ProtectorContract::class, Manipulation\PdfProtector::class);
+        $this->app->bind(Manipulation\PdfSplitter::class);
 
         $this->app->bind(Thumbnail\ThumbnailGenerator::class, function ($app) {
             return new Thumbnail\ThumbnailGenerator(

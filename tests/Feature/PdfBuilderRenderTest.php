@@ -120,3 +120,25 @@ it('throws when composed document input is invalid', function () {
         ['data' => ['name' => 'Missing source']],
     ]);
 })->throws(\InvalidArgumentException::class, 'either [view] or [html]');
+
+it('splits an existing pdf through the builder', function () {
+    $splitter = new class
+    {
+        public function split(string $pdfContent, array $ranges): array
+        {
+            return [
+                new PdfResult(content: 'PART_1', driver: 'fpdi-splitter', renderTimeMs: 0),
+                new PdfResult(content: 'PART_2', driver: 'fpdi-splitter', renderTimeMs: 0),
+            ];
+        }
+    };
+
+    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfSplitter::class, $splitter);
+
+    $results = Pdf::split('%PDF-fake', ['1-2', '3-4']);
+
+    expect($results)->toHaveCount(2)
+        ->and($results[0])->toBeInstanceOf(PdfResult::class)
+        ->and($results[0]->content())->toBe('PART_1')
+        ->and($results[1]->content())->toBe('PART_2');
+});
