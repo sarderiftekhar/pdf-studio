@@ -267,6 +267,8 @@ $pdf = Pdf::view('reports.annual')
 
 $looksValid = Pdf::isPdf($pdf->content());
 
+$summary = Pdf::inspectPdf($pdf->content());
+
 Pdf::assertPdf($pdf->content(), 'rendered annual report');
 
 $pageCount = Pdf::pageCount($pdf->content());
@@ -278,6 +280,8 @@ $plan = Pdf::chunkPlan($pdf->content(), 50);
 $chunks = Pdf::chunk($pdf->content(), 50);
 
 $storedLooksValid = Pdf::isPdfFile(storage_path('app/reports/annual.pdf'));
+
+$storedSummary = Pdf::inspectPdfFile(storage_path('app/reports/annual.pdf'));
 
 Pdf::assertPdfFile(storage_path('app/reports/annual.pdf'), 'stored annual report');
 

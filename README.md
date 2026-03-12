@@ -755,6 +755,8 @@ Operate on existing PDF bytes after rendering or on PDFs produced outside PDF St
 ```php
 $isPdf = Pdf::isPdf($pdfBytes);
 
+$summary = Pdf::inspectPdf($pdfBytes);
+
 Pdf::assertPdf($pdfBytes, 'uploaded report');
 
 $totalPages = Pdf::pageCount($pdfBytes);
@@ -773,6 +775,8 @@ $embedded = Pdf::embedFiles($pdfBytes, [[
 
 $isStoredPdf = Pdf::isPdfFile(storage_path('app/reports/annual.pdf'));
 
+$storedSummary = Pdf::inspectPdfFile(storage_path('app/reports/annual.pdf'));
+
 Pdf::assertPdfFile(storage_path('app/reports/annual.pdf'), 'stored annual report');
 
 $totalPages = Pdf::pageCountFile(storage_path('app/reports/annual.pdf'));
@@ -784,7 +788,7 @@ $chunkPlan = Pdf::chunkPlanFile(storage_path('app/reports/annual.pdf'), 25);
 $fileChunks = Pdf::chunkFile(storage_path('app/reports/annual.pdf'), 25);
 ```
 
-`isPdf()` and `isPdfFile()` provide a cheap preflight check before queueing or manipulating uploaded content. `assertPdf()` and `assertPdfFile()` provide a fail-fast validation path when invalid input should stop the workflow immediately. `pageCount()` and `pageCountFile()` return integers. `chunkRanges()` / `chunkRangesFile()` return plain page-range strings. `chunkPlan()` / `chunkPlanFile()` return structured planning metadata per chunk. `split()`, `chunk()`, and `chunkFile()` execute the staged split into `PdfResult` outputs. `flattenPdf()` / `flattenPdfFile()` and `embedFiles()` / `embedFilesIntoFile()` return a single `PdfResult`.
+`isPdf()` and `isPdfFile()` provide a cheap preflight check before queueing or manipulating uploaded content. `inspectPdf()` and `inspectPdfFile()` provide a combined summary with validity and page-count information when available. `assertPdf()` and `assertPdfFile()` provide a fail-fast validation path when invalid input should stop the workflow immediately. `pageCount()` and `pageCountFile()` return integers. `chunkRanges()` / `chunkRangesFile()` return plain page-range strings. `chunkPlan()` / `chunkPlanFile()` return structured planning metadata per chunk. `split()`, `chunk()`, and `chunkFile()` execute the staged split into `PdfResult` outputs. `flattenPdf()` / `flattenPdfFile()` and `embedFiles()` / `embedFilesIntoFile()` return a single `PdfResult`.
 
 ---
 
