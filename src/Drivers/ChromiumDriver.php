@@ -109,6 +109,18 @@ class ChromiumDriver implements RendererContract
             $browsershot->setNpmBinary((string) $this->config['npm_binary']);
         }
 
+        if (isset($this->config['node_module_path'])) {
+            $browsershot->setNodeModulePath((string) $this->config['node_module_path']);
+        }
+
+        if (!empty($this->config['no_sandbox'])) {
+            $browsershot->noSandbox();
+        }
+
+        if (!empty($this->config['chromium_args'])) {
+            $browsershot->addChromiumArguments((array) $this->config['chromium_args']);
+        }
+
         if (isset($this->config['timeout'])) {
             $browsershot->timeout((int) $this->config['timeout']);
         }

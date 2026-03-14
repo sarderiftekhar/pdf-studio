@@ -23,9 +23,12 @@ return [
     */
     'drivers' => [
         'chromium' => [
-            'binary' => null,
-            'node_binary' => null,
-            'npm_binary' => null,
+            'binary' => env('CHROMIUM_BINARY'),
+            'node_binary' => env('NODE_BINARY'),
+            'npm_binary' => env('NPM_BINARY'),
+            'node_module_path' => env('NODE_MODULE_PATH'),
+            'no_sandbox' => env('CHROMIUM_NO_SANDBOX', false),
+            'chromium_args' => [],
             'timeout' => 60,
             'options' => [],
         ],
