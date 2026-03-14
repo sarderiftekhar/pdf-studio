@@ -21,3 +21,13 @@ it('accepts custom values', function () {
     expect($context->viewName)->toBe('invoices.show')
         ->and($context->data)->toBe(['invoice' => ['id' => 1]]);
 });
+
+it('defaults cssFramework to null', function () {
+    $context = new RenderContext;
+    expect($context->cssFramework)->toBeNull();
+});
+
+it('accepts cssFramework parameter', function () {
+    $context = new RenderContext(cssFramework: 'bootstrap');
+    expect($context->cssFramework)->toBe('bootstrap');
+});

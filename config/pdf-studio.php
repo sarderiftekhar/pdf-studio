@@ -15,6 +15,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | CSS Framework
+    |--------------------------------------------------------------------------
+    |
+    | The default CSS framework used in the render pipeline.
+    | Supported: "tailwind", "bootstrap", "none"
+    |
+    */
+    'css_framework' => 'tailwind', // 'tailwind', 'bootstrap', 'none'
+
+    /*
+    |--------------------------------------------------------------------------
     | Renderer Drivers
     |--------------------------------------------------------------------------
     |
@@ -60,6 +71,65 @@ return [
             'store' => null,
             'ttl' => null,
         ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Barcode
+    |--------------------------------------------------------------------------
+    |
+    | Default settings for barcode generation via the @barcode directive.
+    |
+    */
+    'barcode' => [
+        'default_type' => 'CODE128',
+        'default_width' => 2,
+        'default_height' => 50,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | QR Code
+    |--------------------------------------------------------------------------
+    |
+    | Default settings for QR code generation via the @qrcode directive.
+    |
+    */
+    'qrcode' => [
+        'default_size' => 150,
+        'error_correction' => 'M',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Thumbnail
+    |--------------------------------------------------------------------------
+    |
+    | Settings for PDF thumbnail generation. Strategy can be 'auto',
+    | 'imagick', or 'chromium'.
+    |
+    */
+    'thumbnail' => [
+        'strategy' => 'auto', // 'auto', 'imagick', 'chromium'
+        'default_width' => 300,
+        'default_format' => 'png',
+        'quality' => 85,
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Table of Contents
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for automatic table of contents generation.
+    |
+    */
+    'toc' => [
+        'enabled' => false,
+        'depth' => 6,
+        'title' => 'Table of Contents',
+        'mode' => 'auto',
+        'view' => 'pdf-studio::toc',
     ],
 
     /*

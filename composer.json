@@ -1,7 +1,7 @@
 {
     "name": "sarder/pdfstudio",
-    "description": "Design, preview, and generate PDFs using HTML and TailwindCSS in Laravel",
-    "keywords": ["laravel", "pdf", "tailwind", "html-to-pdf", "chromium", "dompdf"],
+    "description": "Design, preview, and generate PDFs using HTML, TailwindCSS or Bootstrap in Laravel",
+    "keywords": ["laravel", "pdf", "tailwind", "bootstrap", "html-to-pdf", "chromium", "dompdf", "barcode", "qrcode", "thumbnail"],
     "license": "MIT",
     "type": "library",
     "authors": [
@@ -17,6 +17,7 @@
         "illuminate/support": "^11.0|^12.0"
     },
     "require-dev": {
+        "chillerlan/php-qrcode": "^5.0",
         "dompdf/dompdf": "^3.1",
         "laravel/pint": "^1.0",
         "orchestra/testbench": "^9.0|^10.0",
@@ -24,13 +25,17 @@
         "pestphp/pest-plugin-arch": "^2.0|^3.0",
         "pestphp/pest-plugin-laravel": "^2.0|^3.0",
         "phpstan/phpstan": "^1.10",
+        "picqer/php-barcode-generator": "^3.0",
         "spatie/browsershot": "^5.2"
     },
     "suggest": {
         "spatie/browsershot": "Required for the Chromium PDF driver (^5.0)",
         "dompdf/dompdf": "Required for the dompdf PDF driver (^2.0|^3.0)",
         "setasign/fpdi": "Required for PDF merging and watermarking (^2.3)",
-        "mikehaertl/php-pdftk": "Required for AcroForm filling and password protection (^4.0)"
+        "mikehaertl/php-pdftk": "Required for AcroForm filling and password protection (^4.0)",
+        "picqer/php-barcode-generator": "Required for @barcode Blade directive (^3.0)",
+        "chillerlan/php-qrcode": "Required for @qrcode Blade directive (^5.0)",
+        "ext-imagick": "Required for PDF thumbnail generation from existing files"
     },
     "autoload": {
         "psr-4": {

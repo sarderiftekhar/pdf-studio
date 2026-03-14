@@ -37,6 +37,8 @@ class PdfStudioServiceProvider extends ServiceProvider
         $this->app->bind(Pipeline\BladeCompiler::class);
         $this->app->bind(Pipeline\PdfRenderer::class);
 
+        $this->app->bind(Pipeline\BootstrapInjector::class);
+
         $this->app->bind(Pipeline\TailwindCompiler::class, function ($app) {
             return new Pipeline\TailwindCompiler(
                 cache: $app->make(Cache\CssCache::class),
@@ -71,6 +73,12 @@ class PdfStudioServiceProvider extends ServiceProvider
         $this->app->bind(Contracts\WatermarkerContract::class, Manipulation\PdfWatermarker::class);
         $this->app->bind(Contracts\AcroFormContract::class, Manipulation\AcroFormFiller::class);
         $this->app->bind(Contracts\ProtectorContract::class, Manipulation\PdfProtector::class);
+
+        $this->app->bind(Thumbnail\ThumbnailGenerator::class, function ($app) {
+            return new Thumbnail\ThumbnailGenerator(
+                strategy: $app['config']->get('pdf-studio.thumbnail.strategy', 'auto'),
+            );
+        });
     }
 
     public function boot(): void
@@ -249,6 +257,14 @@ class PdfStudioServiceProvider extends ServiceProvider
 
         \Illuminate\Support\Facades\Blade::directive('endKeepTogether', function () {
             return '<?php echo \'</div>\'; ?>';
+        });
+
+        \Illuminate\Support\Facades\Blade::directive('barcode', function ($expression) {
+            return "<?php echo app(\PdfStudio\Laravel\Barcode\BarcodeGenerator::class)->generate({$expression}); ?>";
+        });
+
+        \Illuminate\Support\Facades\Blade::directive('qrcode', function ($expression) {
+            return "<?php echo app(\PdfStudio\Laravel\Barcode\QrCodeGenerator::class)->generate({$expression}); ?>";
         });
     }
 

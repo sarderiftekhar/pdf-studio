@@ -1,0 +1,23 @@
+<?php
+
+use PdfStudio\Laravel\DTOs\RenderContext;
+use PdfStudio\Laravel\Pipeline\BootstrapInjector;
+
+it('sets compiledCss to bootstrap CSS content', function () {
+    $injector = new BootstrapInjector;
+    $context = new RenderContext(compiledHtml: '<div class="container">Hello</div>');
+
+    $result = $injector->handle($context, fn ($ctx) => $ctx);
+
+    expect($result->compiledCss)->toContain('Bootstrap');
+    expect($result->compiledCss)->toContain('.container');
+});
+
+it('skips injection when compiledHtml is empty', function () {
+    $injector = new BootstrapInjector;
+    $context = new RenderContext;
+
+    $result = $injector->handle($context, fn ($ctx) => $ctx);
+
+    expect($result->compiledCss)->toBeNull();
+});

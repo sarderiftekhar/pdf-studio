@@ -65,6 +65,20 @@ class PdfBuilder
         return $this;
     }
 
+    public function bootstrap(): static
+    {
+        $this->context->cssFramework = 'bootstrap';
+
+        return $this;
+    }
+
+    public function tailwind(): static
+    {
+        $this->context->cssFramework = 'tailwind';
+
+        return $this;
+    }
+
     public function format(string $format): static
     {
         $this->context->options->format = $format;
@@ -307,6 +321,41 @@ class PdfBuilder
         return new Manipulation\AcroFormBuilder($this->app, $pdfPath);
     }
 
+    // ---- Thumbnail (Feature 7) ----
+
+    public function thumbnail(int $width = 300, string $format = 'png', int $quality = 85, int $page = 1): Thumbnail\ThumbnailResult
+    {
+        $pdfResult = $this->render();
+
+        $generator = $this->app->make(Thumbnail\ThumbnailGenerator::class);
+
+        return $generator->generate($pdfResult->content(), $page, $width, $format, $quality);
+    }
+
+    // ---- Table of Contents (Feature 13) ----
+
+    public function withTableOfContents(int $depth = 6, string $title = 'Table of Contents', string $mode = 'auto'): static
+    {
+        $this->context->options->tocOptions = new DTOs\TocOptions(
+            depth: $depth,
+            title: $title,
+            mode: $mode,
+        );
+
+        return $this;
+    }
+
+    public function withBookmarks(): static
+    {
+        if ($this->context->options->tocOptions === null) {
+            $this->context->options->tocOptions = new DTOs\TocOptions;
+        }
+
+        $this->context->options->tocOptions->bookmarks = true;
+
+        return $this;
+    }
+
     // ---- Core Methods ----
 
     public function getContext(): RenderContext
@@ -357,6 +406,30 @@ class PdfBuilder
         try {
             $pipeline = $this->app->make(RenderPipeline::class);
             $context = $pipeline->run($this->context, $driverName);
+
+            // Two-pass TOC rendering
+            if ($this->context->options->tocOptions !== null) {
+                $tocExtractor = $this->app->make(TableOfContents\TocExtractor::class);
+                $tocRenderer = $this->app->make(TableOfContents\TocRenderer::class);
+                $tocOptions = $this->context->options->tocOptions;
+
+                // Extract headings from the compiled HTML
+                $compiledHtml = $context->styledHtml ?? $context->compiledHtml ?? '';
+                $entries = $tocExtractor->extract($compiledHtml, $tocOptions);
+
+                if (count($entries) > 0) {
+                    // Inject anchors into the HTML
+                    $anchoredHtml = $tocExtractor->injectAnchors($compiledHtml, $tocOptions);
+
+                    // Render TOC HTML (page numbers are 0 for now)
+                    $tocHtml = $tocRenderer->render($entries, $tocOptions);
+
+                    // Prepend TOC to document and re-render (skip Blade/CSS compilation)
+                    $this->context->styledHtml = $tocHtml.$anchoredHtml;
+                    $this->context->compiledHtml = $tocHtml.$anchoredHtml;
+                    $context = $pipeline->runRenderOnly($this->context, $driverName);
+                }
+            }
 
             // Post-render: watermark
             if ($this->context->options->watermark !== null) {
