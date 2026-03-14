@@ -424,10 +424,10 @@ class PdfBuilder
                     // Render TOC HTML (page numbers are 0 for now)
                     $tocHtml = $tocRenderer->render($entries, $tocOptions);
 
-                    // Prepend TOC to document and re-render
+                    // Prepend TOC to document and re-render (skip Blade/CSS compilation)
                     $this->context->styledHtml = $tocHtml.$anchoredHtml;
                     $this->context->compiledHtml = $tocHtml.$anchoredHtml;
-                    $context = $pipeline->run($this->context, $driverName);
+                    $context = $pipeline->runRenderOnly($this->context, $driverName);
                 }
             }
 

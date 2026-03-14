@@ -23,8 +23,8 @@ class QrCodeGenerator
             );
         }
 
-        $scale = $options['size'] ?? 5;
-        $eccLevel = $this->resolveEccLevel($options['error_correction'] ?? 'M');
+        $scale = $options['size'] ?? config('pdf-studio.qrcode.default_size', 5);
+        $eccLevel = $this->resolveEccLevel($options['error_correction'] ?? config('pdf-studio.qrcode.error_correction', 'M'));
 
         $qrOptions = new QROptions([
             'eccLevel' => $eccLevel,

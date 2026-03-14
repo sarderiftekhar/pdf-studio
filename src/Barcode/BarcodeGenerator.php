@@ -22,8 +22,8 @@ class BarcodeGenerator
 
         $generator = new BarcodeGeneratorSVG;
         $barcodeType = $this->resolveType($type);
-        $width = $options['width'] ?? 2;
-        $height = $options['height'] ?? 50;
+        $width = $options['width'] ?? config('pdf-studio.barcode.default_width', 2);
+        $height = $options['height'] ?? config('pdf-studio.barcode.default_height', 50);
 
         return $generator->getBarcode($value, $barcodeType, $width, $height);
     }
@@ -39,7 +39,7 @@ class BarcodeGenerator
             'UPCE' => PicqerBarcodeGenerator::TYPE_UPC_E,
             'CODE93' => PicqerBarcodeGenerator::TYPE_CODE_93,
             'ITF14' => PicqerBarcodeGenerator::TYPE_ITF_14,
-            default => $type,
+            default => throw new \InvalidArgumentException("Unsupported barcode type: {$type}"),
         };
     }
 }
