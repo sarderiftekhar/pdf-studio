@@ -73,6 +73,50 @@ class ChromiumDriver implements RendererContract
             $browsershot->showBackground();
         }
 
+        if ($options->pageRanges !== null) {
+            $browsershot->pages($options->pageRanges);
+        }
+
+        if ($options->preferCssPageSize) {
+            $browsershot->setOption('preferCSSPageSize', true);
+        }
+
+        if ($options->scale !== 1.0) {
+            $browsershot->scale($options->scale);
+        }
+
+        if ($options->waitForFonts) {
+            $browsershot->setOption('waitForFonts', true);
+        }
+
+        if ($options->waitUntil !== null) {
+            if (in_array($options->waitUntil, ['networkidle0', 'networkidle2'], true)) {
+                $browsershot->waitUntilNetworkIdle($options->waitUntil === 'networkidle0');
+            } else {
+                $browsershot->setOption('waitUntil', $options->waitUntil);
+            }
+        }
+
+        if ($options->waitDelayMs !== null) {
+            $browsershot->setDelay($options->waitDelayMs);
+        }
+
+        if ($options->waitForSelector !== null) {
+            $browsershot->waitForSelector($options->waitForSelector, $options->waitForSelectorOptions);
+        }
+
+        if ($options->waitForFunction !== null) {
+            $browsershot->waitForFunction($options->waitForFunction, timeout: $options->waitForFunctionTimeout);
+        }
+
+        if ($options->taggedPdf) {
+            $browsershot->taggedPdf();
+        }
+
+        if ($options->outline) {
+            $browsershot->setOption('outline', true);
+        }
+
         if ($options->headerHtml !== null || $options->footerHtml !== null) {
             $browsershot->showBrowserHeaderAndFooter();
 
@@ -182,6 +226,16 @@ class ChromiumDriver implements RendererContract
             printBackground: true,
             supportedFormats: ['A4', 'Letter', 'Legal', 'Tabloid', 'Ledger', 'A0', 'A1', 'A2', 'A3', 'A5', 'A6'],
             autoHeight: true,
+            pageRanges: true,
+            preferCssPageSize: true,
+            scale: true,
+            waitForFonts: true,
+            waitUntil: true,
+            waitDelay: true,
+            waitForSelector: true,
+            waitForFunction: true,
+            taggedPdf: true,
+            outline: true,
         );
     }
 }

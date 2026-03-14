@@ -66,6 +66,20 @@ it('uses configured disk', function () {
     Storage::disk('s3')->assertExists('reports/test.pdf');
 });
 
+it('renders and saves raw HTML to storage when handled', function () {
+    Storage::fake('local');
+
+    $job = new RenderPdfJob(
+        view: '',
+        html: '<h1>Hello HTML</h1>',
+        outputPath: 'output/html-test.pdf',
+    );
+
+    $job->handle($this->app);
+
+    Storage::disk('local')->assertExists('output/html-test.pdf');
+});
+
 it('can be dispatched to a queue', function () {
     Bus::fake();
 

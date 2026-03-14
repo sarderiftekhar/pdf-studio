@@ -1,6 +1,7 @@
 <?php
 
 use PdfStudio\Laravel\DTOs\RenderContext;
+use PdfStudio\Laravel\Fonts\FontCssGenerator;
 use PdfStudio\Laravel\Pipeline\CssInjector;
 
 it('injects CSS into HTML head', function () {
@@ -50,4 +51,26 @@ it('passes context to the next stage', function () {
     });
 
     expect($nextCalled)->toBeTrue();
+});
+
+it('prepends generated font css before compiled css', function () {
+    $generator = new class extends FontCssGenerator
+    {
+        public function __construct() {}
+
+        public function generate(): string
+        {
+            return '@font-face{font-family:"Inter";src:url("data:font/ttf;base64,Zm9v") format("truetype");}';
+        }
+    };
+
+    $injector = new CssInjector($generator);
+    $context = new RenderContext;
+    $context->compiledHtml = '<html><head></head><body><h1>Test</h1></body></html>';
+    $context->compiledCss = 'h1 { font-family: "Inter"; }';
+
+    $result = $injector->handle($context, fn ($ctx) => $ctx);
+
+    expect($result->styledHtml)->toContain('@font-face{font-family:"Inter"')
+        ->and($result->styledHtml)->toContain('h1 { font-family: "Inter"; }');
 });

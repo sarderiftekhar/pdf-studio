@@ -33,9 +33,19 @@ class PdfStudioServiceProvider extends ServiceProvider
             return new Templates\TemplateRegistry;
         });
 
+        $this->app->singleton(Fonts\FontRegistry::class, function ($app) {
+            return new Fonts\FontRegistry($app);
+        });
+
+        $this->app->singleton(Fonts\FontCssGenerator::class, function ($app) {
+            return new Fonts\FontCssGenerator($app->make(Fonts\FontRegistry::class));
+        });
+
         $this->app->bind(Pipeline\RenderPipeline::class);
         $this->app->bind(Pipeline\BladeCompiler::class);
         $this->app->bind(Pipeline\PdfRenderer::class);
+        $this->app->bind(Pipeline\CssInjector::class);
+        $this->app->bind(Pipeline\AssetResolver::class);
 
         $this->app->bind(Pipeline\BootstrapInjector::class);
 
@@ -73,6 +83,16 @@ class PdfStudioServiceProvider extends ServiceProvider
         $this->app->bind(Contracts\WatermarkerContract::class, Manipulation\PdfWatermarker::class);
         $this->app->bind(Contracts\AcroFormContract::class, Manipulation\AcroFormFiller::class);
         $this->app->bind(Contracts\ProtectorContract::class, Manipulation\PdfProtector::class);
+        $this->app->bind(Manipulation\PdfFlattener::class);
+        $this->app->bind(Manipulation\PdfPageCounter::class);
+        $this->app->bind(Manipulation\PdfValidator::class);
+        $this->app->bind(Manipulation\PdfInspector::class);
+        $this->app->bind(Manipulation\PdfMetadataReader::class);
+        $this->app->bind(Manipulation\PdfPageEditor::class);
+        $this->app->bind(Manipulation\PdfPageRotator::class);
+        $this->app->bind(Manipulation\PdfSplitter::class);
+        $this->app->bind(Manipulation\PdfChunker::class);
+        $this->app->bind(Manipulation\PdfEmbedder::class);
 
         $this->app->bind(Thumbnail\ThumbnailGenerator::class, function ($app) {
             return new Thumbnail\ThumbnailGenerator(

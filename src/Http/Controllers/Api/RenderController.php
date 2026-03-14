@@ -40,6 +40,10 @@ class RenderController
     {
         $workspace = $request->attributes->get('workspace');
 
+        if ($request->has('view')) {
+            $this->assertViewAllowed($request->input('view'));
+        }
+
         $job = RenderJob::create([
             'workspace_id' => $workspace->id,
             'status' => 'pending',
@@ -54,6 +58,7 @@ class RenderController
 
         \PdfStudio\Laravel\Jobs\RenderPdfJob::dispatch(
             view: $job->view ?? '',
+            html: $job->html,
             data: $job->data ?? [],
             outputPath: $job->output_path ?? '',
             disk: $job->output_disk,
@@ -120,8 +125,8 @@ class RenderController
 
     protected function assertViewAllowed(string $view): void
     {
-        // Check explicit allowlist in config first
-        $allowlist = config('pdf-studio.api.allowed_views', []);
+        // Check explicit allowlist in config (with backwards-compatible fallback)
+        $allowlist = config('pdf-studio.saas.api.allowed_views', config('pdf-studio.api.allowed_views', []));
         if (!empty($allowlist)) {
             if (!in_array($view, $allowlist, true)) {
                 abort(403, "View [{$view}] is not permitted.");
@@ -133,7 +138,7 @@ class RenderController
         // Fall back to registered PDF Studio template views
         $registry = app(TemplateRegistry::class);
         $registeredViews = collect($registry->all())->pluck('view')->all();
-        if (!empty($registeredViews) && !in_array($view, $registeredViews, true)) {
+        if (empty($registeredViews) || !in_array($view, $registeredViews, true)) {
             abort(403, "View [{$view}] is not a registered PDF Studio template view.");
         }
     }
