@@ -63,6 +63,64 @@ it('creates async render job', function () {
     expect($response->json('status'))->toBe('pending');
 });
 
+it('rejects sync API views that are not explicitly allowed', function () {
+    $setup = setupSaasWorkspace();
+    config([
+        'pdf-studio.saas.api.allowed_views' => ['allowed.invoice'],
+    ]);
+
+    $response = $this->postJson('/api/pdf-studio/render', [
+        'view' => 'secret.admin',
+    ], apiHeaders($setup['raw_key']));
+
+    $response->assertStatus(403);
+});
+
+it('rejects async API views that are not explicitly allowed', function () {
+    \Illuminate\Support\Facades\Queue::fake();
+
+    $setup = setupSaasWorkspace();
+    config([
+        'pdf-studio.saas.api.allowed_views' => ['allowed.invoice'],
+    ]);
+
+    $response = $this->postJson('/api/pdf-studio/render/async', [
+        'view' => 'secret.admin',
+        'output_path' => 'output/test.pdf',
+    ], apiHeaders($setup['raw_key']));
+
+    $response->assertStatus(403);
+});
+
+it('rejects API views when no allowlist or registered templates exist', function () {
+    $setup = setupSaasWorkspace();
+
+    $response = $this->postJson('/api/pdf-studio/render', [
+        'view' => 'secret.admin',
+    ], apiHeaders($setup['raw_key']));
+
+    $response->assertStatus(403);
+});
+
+it('dispatches async HTML renders without losing the html payload', function () {
+    \Illuminate\Support\Facades\Queue::fake();
+
+    $setup = setupSaasWorkspace();
+
+    $response = $this->postJson('/api/pdf-studio/render/async', [
+        'html' => '<h1>Async HTML</h1>',
+        'output_path' => 'output/test.pdf',
+    ], apiHeaders($setup['raw_key']));
+
+    $response->assertStatus(202);
+
+    \Illuminate\Support\Facades\Queue::assertPushed(
+        \PdfStudio\Laravel\Jobs\RenderPdfJob::class,
+        fn (\PdfStudio\Laravel\Jobs\RenderPdfJob $job) => $job->html === '<h1>Async HTML</h1>'
+            && $job->view === ''
+    );
+});
+
 it('returns render job status', function () {
     $setup = setupSaasWorkspace();
 

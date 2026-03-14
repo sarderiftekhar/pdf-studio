@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PdfFake extends PdfBuilder
 {
-    /** @var array<int, array{view: string|null, html: string|null, driver: string, options: mixed, data: array<string, mixed>}> */
+    /** @var array<int, array{view: string|null, html: string|null, driver: string, options: mixed, data: array<string, mixed>, output: string}> */
     protected array $renders = [];
 
     /** @var array<int, string> */
@@ -37,6 +37,7 @@ class PdfFake extends PdfBuilder
     {
         $driverName = $this->getResolvedDriverName();
         $html = $this->context->rawHtml ?? '';
+        $content = "FAKE_PDF\n".($this->context->viewName ?? $html);
 
         $this->renders[] = [
             'view' => $this->context->viewName,
@@ -44,6 +45,7 @@ class PdfFake extends PdfBuilder
             'driver' => $driverName,
             'options' => clone $this->context->options,
             'data' => $this->context->data,
+            'output' => $content,
         ];
 
         if ($this->context->options->watermark !== null) {
@@ -53,8 +55,6 @@ class PdfFake extends PdfBuilder
         if ($this->context->options->userPassword !== null || $this->context->options->ownerPassword !== null) {
             $this->wasProtected = true;
         }
-
-        $content = "FAKE_PDF\n".($this->context->viewName ?? $html);
 
         return new PdfResult(
             content: $content,
@@ -157,6 +157,11 @@ class PdfFake extends PdfBuilder
         return $this;
     }
 
+    public function assertSaved(string $path, ?string $disk = null): static
+    {
+        return $this->assertSavedTo($path, $disk);
+    }
+
     public function assertDriverWas(string $driver): static
     {
         $matched = collect($this->renders)->contains(fn (array $r) => $r['driver'] === $driver);
@@ -170,10 +175,70 @@ class PdfFake extends PdfBuilder
     {
         Assert::assertNotEmpty($this->renders, 'No renders to check content against.');
 
-        $lastRender = end($this->renders);
-        $content = $lastRender['html'] ?? $lastRender['view'] ?? '';
+        $content = $this->lastRenderedContent();
 
         Assert::assertStringContainsString($text, $content, "Expected rendered PDF to contain [{$text}].");
+
+        return $this;
+    }
+
+    public function assertContainsHtml(string $html): static
+    {
+        return $this->assertContains($html);
+    }
+
+    public function assertContainsText(string $text): static
+    {
+        Assert::assertNotEmpty($this->renders, 'No renders to check content against.');
+
+        $content = strip_tags($this->lastRenderedContent());
+        Assert::assertStringContainsString($text, $content, "Expected rendered text to contain [{$text}].");
+
+        return $this;
+    }
+
+    /**
+     * @param  array<string, scalar|null>  $metadata
+     */
+    public function assertHasMetadata(array $metadata): static
+    {
+        $lastRender = $this->lastRender();
+
+        Assert::assertEquals(
+            $metadata,
+            $lastRender['options']->metadata,
+            'Expected rendered PDF metadata to match the provided array.'
+        );
+
+        return $this;
+    }
+
+    public function assertPdfVariant(string $variant): static
+    {
+        $lastRender = $this->lastRender();
+
+        Assert::assertSame(
+            $variant,
+            $lastRender['options']->pdfVariant,
+            "Expected PDF variant [{$variant}] to be used."
+        );
+
+        return $this;
+    }
+
+    public function assertHasAttachment(string $path, ?string $name = null): static
+    {
+        $lastRender = $this->lastRender();
+
+        $matched = collect($lastRender['options']->attachments)->contains(function (array $attachment) use ($path, $name) {
+            if (($attachment['path'] ?? null) !== $path) {
+                return false;
+            }
+
+            return $name === null || ($attachment['name'] ?? null) === $name;
+        });
+
+        Assert::assertTrue($matched, "Expected rendered PDF to include attachment [{$path}].");
 
         return $this;
     }
@@ -211,5 +276,26 @@ class PdfFake extends PdfBuilder
         Assert::assertEmpty($this->renders, 'Expected no PDF renders, but '.count($this->renders).' occurred.');
 
         return $this;
+    }
+
+    /**
+     * @return array{view: string|null, html: string|null, driver: string, options: mixed, data: array<string, mixed>, output: string}
+     */
+    public function lastRender(): array
+    {
+        Assert::assertNotEmpty($this->renders, 'Expected at least one PDF render, but none occurred.');
+
+        $render = end($this->renders);
+
+        Assert::assertIsArray($render);
+
+        return $render;
+    }
+
+    protected function lastRenderedContent(): string
+    {
+        $lastRender = $this->lastRender();
+
+        return $lastRender['html'] ?? $lastRender['view'] ?? '';
     }
 }

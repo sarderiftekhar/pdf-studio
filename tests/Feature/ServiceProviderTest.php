@@ -1,5 +1,6 @@
 <?php
 
+use PdfStudio\Laravel\Fonts\FontRegistry;
 use PdfStudio\Laravel\PdfBuilder;
 
 it('registers PdfBuilder as a transient binding', function () {
@@ -14,5 +15,14 @@ it('registers PdfBuilder as a transient binding', function () {
 it('merges default config', function () {
     expect(config('pdf-studio.default_driver'))->toBe('chromium')
         ->and(config('pdf-studio.drivers'))->toBeArray()
-        ->and(config('pdf-studio.drivers'))->toHaveKeys(['chromium', 'wkhtmltopdf', 'dompdf']);
+        ->and(config('pdf-studio.drivers'))->toHaveKeys(['chromium', 'gotenberg', 'weasyprint', 'wkhtmltopdf', 'dompdf'])
+        ->and(config('pdf-studio.fonts'))->toBeArray();
+});
+
+it('registers FontRegistry as a singleton', function () {
+    $registry1 = app(FontRegistry::class);
+    $registry2 = app(FontRegistry::class);
+
+    expect($registry1)->toBeInstanceOf(FontRegistry::class)
+        ->and($registry1)->toBe($registry2);
 });

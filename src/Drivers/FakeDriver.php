@@ -22,6 +22,8 @@ class FakeDriver implements RendererContract
             printBackground: true,
             supportedFormats: ['A4', 'Letter', 'Legal'],
             autoHeight: true,
+            waitUntil: true,
+            waitDelay: true,
         );
     }
 }

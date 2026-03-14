@@ -30,6 +30,7 @@ Design, preview, and generate PDFs using HTML and TailwindCSS in Laravel.
 - [SaaS: Usage Metering](#saas-usage-metering)
 - [SaaS: Analytics](#saas-analytics)
 - [PDF Merging](#pdf-merging)
+- [PDF Post-Processing](#pdf-post-processing)
 - [Watermarking](#watermarking)
 - [Password Protection](#password-protection)
 - [AcroForm Fill](#acroform-fill)
@@ -53,6 +54,9 @@ Design, preview, and generate PDFs using HTML and TailwindCSS in Laravel.
 | Driver | Package | Required For |
 |--------|---------|-------------|
 | Chromium | `spatie/browsershot` ^5.2 | Full CSS/TailwindCSS fidelity (recommended) |
+| Cloudflare | Cloudflare Browser Rendering | Managed remote Chromium rendering |
+| Gotenberg | Self-hosted Gotenberg service | Remote/self-hosted Chromium rendering |
+| WeasyPrint | System `weasyprint` binary | Print-native rendering, attachments, PDF variants |
 | dompdf | `dompdf/dompdf` ^2.0\|^3.0 | Zero external dependencies, limited CSS |
 | wkhtmltopdf | System binary | Good CSS fidelity, no Node.js needed |
 
@@ -123,12 +127,20 @@ echo $result->renderTimeMs; // render duration
 
 ## Drivers
 
-| Driver | Package | Node | CSS Fidelity |
-|--------|---------|------|--------------|
-| `chromium` (default) | `spatie/browsershot` | Yes | Full |
-| `wkhtmltopdf` | System binary | No | Good |
-| `dompdf` | `dompdf/dompdf` | No | Limited |
-| `fake` | Built-in | No | Testing only |
+Detailed driver selection and troubleshooting guide:
+
+- [Driver Guide](docs/driver-guide.md)
+- [Existing PDF Workflows](docs/existing-pdf-workflows.md)
+
+| Driver | Runtime | Node | CSS Fidelity | Best For |
+|--------|---------|------|--------------|----------|
+| `chromium` (default) | Local Chrome + Browsershot | Yes | Full | High-fidelity local rendering |
+| `cloudflare` | Cloudflare Browser Rendering | No local Node | Full | Managed remote rendering |
+| `gotenberg` | Remote Gotenberg service | No local Node | Full | Self-hosted remote rendering |
+| `weasyprint` | System `weasyprint` binary | No | Print-native | Tagged PDFs, attachments, PDF variants |
+| `wkhtmltopdf` | System binary | No | Good | Legacy compatibility |
+| `dompdf` | `dompdf/dompdf` | No | Limited | Zero external services |
+| `fake` | Built-in | No | N/A | Testing only |
 
 Install your preferred driver:
 
@@ -151,6 +163,66 @@ Switch per-render:
 
 ```php
 Pdf::view('report')->driver('dompdf')->download('report.pdf');
+```
+
+Remote driver examples:
+
+```php
+Pdf::view('report')->driver('cloudflare')->download('report.pdf');
+Pdf::view('report')->driver('gotenberg')->download('report.pdf');
+Pdf::view('report')->driver('weasyprint')->pdfVariant('pdf/a-3u')->download('report.pdf');
+```
+
+Cloudflare config:
+
+```php
+'drivers' => [
+    'cloudflare' => [
+        'account_id' => env('PDF_STUDIO_CLOUDFLARE_ACCOUNT_ID'),
+        'api_token' => env('PDF_STUDIO_CLOUDFLARE_API_TOKEN'),
+    ],
+],
+```
+
+Gotenberg config:
+
+```php
+'drivers' => [
+    'gotenberg' => [
+        'url' => env('PDF_STUDIO_GOTENBERG_URL', 'http://127.0.0.1:3000'),
+    ],
+],
+```
+
+WeasyPrint config:
+
+```php
+'drivers' => [
+    'weasyprint' => [
+        'binary' => env('PDF_STUDIO_WEASYPRINT_BINARY', 'weasyprint'),
+    ],
+],
+```
+
+### Modern Render Options
+
+```php
+Pdf::view('reports.quarterly')
+    ->driver('chromium')
+    ->pageRanges('1-3')
+    ->preferCssPageSize()
+    ->scale(0.95)
+    ->waitForFonts()
+    ->waitForNetworkIdle()
+    ->waitDelay(750)
+    ->waitForSelector('#report-ready', ['visible' => true])
+    ->taggedPdf()
+    ->outline()
+    ->metadata([
+        'title' => 'Quarterly Report',
+        'author' => 'PDF Studio',
+    ])
+    ->download('quarterly-report.pdf');
 ```
 
 ---
@@ -240,6 +312,22 @@ Pdf::batch([
 ], driver: 'dompdf', disk: 's3');
 ```
 
+Compose multiple sections independently and merge them into one PDF:
+
+```php
+$result = Pdf::compose([
+    ['html' => '<h1>Cover</h1>'],
+    [
+        'view' => 'pdf.invoice',
+        'data' => ['invoice' => $invoice],
+        'options' => [
+            'format' => 'A4',
+            'metadata' => ['title' => 'Invoice section'],
+        ],
+    ],
+], driver: 'chromium');
+```
+
 ---
 
 ## Preview Routes
@@ -277,6 +365,43 @@ Compiled CSS is cached automatically. Clear the cache:
 ```bash
 php artisan pdf-studio:cache-clear
 ```
+
+## Fonts & Assets
+
+Register local fonts once and PDF Studio will embed them as generated `@font-face` CSS during rendering:
+
+```php
+'fonts' => [
+    'inter' => [
+        'family' => 'Inter',
+        'sources' => [
+            resource_path('fonts/Inter-Regular.ttf'),
+        ],
+        'weight' => '400',
+        'style' => 'normal',
+    ],
+],
+```
+
+Asset policy can inline local assets and optionally block remote ones up front:
+
+```php
+'assets' => [
+    'inline_local' => true,
+    'allow_remote' => false,
+    'allowed_hosts' => [
+        'assets.example.com',
+        'cdn.example.com',
+    ],
+],
+```
+
+This helps avoid renderer-specific failures around local file paths, missing images, font files, or remote asset fetches. The resolver covers:
+
+- `<img src="...">`
+- `<link rel="stylesheet" href="...">`
+- CSS `url(...)` references inside linked stylesheets
+- CSS `url(...)` references inside inline `<style>` blocks
 
 ---
 
@@ -624,6 +749,54 @@ $result->download('merged.pdf');
 
 ---
 
+## PDF Post-Processing
+
+Detailed guide:
+
+- [Existing PDF Workflows](docs/existing-pdf-workflows.md)
+
+Operate on existing PDF bytes after rendering or on PDFs produced outside PDF Studio:
+
+```php
+$isPdf = Pdf::isPdf($pdfBytes);
+
+$summary = Pdf::inspectPdf($pdfBytes);
+
+Pdf::assertPdf($pdfBytes, 'uploaded report');
+
+$totalPages = Pdf::pageCount($pdfBytes);
+
+$chunks = Pdf::chunk($pdfBytes, 25);
+
+$parts = Pdf::split($pdfBytes, ['1-2', '3-5']);
+
+$flattened = Pdf::flattenPdf($pdfBytes);
+
+$embedded = Pdf::embedFiles($pdfBytes, [[
+    'path' => storage_path('app/reports/source.csv'),
+    'name' => 'source.csv',
+    'mime' => 'text/csv',
+]]);
+
+$isStoredPdf = Pdf::isPdfFile(storage_path('app/reports/annual.pdf'));
+
+$storedSummary = Pdf::inspectPdfFile(storage_path('app/reports/annual.pdf'));
+
+Pdf::assertPdfFile(storage_path('app/reports/annual.pdf'), 'stored annual report');
+
+$totalPages = Pdf::pageCountFile(storage_path('app/reports/annual.pdf'));
+
+$plannedRanges = Pdf::chunkRangesFile(storage_path('app/reports/annual.pdf'), 25);
+
+$chunkPlan = Pdf::chunkPlanFile(storage_path('app/reports/annual.pdf'), 25);
+
+$fileChunks = Pdf::chunkFile(storage_path('app/reports/annual.pdf'), 25);
+```
+
+`isPdf()` and `isPdfFile()` provide a cheap preflight check before queueing or manipulating uploaded content. `inspectPdf()` and `inspectPdfFile()` provide a combined summary with validity, page-count information when available, and `byte_size` for transport/storage planning. `readPdfMetadata()` / `readPdfMetadataFile()` extract basic document-info metadata. `assertPdf()` and `assertPdfFile()` provide a fail-fast validation path when invalid input should stop the workflow immediately. `pageCount()` and `pageCountFile()` return integers. `chunkRanges()` / `chunkRangesFile()` return plain page-range strings. `chunkPlan()` / `chunkPlanFile()` return structured planning metadata per chunk. `split()`, `chunk()`, `chunkFile()`, `reorderPages()`, `rotatePages()`, and `removePages()` handle staged page editing. `flattenPdf()` / `flattenPdfFile()` and `embedFiles()` / `embedFilesIntoFile()` return a single `PdfResult`.
+
+---
+
 ## Watermarking
 
 Add text or image watermarks to rendered PDFs. Requires `setasign/fpdi`.
@@ -811,7 +984,20 @@ Run a health check on your PDF Studio installation:
 php artisan pdf-studio:doctor
 ```
 
-Checks: PHP version, memory limit, Node.js, dompdf, wkhtmltopdf, pdftk, FPDI, Tailwind binary, and performs a test render.
+Checks:
+
+- PHP version and memory limit
+- DOM/XML extension
+- temporary directory writability
+- current default driver
+- Node.js
+- Cloudflare credential presence
+- Gotenberg endpoint configuration and reachability when selected
+- WeasyPrint availability
+- dompdf, wkhtmltopdf, pdftk, FPDI, and Tailwind binary
+- configured custom font paths
+- asset policy summary
+- a fake render pass
 
 ---
 

@@ -43,6 +43,21 @@ return [
             'timeout' => 60,
             'options' => [],
         ],
+        'cloudflare' => [
+            'account_id' => env('PDF_STUDIO_CLOUDFLARE_ACCOUNT_ID', ''),
+            'api_token' => env('PDF_STUDIO_CLOUDFLARE_API_TOKEN', ''),
+            'base_url' => env('PDF_STUDIO_CLOUDFLARE_BASE_URL', 'https://api.cloudflare.com/client/v4'),
+            'timeout' => 30,
+        ],
+        'gotenberg' => [
+            'url' => env('PDF_STUDIO_GOTENBERG_URL', 'http://127.0.0.1:3000'),
+            'timeout' => 60,
+            'headers' => [],
+        ],
+        'weasyprint' => [
+            'binary' => env('PDF_STUDIO_WEASYPRINT_BINARY', 'weasyprint'),
+            'timeout' => 60,
+        ],
         'wkhtmltopdf' => [
             'binary' => '/usr/local/bin/wkhtmltopdf',
             'timeout' => 60,
@@ -71,6 +86,43 @@ return [
             'store' => null,
             'ttl' => null,
         ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Fonts
+    |--------------------------------------------------------------------------
+    |
+    | Register reusable font families and source files for diagnostics and
+    | future driver integrations. Each entry should define a family name and
+    | one or more local font file paths.
+    |
+    */
+    'fonts' => [
+        // 'inter' => [
+        //     'family' => 'Inter',
+        //     'sources' => [
+        //         resource_path('fonts/Inter-Regular.ttf'),
+        //     ],
+        //     'weight' => 'normal',
+        //     'style' => 'normal',
+        // ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Assets
+    |--------------------------------------------------------------------------
+    |
+    | Controls how local and remote assets referenced from HTML are handled
+    | before rendering. Local images can be inlined automatically to reduce
+    | driver-specific file path issues. Remote assets may be blocked entirely.
+    |
+    */
+    'assets' => [
+        'inline_local' => true,
+        'allow_remote' => true,
+        'allowed_hosts' => [],
     ],
 
     /*

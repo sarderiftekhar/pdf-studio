@@ -14,18 +14,21 @@ class RenderPipeline
     public function run(RenderContext $context, ?string $driverName = null): RenderContext
     {
         $bladeCompiler = $this->app->make(BladeCompiler::class);
+        $assetResolver = $this->app->make(AssetResolver::class);
         $cssStep = $this->resolveCssStep($context);
-        $cssInjector = new CssInjector;
+        $cssInjector = $this->app->make(CssInjector::class);
         $pdfRenderer = $this->app->make(PdfRenderer::class);
 
         if ($driverName !== null) {
             $pdfRenderer->setDriver($driverName);
         }
 
-        return $bladeCompiler->handle($context, function ($context) use ($cssStep, $cssInjector, $pdfRenderer) {
-            return $cssStep->handle($context, function ($context) use ($cssInjector, $pdfRenderer) {
-                return $cssInjector->handle($context, function ($context) use ($pdfRenderer) {
-                    return $pdfRenderer->handle($context, fn ($ctx) => $ctx);
+        return $bladeCompiler->handle($context, function ($context) use ($assetResolver, $cssStep, $cssInjector, $pdfRenderer) {
+            return $assetResolver->handle($context, function ($context) use ($cssStep, $cssInjector, $pdfRenderer) {
+                return $cssStep->handle($context, function ($context) use ($cssInjector, $pdfRenderer) {
+                    return $cssInjector->handle($context, function ($context) use ($pdfRenderer) {
+                        return $pdfRenderer->handle($context, fn ($ctx) => $ctx);
+                    });
                 });
             });
         });

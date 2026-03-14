@@ -52,3 +52,31 @@ it('returns multiple warnings for multiple unsupported options', function () {
 
     expect($warnings)->toHaveCount(2);
 });
+
+it('warns for modern PDF options the driver cannot support', function () {
+    $capabilities = new DriverCapabilities;
+    $options = new RenderOptions(
+        pageRanges: '1-2',
+        preferCssPageSize: true,
+        scale: 0.8,
+        waitForFonts: true,
+        waitUntil: 'networkidle0',
+        waitDelayMs: 500,
+        waitForSelector: '#ready',
+        waitForFunction: 'window.__READY === true',
+        taggedPdf: true,
+        outline: true,
+        metadata: ['title' => 'Report'],
+        attachments: [['name' => 'data.csv', 'path' => '/tmp/data.csv']],
+        pdfVariant: 'pdf/a-2b',
+    );
+
+    $warnings = CapabilityValidator::validate($options, $capabilities);
+
+    expect($warnings)->toHaveCount(13)
+        ->and(implode(' ', $warnings))->toContain('page ranges')
+        ->and(implode(' ', $warnings))->toContain('navigation readiness')
+        ->and(implode(' ', $warnings))->toContain('waitDelay')
+        ->and(implode(' ', $warnings))->toContain('tagged PDFs')
+        ->and(implode(' ', $warnings))->toContain('PDF variants');
+});
