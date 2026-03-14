@@ -38,6 +38,7 @@ Design, preview, and generate PDFs using HTML and TailwindCSS in Laravel.
 - [Render Caching](#render-caching)
 - [Auto-Height Paper](#auto-height-paper)
 - [Header/Footer Per-Page Control](#headerfooter-per-page-control)
+- [Dependency Installer](#dependency-installer)
 - [Diagnostics](#diagnostics)
 - [Configuration Reference](#configuration-reference)
 - [Testing](#testing)
@@ -82,6 +83,29 @@ Publish the config file:
 ```bash
 php artisan vendor:publish --tag=pdf-studio-config
 ```
+
+Install optional dependencies for the features you need:
+
+```bash
+# Interactive — pick features from a list
+php artisan pdf-studio:install
+
+# Install all optional dependencies at once
+php artisan pdf-studio:install --all
+```
+
+Or install them individually:
+
+```bash
+composer require spatie/browsershot          # Chromium PDF driver
+composer require dompdf/dompdf               # Dompdf PDF driver
+composer require setasign/fpdi               # Merge, watermark, split PDFs
+composer require mikehaertl/php-pdftk        # AcroForm fill, password protection
+composer require picqer/php-barcode-generator # @barcode Blade directive
+composer require chillerlan/php-qrcode       # @qrcode Blade directive
+```
+
+> **Note:** PDF thumbnail generation also requires the `imagick` PHP extension, which must be installed separately (not via Composer).
 
 If you're using Pro or SaaS features, publish and run migrations:
 
@@ -973,6 +997,31 @@ Pdf::view('report')
     ->footerExcludePages([1])
     ->download('report.pdf');
 ```
+
+---
+
+## Dependency Installer
+
+Install optional dependencies interactively or all at once:
+
+```bash
+# Interactive — choose which features to install
+php artisan pdf-studio:install
+
+# Install everything
+php artisan pdf-studio:install --all
+```
+
+The command automatically skips packages that are already installed and shows real-time Composer output. After installation it reminds you about the `imagick` PHP extension if it's missing.
+
+| Feature | Package |
+|---------|---------|
+| Chromium PDF driver | `spatie/browsershot` |
+| Dompdf PDF driver | `dompdf/dompdf` |
+| PDF manipulation (merge, watermark, split) | `setasign/fpdi` |
+| Form filling & password protection | `mikehaertl/php-pdftk` |
+| Barcodes (`@barcode` directive) | `picqer/php-barcode-generator` |
+| QR codes (`@qrcode` directive) | `chillerlan/php-qrcode` |
 
 ---
 

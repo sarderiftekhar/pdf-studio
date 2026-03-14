@@ -723,6 +723,7 @@
       <a href="#caching" class="nav-item"><span class="nav-dot"></span>Render Caching <span class="nav-badge nb-saas">v2</span></a>
       <a href="#autoheight" class="nav-item"><span class="nav-dot"></span>Auto-Height Paper <span class="nav-badge nb-saas">v2</span></a>
       <a href="#headercontrol" class="nav-item"><span class="nav-dot"></span>Header/Footer Control <span class="nav-badge nb-saas">v2</span></a>
+      <a href="#dependency-installer" class="nav-item"><span class="nav-dot"></span>Dependency Installer <span class="nav-badge nb-saas">v3</span></a>
       <a href="#diagnostics" class="nav-item"><span class="nav-dot"></span>Diagnostics <span class="nav-badge nb-saas">v2</span></a>
       <a href="#splitting" class="nav-item"><span class="nav-dot"></span>Split &amp; Chunk <span class="nav-badge nb-saas">v3</span></a>
       <a href="#pageediting" class="nav-item"><span class="nav-dot"></span>Page Editing <span class="nav-badge nb-saas">v3</span></a>
@@ -815,11 +816,25 @@
 <span class="t-prompt">$</span> <span class="t-cmd">php artisan migrate</span></pre>
       </div>
 
+      <p>Install optional dependencies for the features you need:</p>
+
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="terminal-title">bash</span>
+        </div>
+        <pre><span class="t-dim"># Interactive — pick features from a list</span>
+<span class="t-prompt">$</span> <span class="t-cmd">php artisan pdf-studio:install</span>
+
+<span class="t-dim"># Or install all optional dependencies at once</span>
+<span class="t-prompt">$</span> <span class="t-cmd">php artisan pdf-studio:install --all</span></pre>
+      </div>
+
       <div class="callout callout-info">
         <span class="callout-icon">💡</span>
         <div class="callout-body">
           <strong>Zero config for basic use</strong>
-          The package works out of the box with the <code>fake</code> driver. Install <code>spatie/browsershot</code> or <code>dompdf/dompdf</code> when you're ready for real rendering.
+          The package works out of the box with the <code>fake</code> driver. Run <code>php artisan pdf-studio:install</code> to interactively pick which drivers and features to enable, or see the <a href="#dependency-installer">Dependency Installer</a> section for details.
         </div>
       </div>
     </section>
@@ -2001,6 +2016,63 @@
     <div class="divider"></div>
 
     <!-- ── DIAGNOSTICS ── -->
+    <section class="section fade-in" id="dependency-installer">
+      <div class="section-eyebrow ey-base">// Getting Started</div>
+      <h2>Dependency Installer</h2>
+      <p class="section-lead">Install optional dependencies interactively or all at once with the <code>pdf-studio:install</code> Artisan command.</p>
+
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="terminal-title">Interactive install</span>
+        </div>
+        <pre><span class="t-prompt">$</span> <span class="t-cmd">php artisan pdf-studio:install</span>
+
+<span class="t-out">  PDF Studio Dependency Installer
+
+  Which features would you like to install?
+  [0] Chromium PDF driver — Render PDFs via headless Chrome
+  [1] Dompdf PDF driver — Render PDFs via dompdf
+  [2] PDF manipulation — Merge, watermark, split, and reorder PDFs
+  [3] Form filling &amp; protection — AcroForm filling and password protection
+  [4] Barcodes — @barcode Blade directive
+  [5] QR codes — @qrcode Blade directive</span></pre>
+      </div>
+
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="terminal-title">Install all at once</span>
+        </div>
+        <pre><span class="t-prompt">$</span> <span class="t-cmd">php artisan pdf-studio:install --all</span>
+
+<span class="t-out">  [SKIP] Dompdf PDF driver — already installed
+  Installing: spatie/browsershot setasign/fpdi mikehaertl/php-pdftk picqer/php-barcode-generator chillerlan/php-qrcode
+  ...
+  Dependencies installed successfully!</span></pre>
+      </div>
+
+      <table class="data-table">
+        <thead><tr><th>Feature</th><th>Package</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td>Chromium PDF driver</td><td><code>spatie/browsershot</code></td><td>Render PDFs via headless Chrome</td></tr>
+          <tr><td>Dompdf PDF driver</td><td><code>dompdf/dompdf</code></td><td>Render PDFs via dompdf</td></tr>
+          <tr><td>PDF manipulation</td><td><code>setasign/fpdi</code></td><td>Merge, watermark, split, and reorder PDFs</td></tr>
+          <tr><td>Form filling &amp; protection</td><td><code>mikehaertl/php-pdftk</code></td><td>AcroForm filling and password protection</td></tr>
+          <tr><td>Barcodes</td><td><code>picqer/php-barcode-generator</code></td><td><code>@barcode</code> Blade directive</td></tr>
+          <tr><td>QR codes</td><td><code>chillerlan/php-qrcode</code></td><td><code>@qrcode</code> Blade directive</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-info">
+        <span class="callout-icon">💡</span>
+        <div class="callout-body">
+          <strong>imagick PHP extension</strong>
+          PDF thumbnail generation requires the <code>imagick</code> PHP extension, which must be installed separately (not via Composer). The installer will remind you if it's missing.
+        </div>
+      </div>
+    </section>
+
     <section class="section fade-in" id="diagnostics">
       <div class="section-eyebrow ey-base">// 23 · PDF Manipulation</div>
       <h2>Diagnostics</h2>

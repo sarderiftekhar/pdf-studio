@@ -119,6 +119,7 @@ class PdfStudioServiceProvider extends ServiceProvider
                 Commands\CacheClearCommand::class,
                 Commands\TemplateListCommand::class,
                 Commands\DoctorCommand::class,
+                Commands\InstallCommand::class,
             ]);
 
             $this->publishes([
