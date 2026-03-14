@@ -671,7 +671,7 @@
 
   <div class="sidebar-version">
     <div class="badge-row">
-      <span class="badge badge-oss">v2.0.0 · MIT</span>
+      <span class="badge badge-oss">v3.0.0 · MIT</span>
       
       <span class="badge badge-saas">SaaS</span>
     </div>
@@ -693,6 +693,10 @@
       <a href="#queue" class="nav-item"><span class="nav-dot"></span>Queue / Async</a>
       <a href="#preview" class="nav-item"><span class="nav-dot"></span>Preview Routes</a>
       <a href="#tailwind" class="nav-item"><span class="nav-dot"></span>Tailwind CSS</a>
+      <a href="#bootstrap" class="nav-item"><span class="nav-dot"></span>Bootstrap CSS <span class="nav-badge nb-saas">v2.1</span></a>
+      <a href="#barcode" class="nav-item"><span class="nav-dot"></span>Barcode &amp; QR Code <span class="nav-badge nb-saas">v2.1</span></a>
+      <a href="#thumbnails" class="nav-item"><span class="nav-dot"></span>Thumbnails <span class="nav-badge nb-saas">v2.1</span></a>
+      <a href="#toc" class="nav-item"><span class="nav-dot"></span>Table of Contents <span class="nav-badge nb-saas">v2.1</span></a>
     </div>
 
     <div class="nav-group">
@@ -720,6 +724,13 @@
       <a href="#autoheight" class="nav-item"><span class="nav-dot"></span>Auto-Height Paper <span class="nav-badge nb-saas">v2</span></a>
       <a href="#headercontrol" class="nav-item"><span class="nav-dot"></span>Header/Footer Control <span class="nav-badge nb-saas">v2</span></a>
       <a href="#diagnostics" class="nav-item"><span class="nav-dot"></span>Diagnostics <span class="nav-badge nb-saas">v2</span></a>
+      <a href="#splitting" class="nav-item"><span class="nav-dot"></span>Split &amp; Chunk <span class="nav-badge nb-saas">v3</span></a>
+      <a href="#pageediting" class="nav-item"><span class="nav-dot"></span>Page Editing <span class="nav-badge nb-saas">v3</span></a>
+      <a href="#inspection" class="nav-item"><span class="nav-dot"></span>Inspect &amp; Validate <span class="nav-badge nb-saas">v3</span></a>
+      <a href="#embedding" class="nav-item"><span class="nav-dot"></span>File Embedding <span class="nav-badge nb-saas">v3</span></a>
+      <a href="#compose" class="nav-item"><span class="nav-dot"></span>Compose <span class="nav-badge nb-saas">v3</span></a>
+      <a href="#fonts" class="nav-item"><span class="nav-dot"></span>Custom Fonts <span class="nav-badge nb-saas">v3</span></a>
+      <a href="#assets" class="nav-item"><span class="nav-dot"></span>Asset Resolution <span class="nav-badge nb-saas">v3</span></a>
     </div>
 
     <div class="nav-group">
@@ -873,7 +884,7 @@
     <section class="section fade-in" id="drivers">
       <div class="section-eyebrow ey-base">// 03 · Getting Started</div>
       <h2>Drivers</h2>
-      <p class="section-lead">PDF Studio supports three real rendering engines plus a test double. Install only what you need.</p>
+      <p class="section-lead">PDF Studio supports six rendering engines plus a test double. Install only what you need.</p>
 
       <div class="driver-grid">
         <div class="driver-card featured">
@@ -904,6 +915,36 @@
             <span class="tag tag-muted">Basic CSS</span>
           </div>
         </div>
+        <div class="driver-card">
+          <div class="driver-icon">🐳</div>
+          <div class="driver-name">Gotenberg</div>
+          <div class="driver-pkg">Docker container</div>
+          <div class="driver-tags">
+            <span class="tag tag-green">Full CSS</span>
+            <span class="tag tag-green">PDF/A</span>
+            <span class="tag tag-yellow">Docker</span>
+          </div>
+        </div>
+        <div class="driver-card">
+          <div class="driver-icon">🐍</div>
+          <div class="driver-name">WeasyPrint</div>
+          <div class="driver-pkg">System binary</div>
+          <div class="driver-tags">
+            <span class="tag tag-green">PDF/A &amp; UA</span>
+            <span class="tag tag-green">Attachments</span>
+            <span class="tag tag-yellow">Python</span>
+          </div>
+        </div>
+        <div class="driver-card">
+          <div class="driver-icon">☁️</div>
+          <div class="driver-name">Cloudflare Browser</div>
+          <div class="driver-pkg">Cloudflare Workers</div>
+          <div class="driver-tags">
+            <span class="tag tag-green">Serverless</span>
+            <span class="tag tag-green">Full CSS</span>
+            <span class="tag tag-yellow">API Key</span>
+          </div>
+        </div>
       </div>
 
       <div class="terminal">
@@ -915,7 +956,13 @@
 <span class="t-prompt">$</span> <span class="t-cmd">composer require spatie/browsershot</span>
 
 <span class="t-dim"># dompdf (no external binaries needed)</span>
-<span class="t-prompt">$</span> <span class="t-cmd">composer require dompdf/dompdf</span></pre>
+<span class="t-prompt">$</span> <span class="t-cmd">composer require dompdf/dompdf</span>
+
+<span class="t-dim"># Gotenberg (Docker-based, supports PDF/A)</span>
+<span class="t-prompt">$</span> <span class="t-cmd">docker run --rm -p 3000:3000 gotenberg/gotenberg:8</span>
+
+<span class="t-dim"># WeasyPrint (Python-based, supports PDF/A, PDF/UA, attachments)</span>
+<span class="t-prompt">$</span> <span class="t-cmd">pip install weasyprint</span></pre>
       </div>
 
       <div class="code-block">
@@ -1006,7 +1053,13 @@
 <span class="amb">@endKeepTogether</span>
 
 <span class="cm">{{-- Chromium page number footer --}}</span>
-<span class="amb">@pageNumber</span>([<span class="str">'format'</span> => <span class="str">'Page {page} of {total}'</span>])</pre>
+<span class="amb">@pageNumber</span>([<span class="str">'format'</span> => <span class="str">'Page {page} of {total}'</span>])
+
+<span class="cm">{{-- Barcode (requires picqer/php-barcode-generator) --}}</span>
+<span class="amb">@barcode</span>(<span class="str">'CODE128'</span>, <span class="str">'INV-001'</span>)
+
+<span class="cm">{{-- QR Code (requires chillerlan/php-qrcode) --}}</span>
+<span class="amb">@qrcode</span>(<span class="str">'https://example.com'</span>)</pre>
       </div>
     </section>
 
@@ -1094,11 +1147,183 @@
       </div>
     </section>
 
+    <!-- ── BOOTSTRAP CSS ── -->
+    <section class="section fade-in" id="bootstrap">
+      <div class="section-eyebrow ey-base">// 09 · Core Features</div>
+      <h2>Bootstrap CSS</h2>
+      <p class="section-lead">Use Bootstrap 5 utility classes in your PDF views instead of Tailwind. The bundled CSS is injected automatically when Bootstrap mode is active.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP</span>
+        </div>
+        <pre><span class="cm">// Per-render Bootstrap mode</span>
+<span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'invoices.show'</span>)
+    -><span class="fn">bootstrap</span>()
+    -><span class="fn">render</span>();
+
+<span class="cm">// Or set globally in config</span>
+<span class="str">'css_framework'</span> => <span class="str">'bootstrap'</span>,  <span class="cm">// 'tailwind', 'bootstrap', or 'none'</span></pre>
+      </div>
+
+      <div class="callout callout-info">
+        <span class="callout-icon">ℹ️</span>
+        <div class="callout-body">
+          Set <code>css_framework</code> to <code>'none'</code> to skip CSS framework injection entirely and use only your own styles.
+        </div>
+      </div>
+    </section>
+
+    <!-- ── BARCODE & QR ── -->
+    <section class="section fade-in" id="barcode">
+      <div class="section-eyebrow ey-base">// 10 · Core Features</div>
+      <h2>Barcode &amp; QR Code</h2>
+      <p class="section-lead">Generate inline SVG barcodes and QR codes directly in your Blade templates using Blade directives. Requires optional packages.</p>
+
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="terminal-title">Install dependencies</span>
+        </div>
+        <pre><span class="t-prompt">$</span> <span class="t-cmd">composer require picqer/php-barcode-generator</span>
+<span class="t-prompt">$</span> <span class="t-cmd">composer require chillerlan/php-qrcode</span></pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">Blade Template</span>
+        </div>
+        <pre><span class="cm">{{-- Barcode: type, value, [options] --}}</span>
+@@barcode(<span class="str">'CODE128'</span>, <span class="str">'INV-2026-001'</span>)
+@@barcode(<span class="str">'EAN13'</span>, <span class="str">'5901234123457'</span>, [<span class="str">'width'</span> => 3, <span class="str">'height'</span> => 60])
+
+<span class="cm">{{-- QR Code: data, [options] --}}</span>
+@@qrcode(<span class="str">'https://example.com/invoice/123'</span>)
+@@qrcode(<span class="str">'Payment: $500'</span>, [<span class="str">'size'</span> => 8, <span class="str">'error_correction'</span> => <span class="str">'H'</span>])</pre>
+      </div>
+
+      <table class="data-table">
+        <thead><tr><th>Supported Barcode Types</th><th>Alias</th></tr></thead>
+        <tbody>
+          <tr><td>CODE128</td><td>C128</td></tr>
+          <tr><td>CODE39</td><td>C39</td></tr>
+          <tr><td>EAN13</td><td>&mdash;</td></tr>
+          <tr><td>EAN8</td><td>&mdash;</td></tr>
+          <tr><td>UPCA</td><td>&mdash;</td></tr>
+          <tr><td>UPCE</td><td>&mdash;</td></tr>
+          <tr><td>CODE93</td><td>&mdash;</td></tr>
+          <tr><td>ITF14</td><td>&mdash;</td></tr>
+        </tbody>
+      </table>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">config/pdf-studio.php</span>
+        </div>
+        <pre><span class="str">'barcode'</span> => [
+    <span class="str">'default_type'</span>   => <span class="str">'CODE128'</span>,
+    <span class="str">'default_width'</span>  => <span class="num">2</span>,
+    <span class="str">'default_height'</span> => <span class="num">50</span>,
+],
+
+<span class="str">'qrcode'</span> => [
+    <span class="str">'default_size'</span>       => <span class="num">150</span>,
+    <span class="str">'error_correction'</span>   => <span class="str">'M'</span>,  <span class="cm">// L, M, Q, H</span>
+],</pre>
+      </div>
+    </section>
+
+    <!-- ── THUMBNAILS ── -->
+    <section class="section fade-in" id="thumbnails">
+      <div class="section-eyebrow ey-base">// 11 · Core Features</div>
+      <h2>Thumbnails</h2>
+      <p class="section-lead">Generate image thumbnails from rendered PDFs. Uses Imagick when available, falls back to Chromium screenshots. Ideal for document previews and galleries.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP</span>
+        </div>
+        <pre><span class="cm">// Generate thumbnail from a rendered PDF</span>
+<span class="var">$thumb</span> = <span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'invoices.show'</span>)
+    -><span class="fn">data</span>([<span class="str">'invoice'</span> => <span class="var">$invoice</span>])
+    -><span class="fn">thumbnail</span>(
+        <span class="prop">width</span>:   <span class="num">300</span>,
+        <span class="prop">format</span>:  <span class="str">'png'</span>,
+        <span class="prop">quality</span>: <span class="num">85</span>,
+        <span class="prop">page</span>:    <span class="num">1</span>,
+    );
+
+<span class="cm">// Save to storage</span>
+<span class="var">$thumb</span>-><span class="fn">save</span>(<span class="str">'thumbnails/inv-001.png'</span>);
+
+<span class="cm">// Or generate from file</span>
+<span class="var">$thumb</span> = <span class="cls">Pdf</span>::<span class="fn">thumbnailFromFile</span>(<span class="str">'/path/to/document.pdf'</span>);</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">config/pdf-studio.php</span>
+        </div>
+        <pre><span class="str">'thumbnail'</span> => [
+    <span class="str">'strategy'</span>       => <span class="str">'auto'</span>,  <span class="cm">// 'auto', 'imagick', 'chromium'</span>
+    <span class="str">'default_width'</span>  => <span class="num">300</span>,
+    <span class="str">'default_format'</span> => <span class="str">'png'</span>,
+    <span class="str">'quality'</span>        => <span class="num">85</span>,
+],</pre>
+      </div>
+    </section>
+
+    <!-- ── TABLE OF CONTENTS ── -->
+    <section class="section fade-in" id="toc">
+      <div class="section-eyebrow ey-base">// 12 · Core Features</div>
+      <h2>Table of Contents</h2>
+      <p class="section-lead">Automatically generate a table of contents from headings in your PDF. Uses a two-pass rendering approach: extract headings, build TOC, then re-render with the TOC prepended.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP</span>
+        </div>
+        <pre><span class="cm">// Add a TOC to any PDF</span>
+<span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'reports.annual'</span>)
+    -><span class="fn">withTableOfContents</span>(
+        <span class="prop">depth</span>: <span class="num">3</span>,           <span class="cm">// Include h1-h3</span>
+        <span class="prop">title</span>: <span class="str">'Contents'</span>,   <span class="cm">// TOC heading</span>
+    )
+    -><span class="fn">render</span>();
+
+<span class="cm">// Explicit mode — only include headings with data-toc attribute</span>
+<span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'reports.annual'</span>)
+    -><span class="fn">withTableOfContents</span>(<span class="prop">mode</span>: <span class="str">'explicit'</span>)
+    -><span class="fn">render</span>();</pre>
+      </div>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">Blade Template</span>
+        </div>
+        <pre><span class="cm">{{-- Auto mode: all headings are included unless excluded --}}</span>
+&lt;h1&gt;Introduction&lt;/h1&gt;
+&lt;h2&gt;Background&lt;/h2&gt;
+&lt;h2 data-toc="false"&gt;This heading is excluded&lt;/h2&gt;
+
+<span class="cm">{{-- Explicit mode: only headings with data-toc are included --}}</span>
+&lt;h1 data-toc&gt;Chapter 1&lt;/h1&gt;
+&lt;h2 data-toc&gt;Section 1.1&lt;/h2&gt;</pre>
+      </div>
+    </section>
+
     <div class="divider"></div>
 
     <!-- ── PRO: VERSIONING ── -->
     <section class="section fade-in" id="versioning">
-      <div class="section-eyebrow ey-base">// 09 · Advanced</div>
+      <div class="section-eyebrow ey-base">// 13 · Advanced</div>
       <h2>Template Versioning</h2>
       <p class="section-lead">Snapshot template definitions at any point, browse history, restore previous versions, and diff changes between versions.</p>
 
@@ -1815,6 +2040,216 @@
           <tr><td>Test render</td><td>Performs a render with the fake driver</td></tr>
         </tbody>
       </table>
+    </section>
+
+    <!-- ── SPLIT & CHUNK ── -->
+    <section class="section fade-in" id="splitting">
+      <div class="section-eyebrow ey-base">// PDF Manipulation</div>
+      <h2>Split &amp; Chunk</h2>
+      <p class="section-lead">Split PDFs by page ranges or chunk them into equal-sized parts. Useful for breaking large documents into smaller files for email or parallel processing.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP</span>
+        </div>
+        <pre><span class="cm">// Split into specific page ranges</span>
+<span class="var">$parts</span> = <span class="cls">Pdf</span>::<span class="fn">split</span>(<span class="var">$pdfContent</span>, [<span class="str">'1-3'</span>, <span class="str">'4-6'</span>, <span class="str">'7-10'</span>]);
+<span class="cm">// Returns array of PdfResult objects</span>
+
+<span class="cm">// Split from a file path</span>
+<span class="var">$parts</span> = <span class="cls">Pdf</span>::<span class="fn">splitFile</span>(<span class="str">'/path/to/document.pdf'</span>, [<span class="str">'1-5'</span>, <span class="str">'6-10'</span>]);
+
+<span class="cm">// Chunk into equal-sized parts</span>
+<span class="var">$chunks</span> = <span class="cls">Pdf</span>::<span class="fn">chunk</span>(<span class="var">$pdfContent</span>, <span class="prop">pagesPerChunk</span>: <span class="num">5</span>);
+
+<span class="cm">// Get chunk ranges without splitting</span>
+<span class="var">$ranges</span> = <span class="cls">Pdf</span>::<span class="fn">chunkRanges</span>(<span class="var">$pdfContent</span>, <span class="num">5</span>);
+<span class="cm">// ['1-5', '6-10', '11-13']</span>
+
+<span class="cm">// Get a detailed chunk plan</span>
+<span class="var">$plan</span> = <span class="cls">Pdf</span>::<span class="fn">chunkPlan</span>(<span class="var">$pdfContent</span>, <span class="num">5</span>);
+<span class="cm">// [['index' => 0, 'start' => 1, 'end' => 5, 'pages' => 5, 'range' => '1-5'], ...]</span></pre>
+      </div>
+    </section>
+
+    <!-- ── PAGE EDITING ── -->
+    <section class="section fade-in" id="pageediting">
+      <div class="section-eyebrow ey-base">// PDF Manipulation</div>
+      <h2>Page Editing</h2>
+      <p class="section-lead">Reorder, remove, and rotate individual pages in existing PDFs. All operations return a new <code>PdfResult</code> without modifying the original.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP</span>
+        </div>
+        <pre><span class="cm">// Reorder pages (put page 3 first, then 1, then 2)</span>
+<span class="var">$result</span> = <span class="cls">Pdf</span>::<span class="fn">reorderPages</span>(<span class="var">$pdfContent</span>, [<span class="num">3</span>, <span class="num">1</span>, <span class="num">2</span>]);
+
+<span class="cm">// Remove specific pages</span>
+<span class="var">$result</span> = <span class="cls">Pdf</span>::<span class="fn">removePages</span>(<span class="var">$pdfContent</span>, [<span class="num">2</span>, <span class="num">4</span>]);
+
+<span class="cm">// Rotate pages (90, 180, or 270 degrees)</span>
+<span class="var">$result</span> = <span class="cls">Pdf</span>::<span class="fn">rotatePages</span>(<span class="var">$pdfContent</span>, <span class="num">90</span>);              <span class="cm">// All pages</span>
+<span class="var">$result</span> = <span class="cls">Pdf</span>::<span class="fn">rotatePages</span>(<span class="var">$pdfContent</span>, <span class="num">90</span>, [<span class="num">1</span>, <span class="num">3</span>]);     <span class="cm">// Specific pages</span>
+
+<span class="cm">// File-based variants</span>
+<span class="var">$result</span> = <span class="cls">Pdf</span>::<span class="fn">reorderPagesFile</span>(<span class="str">'/path/to/doc.pdf'</span>, [<span class="num">3</span>, <span class="num">1</span>, <span class="num">2</span>]);
+<span class="var">$result</span> = <span class="cls">Pdf</span>::<span class="fn">removePagesFile</span>(<span class="str">'/path/to/doc.pdf'</span>, [<span class="num">2</span>]);
+<span class="var">$result</span> = <span class="cls">Pdf</span>::<span class="fn">rotatePagesFile</span>(<span class="str">'/path/to/doc.pdf'</span>, <span class="num">180</span>);</pre>
+      </div>
+    </section>
+
+    <!-- ── INSPECT & VALIDATE ── -->
+    <section class="section fade-in" id="inspection">
+      <div class="section-eyebrow ey-base">// PDF Manipulation</div>
+      <h2>Inspect &amp; Validate</h2>
+      <p class="section-lead">Validate PDF content, count pages, inspect structure, and read metadata. Lightweight checks that don't require external binaries.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP</span>
+        </div>
+        <pre><span class="cm">// Validate PDF content</span>
+<span class="var">$valid</span> = <span class="cls">Pdf</span>::<span class="fn">isPdf</span>(<span class="var">$content</span>);         <span class="cm">// true/false</span>
+<span class="cls">Pdf</span>::<span class="fn">assertPdf</span>(<span class="var">$content</span>);               <span class="cm">// Throws on invalid</span>
+
+<span class="cm">// Page count</span>
+<span class="var">$pages</span> = <span class="cls">Pdf</span>::<span class="fn">pageCount</span>(<span class="var">$content</span>);
+
+<span class="cm">// Full inspection summary</span>
+<span class="var">$info</span> = <span class="cls">Pdf</span>::<span class="fn">inspectPdf</span>(<span class="var">$content</span>);
+<span class="cm">// ['valid' => true, 'page_count' => 12, 'byte_size' => 84210]</span>
+
+<span class="cm">// Read metadata (Title, Author, Creator, etc.)</span>
+<span class="var">$meta</span> = <span class="cls">Pdf</span>::<span class="fn">readPdfMetadata</span>(<span class="var">$content</span>);
+<span class="cm">// ['Title' => 'Invoice', 'Author' => 'Acme Corp', ...]</span>
+
+<span class="cm">// File-based variants</span>
+<span class="var">$valid</span> = <span class="cls">Pdf</span>::<span class="fn">isPdfFile</span>(<span class="str">'/path/to/doc.pdf'</span>);
+<span class="var">$info</span>  = <span class="cls">Pdf</span>::<span class="fn">inspectPdfFile</span>(<span class="str">'/path/to/doc.pdf'</span>);
+<span class="var">$meta</span>  = <span class="cls">Pdf</span>::<span class="fn">readPdfMetadataFile</span>(<span class="str">'/path/to/doc.pdf'</span>);</pre>
+      </div>
+    </section>
+
+    <!-- ── FILE EMBEDDING ── -->
+    <section class="section fade-in" id="embedding">
+      <div class="section-eyebrow ey-base">// PDF Manipulation</div>
+      <h2>File Embedding</h2>
+      <p class="section-lead">Embed files (XML invoices, spreadsheets, images) into existing PDFs as attachments. Essential for PDF/A-3 compliant invoices like ZUGFeRD and Factur-X.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP</span>
+        </div>
+        <pre><span class="var">$result</span> = <span class="cls">Pdf</span>::<span class="fn">embedFiles</span>(<span class="var">$pdfContent</span>, [
+    [<span class="str">'path'</span> => <span class="str">'/path/to/invoice.xml'</span>, <span class="str">'name'</span> => <span class="str">'factur-x.xml'</span>, <span class="str">'mime'</span> => <span class="str">'text/xml'</span>],
+    [<span class="str">'path'</span> => <span class="str">'/path/to/data.csv'</span>],
+]);
+
+<span class="cm">// File-based variant</span>
+<span class="var">$result</span> = <span class="cls">Pdf</span>::<span class="fn">embedFilesIntoFile</span>(<span class="str">'/path/to/invoice.pdf'</span>, [
+    [<span class="str">'path'</span> => <span class="str">'/path/to/factur-x.xml'</span>],
+]);</pre>
+      </div>
+    </section>
+
+    <!-- ── COMPOSE ── -->
+    <section class="section fade-in" id="compose">
+      <div class="section-eyebrow ey-base">// PDF Manipulation</div>
+      <h2>Compose</h2>
+      <p class="section-lead">Render multiple sections independently (different views, different data) and merge them into a single PDF in one call. Each section can use its own driver and options.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP</span>
+        </div>
+        <pre><span class="var">$result</span> = <span class="cls">Pdf</span>::<span class="fn">compose</span>([
+    [
+        <span class="str">'view'</span>    => <span class="str">'pdf.cover'</span>,
+        <span class="str">'data'</span>    => [<span class="str">'title'</span> => <span class="str">'Annual Report 2026'</span>],
+        <span class="str">'options'</span> => [<span class="str">'landscape'</span> => <span class="kw">true</span>],
+    ],
+    [
+        <span class="str">'view'</span> => <span class="str">'pdf.financials'</span>,
+        <span class="str">'data'</span> => [<span class="str">'figures'</span> => <span class="var">$figures</span>],
+    ],
+    [
+        <span class="str">'html'</span> => <span class="str">'&lt;h1&gt;Appendix&lt;/h1&gt;&lt;p&gt;Raw HTML section&lt;/p&gt;'</span>,
+    ],
+]);</pre>
+      </div>
+    </section>
+
+    <!-- ── CUSTOM FONTS ── -->
+    <section class="section fade-in" id="fonts">
+      <div class="section-eyebrow ey-base">// PDF Manipulation</div>
+      <h2>Custom Fonts</h2>
+      <p class="section-lead">Register custom font families and have them automatically inlined as base64 <code>@font-face</code> rules in every render. Supports TTF, OTF, WOFF, and WOFF2 formats.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">PHP — AppServiceProvider</span>
+        </div>
+        <pre><span class="kw">use</span> <span class="cls">PdfStudio\Laravel\Fonts\FontRegistry</span>;
+<span class="kw">use</span> <span class="cls">PdfStudio\Laravel\DTOs\FontDefinition</span>;
+
+<span class="kw">public function</span> <span class="fn">boot</span>(<span class="cls">FontRegistry</span> <span class="var">$fonts</span>): <span class="kw">void</span>
+{
+    <span class="var">$fonts</span>-><span class="fn">register</span>(<span class="kw">new</span> <span class="cls">FontDefinition</span>(
+        <span class="prop">family</span>:  <span class="str">'Inter'</span>,
+        <span class="prop">sources</span>: [<span class="fn">resource_path</span>(<span class="str">'fonts/Inter-Regular.woff2'</span>)],
+        <span class="prop">weight</span>:  <span class="str">'400'</span>,
+        <span class="prop">style</span>:   <span class="str">'normal'</span>,
+    ));
+
+    <span class="var">$fonts</span>-><span class="fn">register</span>(<span class="kw">new</span> <span class="cls">FontDefinition</span>(
+        <span class="prop">family</span>:  <span class="str">'Inter'</span>,
+        <span class="prop">sources</span>: [<span class="fn">resource_path</span>(<span class="str">'fonts/Inter-Bold.woff2'</span>)],
+        <span class="prop">weight</span>:  <span class="str">'700'</span>,
+        <span class="prop">style</span>:   <span class="str">'normal'</span>,
+    ));
+}</pre>
+      </div>
+
+      <div class="callout callout-info">
+        <span class="callout-icon">ℹ️</span>
+        <div class="callout-body">
+          Registered fonts are automatically converted to inline <code>@font-face</code> CSS and injected into every render via the <code>CssInjector</code> pipeline step.
+        </div>
+      </div>
+    </section>
+
+    <!-- ── ASSET RESOLUTION ── -->
+    <section class="section fade-in" id="assets">
+      <div class="section-eyebrow ey-base">// PDF Manipulation</div>
+      <h2>Asset Resolution</h2>
+      <p class="section-lead">Local images, stylesheets, and CSS <code>url()</code> references are automatically resolved and inlined as base64 data URIs. Remote assets can be allowed or blocked per-host.</p>
+
+      <div class="code-block">
+        <div class="code-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="code-lang">config/pdf-studio.php</span>
+        </div>
+        <pre><span class="str">'assets'</span> => [
+    <span class="str">'inline_local'</span>  => <span class="kw">true</span>,        <span class="cm">// Convert local files to data URIs</span>
+    <span class="str">'allow_remote'</span>  => <span class="kw">true</span>,        <span class="cm">// Allow remote URL assets</span>
+    <span class="str">'allowed_hosts'</span> => [],          <span class="cm">// Restrict to specific hosts (empty = all)</span>
+    <span class="str">'allowed_roots'</span> => [],          <span class="cm">// Restrict local paths (empty = app dirs)</span>
+],</pre>
+      </div>
+
+      <div class="callout callout-info">
+        <span class="callout-icon">ℹ️</span>
+        <div class="callout-body">
+          Asset resolution includes path traversal protection. Local file paths are validated with <code>realpath()</code> to ensure they remain within your application's base, public, and resource directories.
+        </div>
+      </div>
     </section>
 
     <div class="divider"></div>
