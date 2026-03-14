@@ -37,9 +37,9 @@ class FontCssGenerator
                 continue;
             }
 
-            $family = addslashes($font->family);
-            $weight = addslashes($font->weight);
-            $style = addslashes($font->style);
+            $family = str_replace(['\\', '"'], ['\\\\', '\\"'], $font->family);
+            $weight = str_replace(['\\', '"'], ['\\\\', '\\"'], $font->weight);
+            $style = str_replace(['\\', '"'], ['\\\\', '\\"'], $font->style);
 
             $blocks[] = "@font-face{font-family:\"{$family}\";src:".implode(',', $sources).";font-weight:{$weight};font-style:{$style};font-display:swap;}";
         }

@@ -239,13 +239,59 @@ class AssetResolver
         $candidates[] = $this->app->basePath($source);
         $candidates[] = getcwd().DIRECTORY_SEPARATOR.ltrim($source, DIRECTORY_SEPARATOR);
 
+        $allowedRoots = $this->allowedAssetRoots();
+
         foreach ($candidates as $candidate) {
-            if (is_string($candidate) && is_file($candidate) && is_readable($candidate)) {
-                return $candidate;
+            if (!is_string($candidate) || !is_file($candidate) || !is_readable($candidate)) {
+                continue;
+            }
+
+            $realPath = realpath($candidate);
+
+            if ($realPath === false) {
+                continue;
+            }
+
+            foreach ($allowedRoots as $root) {
+                if (str_starts_with($realPath, $root)) {
+                    return $realPath;
+                }
             }
         }
 
         return null;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    protected function allowedAssetRoots(): array
+    {
+        /** @var array<int, string> $configured */
+        $configured = $this->app['config']->get('pdf-studio.assets.allowed_roots', []);
+
+        if ($configured !== []) {
+            return array_map(static fn (string $path): string => rtrim((string) realpath($path), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR, array_filter($configured, static fn ($p): bool => is_string($p) && realpath($p) !== false));
+        }
+
+        $roots = [];
+
+        $basePath = realpath($this->app->basePath());
+        if ($basePath !== false) {
+            $roots[] = rtrim($basePath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+        }
+
+        $publicPath = realpath($this->app->publicPath());
+        if ($publicPath !== false) {
+            $roots[] = rtrim($publicPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+        }
+
+        $resourcePath = realpath($this->app->resourcePath());
+        if ($resourcePath !== false) {
+            $roots[] = rtrim($resourcePath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+        }
+
+        return $roots;
     }
 
     protected function resolveCssAssetUrls(string $css, ?string $basePath = null): string

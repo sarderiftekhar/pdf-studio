@@ -125,8 +125,8 @@ class RenderController
 
     protected function assertViewAllowed(string $view): void
     {
-        // Check explicit allowlist in config first
-        $allowlist = config('pdf-studio.saas.api.allowed_views', []);
+        // Check explicit allowlist in config (with backwards-compatible fallback)
+        $allowlist = config('pdf-studio.saas.api.allowed_views', config('pdf-studio.api.allowed_views', []));
         if (!empty($allowlist)) {
             if (!in_array($view, $allowlist, true)) {
                 abort(403, "View [{$view}] is not permitted.");

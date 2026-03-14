@@ -85,6 +85,10 @@ class WeasyPrintDriver implements RendererContract
         }
 
         if ($options->pdfVariant !== null) {
+            if (!preg_match('/^pdf\/(a-[1-4][a-z]?|ua-[12]|x-[1-4][a-z]?)$/i', $options->pdfVariant)) {
+                throw new DriverException("Invalid PDF variant: {$options->pdfVariant}. Expected formats like pdf/a-1b, pdf/ua-1.");
+            }
+
             $command[] = '--pdf-variant';
             $command[] = $options->pdfVariant;
         }
