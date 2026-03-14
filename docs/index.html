@@ -40,7 +40,7 @@
     background: var(--bg);
     color: var(--text);
     font-family: 'Satoshi', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-weight: 400;
+    font-weight: 500;
     line-height: 1.75;
     text-rendering: optimizeLegibility;
   }
@@ -62,7 +62,7 @@
   .nav-title { font-size: 1.05rem; font-weight: 700; color: var(--text); }
   .nav-sub { font-size: 0.7rem; color: var(--muted); margin-left: -2px; }
   .nav-links { display: flex; align-items: center; gap: 28px; }
-  .nav-links a { font-size: 0.84rem; color: var(--muted); text-decoration: none; font-weight: 500; transition: color 0.15s; }
+  .nav-links a { font-size: 0.9rem; color: var(--muted); text-decoration: none; font-weight: 600; transition: color 0.15s; }
   .nav-links a:hover { color: var(--text); }
   .nav-cta {
     display: inline-block; background: var(--amber); color: #fff !important;
@@ -70,6 +70,12 @@
     text-decoration: none; transition: background 0.2s;
   }
   .nav-cta:hover { background: var(--amber-dim); }
+  .nav-coffee {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #FFDD00; color: #1a1a1a !important; padding: 7px 16px; border-radius: 8px;
+    font-size: 0.82rem; font-weight: 700; text-decoration: none; transition: background 0.2s;
+  }
+  .nav-coffee:hover { background: #FFE835; color: #1a1a1a !important; }
 
   /* ── SECTIONS ── */
   .section { padding: 80px 0; }
@@ -80,7 +86,7 @@
   }
   .section-eyebrow.ey-pink { color: var(--pink); }
   .section h2 { font-size: 1.85rem; font-weight: 700; letter-spacing: -0.025em; line-height: 1.2; color: var(--text); margin-bottom: 12px; }
-  .section-lead { font-size: 1rem; line-height: 1.7; color: var(--muted); max-width: 600px; }
+  .section-lead { font-size: 1.05rem; line-height: 1.7; color: var(--muted); max-width: 600px; font-weight: 500; }
   .section-lead.centered { text-align: center; margin: 0 auto; }
   .text-center { text-align: center; }
 
@@ -108,7 +114,7 @@
   }
   .hero h1 { font-size: 3.2rem; font-weight: 700; line-height: 1.1; letter-spacing: -0.03em; margin-bottom: 20px; }
   .hero h1 .accent { color: var(--amber); }
-  .hero-desc { font-size: 1.05rem; line-height: 1.7; color: var(--muted); margin-bottom: 28px; max-width: 500px; }
+  .hero-desc { font-size: 1.1rem; line-height: 1.7; color: var(--muted); margin-bottom: 28px; max-width: 500px; font-weight: 500; }
   .hero-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 32px; }
 
   .badge {
@@ -175,13 +181,13 @@
   /* ── CODE CARD GRID ── */
   .code-card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
   .code-card {
-    background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
-    overflow: hidden; transition: border-color 0.2s, transform 0.2s;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 14px;
+    overflow: hidden; transition: all 0.3s cubic-bezier(.4,0,.2,1);
   }
-  .code-card:hover { border-color: var(--border2); transform: translateY(-2px); }
-  .code-card-label { padding: 20px 20px 0; }
-  .code-card-label h3 { font-size: 0.94rem; font-weight: 600; margin-bottom: 4px; }
-  .code-card-label p { font-size: 0.82rem; color: var(--muted); line-height: 1.5; margin-bottom: 0; }
+  .code-card:hover { border-color: var(--border2); transform: translateY(-6px); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.1); }
+  .code-card-label { padding: 22px 22px 0; }
+  .code-card-label h3 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+  .code-card-label p { font-size: 0.88rem; color: var(--muted); line-height: 1.5; margin-bottom: 0; }
   .code-card pre {
     padding: 16px 20px; margin: 0; font-family: 'JetBrains Mono', monospace;
     font-size: 0.76rem; line-height: 1.7; overflow-x: auto; color: var(--text);
@@ -190,32 +196,37 @@
   /* ── FEATURE GRID ── */
   .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; }
   .feature-card {
-    background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
-    padding: 24px; transition: border-color 0.2s, transform 0.2s;
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 14px;
+    padding: 28px; transition: all 0.3s cubic-bezier(.4,0,.2,1); position: relative; overflow: hidden;
   }
-  .feature-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+  .feature-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: transparent; transition: background 0.3s; }
+  .feature-card:hover { border-color: var(--border2); transform: translateY(-6px); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.08); }
+  .feature-card:hover::after { background: var(--amber); }
   .feature-icon {
-    width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
-    font-size: 18px; margin-bottom: 14px; background: #D9770612;
+    width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+    font-size: 20px; margin-bottom: 16px; background: #D9770612; transition: transform 0.3s;
   }
-  .feature-card h3 { font-size: 0.94rem; font-weight: 600; margin-bottom: 6px; letter-spacing: -0.01em; }
-  .feature-card p { font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
+  .feature-card:hover .feature-icon { transform: scale(1.1); }
+  .feature-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.01em; }
+  .feature-card p { font-size: 0.9rem; color: var(--muted); line-height: 1.65; }
 
   /* ── DRIVER GRID ── */
   .driver-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 40px; }
   .driver-card {
-    background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
-    padding: 20px; transition: border-color 0.2s, transform 0.2s;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 14px;
+    padding: 24px; transition: all 0.3s cubic-bezier(.4,0,.2,1);
   }
-  .driver-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+  .driver-card:hover { border-color: var(--border2); transform: translateY(-6px); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.08); }
   .driver-card.featured { border-color: var(--amber-dim); }
-  .driver-name { font-size: 0.94rem; font-weight: 600; margin-bottom: 4px; }
-  .driver-pkg { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--muted); margin-bottom: 10px; }
-  .driver-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .driver-card.featured:hover { box-shadow: 0 20px 40px -12px rgba(217,119,6,0.15); }
+  .driver-name { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+  .driver-pkg { font-family: 'JetBrains Mono', monospace; font-size: 0.76rem; color: var(--muted); margin-bottom: 12px; }
+  .driver-tags { display: flex; flex-wrap: wrap; gap: 8px; }
   .tag {
-    font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; font-weight: 500;
-    padding: 2px 8px; border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 600;
+    padding: 4px 10px; border-radius: 6px; transition: transform 0.2s;
   }
+  .tag:hover { transform: scale(1.05); }
   .tag-green { background: #ECFDF5; color: var(--green); }
   .tag-yellow { background: #FFFBEB; color: #B45309; }
   .tag-muted { background: var(--bg3); color: var(--muted); }
@@ -225,7 +236,7 @@
 
   .feature-list { list-style: none; padding: 0; }
   .feature-list li {
-    padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem;
+    padding: 10px 0; border-bottom: 1px solid var(--border); font-size: 0.94rem;
     display: flex; gap: 10px; align-items: baseline;
   }
   .feature-list li:last-child { border-bottom: none; }
@@ -234,12 +245,14 @@
   /* ── SAAS CARDS ── */
   .saas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 40px; margin-bottom: 32px; }
   .saas-card {
-    background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
-    padding: 24px; transition: border-color 0.2s, transform 0.2s;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 14px;
+    padding: 28px; transition: all 0.3s cubic-bezier(.4,0,.2,1); position: relative; overflow: hidden;
   }
-  .saas-card:hover { border-color: var(--border2); transform: translateY(-2px); }
-  .saas-card h3 { font-size: 0.94rem; font-weight: 600; margin-bottom: 6px; color: var(--pink); }
-  .saas-card p { font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
+  .saas-card::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: transparent; transition: background 0.3s; }
+  .saas-card:hover { border-color: var(--border2); transform: translateY(-6px); box-shadow: 0 20px 40px -12px rgba(0,0,0,0.08); }
+  .saas-card:hover::after { background: var(--pink); }
+  .saas-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: var(--pink); }
+  .saas-card p { font-size: 0.9rem; color: var(--muted); line-height: 1.65; }
 
   /* ── STEPS ── */
   .steps { margin-top: 40px; }
@@ -263,7 +276,7 @@
     font-family: 'JetBrains Mono', monospace; font-size: 2rem; font-weight: 700;
     color: var(--amber); letter-spacing: -0.03em; line-height: 1;
   }
-  .stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 6px; }
+  .stat-label { font-size: 0.84rem; color: var(--muted); margin-top: 6px; font-weight: 600; }
 
   /* ── CTA SECTION ── */
   .cta-section { text-align: center; padding: 80px 0 60px; }
@@ -276,7 +289,7 @@
   .footer {
     border-top: 1px solid var(--border); padding: 40px 72px;
     display: flex; justify-content: space-between; align-items: center;
-    font-size: 0.82rem; color: var(--muted);
+    font-size: 0.9rem; color: var(--muted);
   }
   .footer a { color: var(--amber); text-decoration: none; font-weight: 500; }
   .footer a:hover { text-decoration: underline; }
@@ -284,6 +297,136 @@
   /* ── FADE-IN ── */
   .fade-in { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
   .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── HERO ANIMATIONS ── */
+  @keyframes heroSlideUp {
+    from { opacity: 0; transform: translateY(32px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes heroSlideRight {
+    from { opacity: 0; transform: translateX(-24px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes terminalFloat {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
+  }
+  @keyframes accentShimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+  @keyframes gridPulse {
+    0%, 100% { opacity: 0.15; }
+    50%      { opacity: 0.25; }
+  }
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50%      { opacity: 0.7; transform: scale(1.08); }
+  }
+
+  .hero-anim { opacity: 0; animation: heroSlideUp 0.7s cubic-bezier(.16,1,.3,1) forwards; }
+  .hero-anim-d1 { animation-delay: 0.1s; }
+  .hero-anim-d2 { animation-delay: 0.25s; }
+  .hero-anim-d3 { animation-delay: 0.4s; }
+  .hero-anim-d4 { animation-delay: 0.55s; }
+  .hero-anim-d5 { animation-delay: 0.7s; }
+  .hero-anim-d6 { animation-delay: 0.85s; }
+
+  .hero-anim-right { opacity: 0; animation: heroSlideRight 0.8s cubic-bezier(.16,1,.3,1) 0.3s forwards; }
+
+  .hero h1 .accent {
+    background: linear-gradient(90deg, var(--amber) 0%, #F59E0B 40%, #FBBF24 50%, #F59E0B 60%, var(--amber) 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+    animation: accentShimmer 4s ease-in-out infinite;
+  }
+
+  .hero::after {
+    animation: gridPulse 6s ease-in-out infinite;
+  }
+  .hero::before {
+    animation: glowPulse 5s ease-in-out infinite;
+  }
+
+  .terminal-animated {
+    animation: terminalFloat 4s ease-in-out infinite;
+  }
+
+  /* ── HERO ROTATOR ── */
+  .hero-slide-left, .hero-slide-right {
+    position: relative; min-height: 380px;
+  }
+  .hero-frame, .hero-right-frame {
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(.16,1,.3,1);
+  }
+  .hero-frame.out {
+    opacity: 0; pointer-events: none; position: absolute; top: 0; left: 0; right: 0;
+  }
+  .hero-frame.in {
+    opacity: 1; transform: translateY(0); position: relative;
+  }
+  .hero-frame.entering {
+    animation: heroSlideUp 0.6s cubic-bezier(.16,1,.3,1) forwards;
+  }
+  .hero-right-frame.out {
+    opacity: 0; pointer-events: none; position: absolute; top: 0; left: 0; right: 0;
+  }
+  .hero-right-frame.in {
+    opacity: 1; transform: translateX(0); position: relative;
+  }
+  .hero-right-frame.entering {
+    animation: heroSlideRight 0.6s cubic-bezier(.16,1,.3,1) forwards;
+  }
+
+  /* Progress dots */
+  .hero-progress {
+    display: flex; gap: 8px; margin-top: 24px;
+  }
+  .hero-dot {
+    width: 32px; height: 4px; border-radius: 2px; background: var(--border2);
+    cursor: pointer; position: relative; overflow: hidden; transition: background 0.3s;
+  }
+  .hero-dot::after {
+    content: ''; position: absolute; left: 0; top: 0; height: 100%; width: 0%;
+    background: var(--amber); border-radius: 2px; transition: width 0.15s;
+  }
+  .hero-dot.active { background: var(--border); }
+  .hero-dot.active::after {
+    animation: dotFill 10s linear forwards;
+  }
+  .hero-dot.done::after { width: 100%; background: var(--amber); }
+  @keyframes dotFill {
+    from { width: 0%; } to { width: 100%; }
+  }
+
+  /* ── WHY STRIP ── */
+  .why-strip {
+    background: var(--bg2); border-bottom: 1px solid var(--border);
+    padding: 48px 72px;
+  }
+  .why-inner {
+    max-width: var(--max-w); margin: 0 auto;
+    display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center;
+  }
+  .why-pills { display: flex; flex-wrap: wrap; gap: 12px; }
+  .why-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 20px; font-size: 0.88rem; font-weight: 600; color: var(--text);
+    transition: all 0.25s cubic-bezier(.4,0,.2,1);
+  }
+  .why-pill:hover { border-color: var(--amber); transform: translateY(-2px); box-shadow: 0 8px 24px -8px rgba(0,0,0,0.08); }
+  .why-pill-icon { font-size: 1.1rem; }
+  .why-pill-check { color: var(--green); font-weight: 700; font-size: 1rem; }
+  .why-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--text); color: #fff; padding: 14px 28px; border-radius: 10px;
+    font-size: 0.9rem; font-weight: 600; text-decoration: none;
+    transition: all 0.25s cubic-bezier(.4,0,.2,1); white-space: nowrap;
+  }
+  .why-cta:hover { background: #000; transform: translateY(-2px); box-shadow: 0 8px 24px -8px rgba(0,0,0,0.2); }
+  .why-cta-arrow { transition: transform 0.25s; }
+  .why-cta:hover .why-cta-arrow { transform: translateX(4px); }
 
   /* ── RESPONSIVE ── */
   @media (max-width: 1120px) {
@@ -308,6 +451,11 @@
     .footer { flex-direction: column; text-align: center; gap: 8px; padding: 32px 24px; }
     .hero-ctas, .cta-buttons { flex-direction: column; align-items: stretch; }
     .cta-btn { text-align: center; }
+    .why-strip { padding: 32px 24px; }
+    .why-inner { grid-template-columns: 1fr; gap: 24px; }
+    .why-pills { gap: 8px; }
+    .why-pill { padding: 10px 14px; font-size: 0.82rem; }
+    .why-cta { justify-content: center; }
   }
 </style>
 </head>
@@ -321,37 +469,108 @@
     <span class="nav-sub">for Laravel</span>
   </a>
   <div class="nav-links">
+    <a href="https://www.buymeacoffee.com/CCO2uAnu8b" class="nav-coffee" target="_blank" rel="noopener noreferrer">&#9749; Buy me a coffee</a>
     <a href="user-guide.html" class="nav-link-text">Docs</a>
+    <a href="compare.html" class="nav-link-text">Compare</a>
     <a href="https://github.com/sarderiftekhar/pdf-studio" class="nav-link-text" target="_blank">GitHub</a>
     <a href="#get-started" class="nav-cta">Get Started</a>
   </div>
 </nav>
 
 <!-- ── HERO ── -->
-<section class="hero">
+<section class="hero" id="hero">
   <div class="hero-inner">
-    <div class="fade-in">
-      <div class="hero-eyebrow">100% Free &amp; Open Source</div>
-      <h1>Design, preview &amp; generate <span class="accent">PDFs</span> in Laravel.</h1>
-      <p class="hero-desc">Use HTML, TailwindCSS, or Bootstrap to create pixel-perfect PDFs. Six rendering drivers. Full PDF manipulation. SaaS-ready API. Zero license fees.</p>
-      <div class="hero-badges">
-        <span class="badge badge-green">MIT LICENSE</span>
-        <span class="badge badge-green">367+ TESTS</span>
-        <span class="badge badge-green">PHPSTAN LVL 6</span>
-        <span class="badge badge-amber">6 DRIVERS</span>
+    <!-- LEFT: text slides -->
+    <div class="hero-slide-left">
+
+      <!-- Slide 0 — Install -->
+      <div class="hero-frame in" data-slide="0">
+        <div class="hero-eyebrow hero-anim hero-anim-d1">100% Free &amp; Open Source</div>
+        <h1 class="hero-anim hero-anim-d2">Design, preview &amp; generate <span class="accent">PDFs</span> in Laravel.</h1>
+        <p class="hero-desc hero-anim hero-anim-d3">Use HTML, TailwindCSS, or Bootstrap to create pixel-perfect PDFs. Six rendering drivers. Full PDF manipulation. SaaS-ready API. Zero license fees.</p>
+        <div class="hero-badges hero-anim hero-anim-d4">
+          <span class="badge badge-green">MIT LICENSE</span>
+          <span class="badge badge-green">367+ TESTS</span>
+          <span class="badge badge-green">PHPSTAN LVL 6</span>
+          <span class="badge badge-amber">6 DRIVERS</span>
+        </div>
+        <div class="hero-ctas hero-anim hero-anim-d5">
+          <a href="user-guide.html" class="cta-btn cta-primary">Read the Docs</a>
+          <a href="https://github.com/sarderiftekhar/pdf-studio" class="cta-btn cta-secondary" target="_blank">View on GitHub</a>
+        </div>
       </div>
-      <div class="hero-ctas">
-        <a href="user-guide.html" class="cta-btn cta-primary">Read the Docs</a>
-        <a href="https://github.com/sarderiftekhar/pdf-studio" class="cta-btn cta-secondary" target="_blank">View on GitHub</a>
+
+      <!-- Slide 1 — Drivers -->
+      <div class="hero-frame out" data-slide="1">
+        <div class="hero-eyebrow">// Six Rendering Engines</div>
+        <h1>One API. Six <span class="accent">drivers.</span> Your&nbsp;choice.</h1>
+        <p class="hero-desc">Chromium, dompdf, wkhtmltopdf, Gotenberg, WeasyPrint, Cloudflare. Switch per-render with a single method call. No config changes.</p>
+        <div class="hero-badges">
+          <span class="badge badge-amber">CHROMIUM</span>
+          <span class="badge badge-green">DOMPDF</span>
+          <span class="badge badge-purple">GOTENBERG</span>
+          <span class="badge badge-pink">WEASYPRINT</span>
+        </div>
+        <div class="hero-ctas">
+          <a href="user-guide.html#drivers" class="cta-btn cta-primary">See All Drivers</a>
+          <a href="compare.html" class="cta-btn cta-secondary">Compare Packages</a>
+        </div>
+      </div>
+
+      <!-- Slide 2 — Manipulation -->
+      <div class="hero-frame out" data-slide="2">
+        <div class="hero-eyebrow">// Full PDF Control</div>
+        <h1>Merge, split, watermark &amp; <span class="accent">protect.</span></h1>
+        <p class="hero-desc">Not just rendering. Merge documents, add watermarks, password-protect, fill forms, embed files, generate thumbnails. All from the same fluent API.</p>
+        <div class="hero-badges">
+          <span class="badge badge-green">MERGE</span>
+          <span class="badge badge-green">SPLIT</span>
+          <span class="badge badge-amber">WATERMARK</span>
+          <span class="badge badge-pink">ENCRYPT</span>
+        </div>
+        <div class="hero-ctas">
+          <a href="user-guide.html#manipulation" class="cta-btn cta-primary">Manipulation Docs</a>
+          <a href="https://github.com/sarderiftekhar/pdf-studio" class="cta-btn cta-secondary" target="_blank">View on GitHub</a>
+        </div>
+      </div>
+
+      <!-- Slide 3 — SaaS -->
+      <div class="hero-frame out" data-slide="3">
+        <div class="hero-eyebrow ey-pink">// SaaS-Ready API</div>
+        <h1>Build a PDF <span class="accent">platform,</span> not just PDFs.</h1>
+        <p class="hero-desc">Ship hosted rendering endpoints with API key auth, workspaces, RBAC, usage metering, and analytics. Everything included, nothing extra to buy.</p>
+        <div class="hero-badges">
+          <span class="badge badge-pink">API KEYS</span>
+          <span class="badge badge-purple">WORKSPACES</span>
+          <span class="badge badge-amber">METERING</span>
+          <span class="badge badge-green">ANALYTICS</span>
+        </div>
+        <div class="hero-ctas">
+          <a href="user-guide.html#saas" class="cta-btn cta-primary">SaaS Docs</a>
+          <a href="compare.html" class="cta-btn cta-secondary">Compare Packages</a>
+        </div>
+      </div>
+
+      <!-- Progress dots -->
+      <div class="hero-progress hero-anim hero-anim-d6">
+        <div class="hero-dot active" data-dot="0"></div>
+        <div class="hero-dot" data-dot="1"></div>
+        <div class="hero-dot" data-dot="2"></div>
+        <div class="hero-dot" data-dot="3"></div>
       </div>
     </div>
-    <div class="fade-in">
-      <div class="terminal">
-        <div class="terminal-header">
-          <div class="code-dots"><span></span><span></span><span></span></div>
-          <span class="terminal-title">bash</span>
-        </div>
-        <pre><span class="t-prompt">$</span> <span class="t-cmd">composer require sarder/pdfstudio</span>
+
+    <!-- RIGHT: code slides -->
+    <div class="hero-slide-right">
+
+      <!-- Slide 0 — Install terminal -->
+      <div class="hero-right-frame in hero-anim-right" data-slide="0">
+        <div class="terminal terminal-animated">
+          <div class="terminal-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="terminal-title">bash</span>
+          </div>
+          <pre><span class="t-prompt">$</span> <span class="t-cmd">composer require sarder/pdfstudio</span>
 
 <span class="t-out">Package installed successfully.</span>
 
@@ -362,8 +581,89 @@
 <span class="t-dim">  [1] Dompdf PDF driver</span>
 <span class="t-dim">  [2] PDF manipulation</span>
 <span class="t-dim">  [3] Barcodes &amp; QR codes</span></pre>
+        </div>
+      </div>
+
+      <!-- Slide 1 — Driver switching -->
+      <div class="hero-right-frame out" data-slide="1">
+        <div class="code-block" style="border-radius:10px;">
+          <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">PHP</span>
+          </div>
+          <pre><span class="cm">// Switch drivers per-render</span>
+<span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'invoice'</span>)
+    -><span class="fn">driver</span>(<span class="str">'chromium'</span>)
+    -><span class="fn">download</span>();
+
+<span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'invoice'</span>)
+    -><span class="fn">driver</span>(<span class="str">'dompdf'</span>)
+    -><span class="fn">save</span>(<span class="str">'inv.pdf'</span>);
+
+<span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'invoice'</span>)
+    -><span class="fn">driver</span>(<span class="str">'gotenberg'</span>)
+    -><span class="fn">stream</span>();</pre>
+        </div>
+      </div>
+
+      <!-- Slide 2 — Merge + watermark -->
+      <div class="hero-right-frame out" data-slide="2">
+        <div class="code-block" style="border-radius:10px;">
+          <div class="code-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="code-lang">PHP</span>
+          </div>
+          <pre><span class="cm">// Merge, watermark &amp; protect</span>
+<span class="cls">Pdf</span>::<span class="fn">merge</span>([
+    <span class="fn">storage_path</span>(<span class="str">'cover.pdf'</span>),
+    <span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'report'</span>)-><span class="fn">render</span>(),
+])
+  -><span class="fn">watermark</span>(<span class="str">'CONFIDENTIAL'</span>)
+  -><span class="fn">protect</span>(<span class="str">'secret'</span>)
+  -><span class="fn">download</span>(<span class="str">'final.pdf'</span>);</pre>
+        </div>
+      </div>
+
+      <!-- Slide 3 — API curl -->
+      <div class="hero-right-frame out" data-slide="3">
+        <div class="terminal" style="border-radius:10px;">
+          <div class="terminal-header">
+            <div class="code-dots"><span></span><span></span><span></span></div>
+            <span class="terminal-title">Render API</span>
+          </div>
+          <pre><span class="t-prompt">$</span> <span class="t-cmd">curl -X POST /api/pdf-studio/render \</span>
+  <span class="t-cmd">-H "Authorization: Bearer sk_..." \</span>
+  <span class="t-cmd">-d '{"view":"invoice","data":{"id":42}}'</span>
+
+<span class="t-out"># 200 OK  application/pdf</span>
+<span class="t-out"># 312ms  14.2KB</span>
+
+<span class="t-prompt">$</span> <span class="t-cmd">curl /api/pdf-studio/analytics</span>
+<span class="t-out">{"total_renders": 4821, "success_rate": "99.7%"}</span></pre>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ── WHY STRIP ── -->
+<section class="why-strip">
+  <div class="why-inner fade-in">
+    <div>
+      <div style="font-size:0.72rem;font-family:'JetBrains Mono',monospace;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--amber);margin-bottom:12px;">// Why PDF Studio?</div>
+      <div class="why-pills">
+        <div class="why-pill"><span class="why-pill-check">&#10003;</span> 6 rendering drivers, not just one</div>
+        <div class="why-pill"><span class="why-pill-check">&#10003;</span> TailwindCSS &amp; Bootstrap built-in</div>
+        <div class="why-pill"><span class="why-pill-check">&#10003;</span> Merge, split, watermark &amp; protect</div>
+        <div class="why-pill"><span class="why-pill-check">&#10003;</span> Barcodes &amp; QR codes in Blade</div>
+        <div class="why-pill"><span class="why-pill-check">&#10003;</span> SaaS-ready API with auth &amp; metering</div>
+        <div class="why-pill"><span class="why-pill-check">&#10003;</span> 100% free, MIT licensed</div>
       </div>
     </div>
+    <a href="compare.html" class="why-cta">
+      Compare with other packages <span class="why-cta-arrow">&rarr;</span>
+    </a>
   </div>
 </section>
 
@@ -764,10 +1064,11 @@
 <!-- ── FOOTER ── -->
 <footer class="footer">
   <div>PDF Studio for Laravel &mdash; MIT License &mdash; <a href="https://github.com/sarderiftekhar/pdf-studio" target="_blank">GitHub</a></div>
-  <div>Made with care by <a href="https://github.com/sarderiftekhar" target="_blank">Sarder Iftekhar</a></div>
+  <div>Made with care by <a href="https://github.com/sarderiftekhar" target="_blank">Sarder Iftekhar</a> &middot; <a href="https://www.buymeacoffee.com/CCO2uAnu8b" target="_blank" rel="noopener noreferrer">&#9749; Buy me a coffee</a></div>
 </footer>
 
 <script>
+  // Fade-in observer
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -777,6 +1078,73 @@
     });
   }, { threshold: 0.1 });
   document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Hero rotator
+  (function() {
+    const INTERVAL = 10000;
+    const TOTAL = 4;
+    let current = 0;
+    let timer = null;
+
+    const leftFrames  = document.querySelectorAll('.hero-slide-left > .hero-frame');
+    const rightFrames = document.querySelectorAll('.hero-slide-right > .hero-right-frame');
+    const dots        = document.querySelectorAll('.hero-dot');
+
+    function goTo(next) {
+      if (next === current) return;
+
+      // Fade out current
+      leftFrames[current].classList.remove('in','entering');
+      leftFrames[current].classList.add('out');
+      rightFrames[current].classList.remove('in','entering');
+      rightFrames[current].classList.add('out');
+
+      // Update dots
+      dots[current].classList.remove('active');
+      dots[current].classList.add('done');
+
+      // Fade in next
+      leftFrames[next].classList.remove('out');
+      leftFrames[next].classList.add('in','entering');
+      rightFrames[next].classList.remove('out');
+      rightFrames[next].classList.add('in','entering');
+
+      // Reset all dots if looping back
+      if (next === 0) {
+        dots.forEach(d => d.classList.remove('done','active'));
+      }
+      dots[next].classList.add('active');
+      dots[next].classList.remove('done');
+
+      current = next;
+    }
+
+    function startTimer() {
+      clearInterval(timer);
+      timer = setInterval(() => {
+        goTo((current + 1) % TOTAL);
+      }, INTERVAL);
+    }
+
+    // Click dots to jump
+    dots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        const idx = parseInt(dot.dataset.dot);
+        // Reset all dot states
+        dots.forEach(d => d.classList.remove('done','active'));
+        for (let i = 0; i < idx; i++) dots[i].classList.add('done');
+        goTo(idx);
+        startTimer(); // Reset timer on manual click
+      });
+    });
+
+    // Pause on hover
+    const hero = document.getElementById('hero');
+    hero.addEventListener('mouseenter', () => clearInterval(timer));
+    hero.addEventListener('mouseleave', startTimer);
+
+    startTimer();
+  })();
 </script>
 </body>
 </html>

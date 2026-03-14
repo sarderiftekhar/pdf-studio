@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PDF Studio vs Spatie vs DomPDF vs Snappy — Laravel PDF Package Comparison 2026</title>
+<meta name="description" content="Detailed comparison of Laravel PDF packages: PDF Studio vs spatie/laravel-pdf vs barryvdh/laravel-dompdf vs barryvdh/laravel-snappy. Feature matrix, charts, code examples, and migration guide.">
+<meta name="keywords" content="laravel pdf, laravel pdf comparison, spatie laravel-pdf, barryvdh laravel-dompdf, laravel-snappy, pdf generation laravel, html to pdf laravel, best laravel pdf package 2026">
+<meta property="og:title" content="Laravel PDF Package Comparison — PDF Studio vs Spatie vs DomPDF vs Snappy">
+<meta property="og:description" content="Honest, detailed comparison of the top 4 Laravel PDF packages. Feature matrix, visual charts, code examples, and migration guide.">
+<meta property="og:type" content="article">
+<link rel="canonical" href="https://sarderiftekhar.github.io/pdf-studio/compare.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,600,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#FFFFFF;--bg2:#F8F9FB;--bg3:#F0F1F4;--border:#E2E4E9;--border2:#D1D5DB;
+    --text:#1A1D24;--muted:#5F6672;--amber:#D97706;--amber-dim:#B45309;
+    --cyan:#0284C7;--purple:#7C3AED;--pink:#DB2777;--green:#16A34A;--red:#DC2626;
+    --code-bg:#FAFBFC;--max-w:1400px;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;font-size:16px;-webkit-font-smoothing:antialiased}
+  body{background:var(--bg);color:var(--text);font-family:'Satoshi',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-weight:500;line-height:1.75;text-rendering:optimizeLegibility;font-size:16px}
+  .container{max-width:var(--max-w);margin:0 auto;padding:0 72px}
+
+  /* ── NAV ── */
+  .navbar{position:sticky;top:0;z-index:100;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 72px;height:60px;display:flex;align-items:center;justify-content:space-between}
+  .nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+  .nav-logo{width:34px;height:34px;background:var(--amber);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff}
+  .nav-title{font-size:1.05rem;font-weight:700;color:var(--text)}
+  .nav-sub{font-size:0.7rem;color:var(--muted);margin-left:-2px}
+  .nav-links{display:flex;align-items:center;gap:28px}
+  .nav-links a{font-size:0.9rem;color:var(--muted);text-decoration:none;font-weight:600;transition:color 0.15s}
+  .nav-links a:hover,.nav-links a.active{color:var(--text)}
+  .nav-cta{display:inline-block;background:var(--amber);color:#fff!important;padding:7px 20px;border-radius:8px;font-size:0.82rem;font-weight:600;text-decoration:none;transition:background 0.2s}
+  .nav-cta:hover{background:var(--amber-dim)}
+
+  /* ── SECTIONS ── */
+  .section{padding:80px 0}
+  .section-alt{background:var(--bg2)}
+  .section-eyebrow{font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:500;letter-spacing:0.12em;text-transform:uppercase;color:var(--amber);margin-bottom:12px}
+  .section h2{font-size:2rem;font-weight:700;letter-spacing:-0.025em;line-height:1.2;margin-bottom:14px}
+  .section-lead{font-size:1.08rem;line-height:1.7;color:var(--muted);max-width:640px;font-weight:500}
+  .text-center{text-align:center}
+  .section-lead.centered{margin:0 auto}
+
+  /* ── HERO ── */
+  .hero{position:relative;padding:100px 72px 80px;overflow:hidden;border-bottom:1px solid var(--border)}
+  .hero::before{content:'';position:absolute;top:-120px;right:-80px;width:500px;height:500px;background:radial-gradient(circle,#D9770618 0%,transparent 65%);pointer-events:none}
+  .hero::after{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:40px 40px;opacity:0.15;pointer-events:none}
+  .hero-inner{position:relative;z-index:1;max-width:var(--max-w);margin:0 auto;text-align:center}
+  .hero-eyebrow{font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--amber);margin-bottom:20px}
+  .hero h1{font-size:3rem;font-weight:700;line-height:1.1;letter-spacing:-0.03em;margin-bottom:20px}
+  .hero h1 .accent{color:var(--amber)}
+  .hero-desc{font-size:1.1rem;line-height:1.7;color:var(--muted);max-width:620px;margin:0 auto;font-weight:500}
+
+  /* ── PACKAGE CARDS ── */
+  .pkg-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px;margin-top:48px}
+  .pkg-card{background:var(--bg);border:1px solid var(--border);border-radius:16px;padding:28px 28px 24px;transition:all 0.3s cubic-bezier(.4,0,.2,1);position:relative;cursor:default}
+  .pkg-card:hover{border-color:var(--border2);transform:translateY(-6px);box-shadow:0 20px 40px -12px rgba(0,0,0,0.1)}
+  .pkg-card.highlighted{border-color:var(--amber);border-width:2px;background:linear-gradient(145deg,#FFFBEB 0%,#FFFDF5 40%,#FFF 80%)}
+  .pkg-card.highlighted:hover{box-shadow:0 20px 40px -12px rgba(217,119,6,0.18);border-color:var(--amber-dim)}
+  .pkg-card .pkg-badge{position:absolute;top:16px;right:16px;font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;padding:5px 12px;border-radius:6px;letter-spacing:0.04em;text-transform:uppercase}
+  .pkg-card .pkg-badge.badge-rec{background:var(--green);color:#fff;border:none}
+  .pkg-card .pkg-badge.badge-pop{background:var(--cyan);color:#fff;border:none}
+  .pkg-card .pkg-badge.badge-dl{background:var(--purple);color:#fff;border:none}
+  .pkg-card .pkg-badge.badge-leg{background:#6B7280;color:#fff;border:none}
+  .pkg-name{font-size:1.2rem;font-weight:700;margin-bottom:6px;margin-top:24px;letter-spacing:-0.01em}
+  .pkg-author{font-size:0.86rem;color:var(--muted);margin-bottom:20px;font-weight:500}
+  .pkg-stats{display:flex;flex-direction:column;gap:0;margin-bottom:20px;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+  .pkg-stat{display:flex;justify-content:space-between;align-items:center;font-size:0.88rem;padding:10px 16px;border-bottom:1px solid var(--border)}
+  .pkg-stat:last-child{border-bottom:none}
+  .pkg-stat:nth-child(odd){background:var(--bg2)}
+  .pkg-stat-label{color:var(--muted);font-weight:500}
+  .pkg-stat-val{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:0.84rem;color:var(--text)}
+  .pkg-card.highlighted .pkg-stat-val{color:var(--amber-dim)}
+  .pkg-verdict{font-size:0.9rem;color:var(--muted);line-height:1.65;padding-top:16px;border-top:1px solid var(--border);font-weight:500}
+
+  /* ── FEATURE TABLE ── */
+  .table-wrap{overflow-x:auto;margin-top:40px;border:1px solid var(--border);border-radius:14px}
+  .cmp-table{width:100%;border-collapse:separate;border-spacing:0;font-size:0.88rem;min-width:720px}
+  .cmp-table thead th{background:var(--bg3);padding:14px 18px;text-align:left;font-weight:600;font-size:0.84rem;letter-spacing:0.02em;border-bottom:2px solid var(--border)}
+  .cmp-table thead th:first-child{width:260px}
+  .cmp-table thead th.col-highlight{background:#FFFBEB;color:var(--amber-dim)}
+  .cmp-table tbody td{padding:12px 18px;border-bottom:1px solid var(--border);vertical-align:middle}
+  .cmp-table tbody tr:last-child td{border-bottom:none}
+  .cmp-table tbody tr:hover td{background:var(--bg2)}
+  .cmp-table td.col-highlight{background:#FEF9E7}
+  .cmp-table .cat-row td{background:var(--bg3);font-weight:600;font-size:0.76rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);padding:10px 18px}
+  .check{color:var(--green);font-weight:700;font-size:1.1rem}
+  .cross{color:var(--red);font-weight:700;font-size:1.1rem}
+  .partial{color:#B45309;font-weight:600;font-size:0.9rem}
+  .feat-name{font-weight:600}
+  /* Floating sticky header clone */
+  .sticky-header{position:fixed;top:60px;left:0;right:0;z-index:50;background:rgba(240,241,244,0.97);backdrop-filter:blur(8px);border-bottom:2px solid var(--border);box-shadow:0 4px 12px rgba(0,0,0,0.08);display:none;overflow:hidden}
+  .sticky-header.visible{display:block}
+  .sticky-header table{width:100%;border-collapse:separate;border-spacing:0;table-layout:fixed}
+  .sticky-header th{padding:12px 18px;text-align:left;font-weight:600;font-size:0.84rem;letter-spacing:0.02em;font-family:'Satoshi',-apple-system,sans-serif;color:var(--text)}
+  .sticky-header th.col-highlight{color:var(--amber-dim);background:rgba(255,251,235,0.8)}
+
+  /* ── BAR CHARTS ── */
+  .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:40px}
+  .chart-box{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:28px;transition:all 0.3s cubic-bezier(.4,0,.2,1)}
+  .chart-box:hover{transform:translateY(-4px);box-shadow:0 16px 32px -8px rgba(0,0,0,0.08);border-color:var(--border2)}
+  .chart-box h3{font-size:1rem;font-weight:700;margin-bottom:22px}
+  .bar-chart{display:flex;flex-direction:column;gap:14px}
+  .bar-row{display:flex;align-items:center;gap:12px}
+  .bar-label{width:160px;font-size:0.86rem;font-weight:600;flex-shrink:0}
+  .bar-track{flex:1;height:32px;background:var(--bg3);border-radius:6px;overflow:hidden;position:relative}
+  .bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding-left:12px;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:#fff;font-weight:600;transition:width 0.8s ease}
+  .bar-fill.amber{background:var(--amber)}
+  .bar-fill.gray{background:var(--border2)}
+  .bar-fill.green{background:var(--green)}
+  .bar-fill.cyan{background:var(--cyan)}
+  .bar-val{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:600;color:var(--muted)}
+
+  /* ── DEEP DIVE CARDS ── */
+  .dive-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:40px}
+  .dive-card{background:var(--bg);border:1px solid var(--border);border-radius:14px;padding:32px;transition:all 0.3s cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
+  .dive-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--border);transition:all 0.3s}
+  .dive-card:hover{transform:translateY(-6px);box-shadow:0 20px 40px -12px rgba(0,0,0,0.1);border-color:var(--border2)}
+  .dive-card:hover::before{background:var(--border2)}
+  .dive-card.highlighted{border:2px solid var(--amber);background:linear-gradient(180deg,#FFFBEB 0%,#FFF 40%)}
+  .dive-card.highlighted::before{background:var(--amber);height:4px}
+  .dive-card.highlighted:hover{box-shadow:0 20px 40px -12px rgba(217,119,6,0.15)}
+  .dive-card h3{font-size:1.15rem;font-weight:700;margin-bottom:4px}
+  .dive-card .dive-pkg{font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--muted);margin-bottom:16px}
+  .dive-card p{font-size:0.92rem;color:var(--muted);line-height:1.7;margin-bottom:14px}
+  .dive-card .tag-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+  .tag{font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:600;padding:4px 10px;border-radius:6px;transition:transform 0.2s}
+  .tag:hover{transform:scale(1.05)}
+  .tag-green{background:#ECFDF5;color:var(--green)}
+  .tag-yellow{background:#FFFBEB;color:#B45309}
+  .tag-red{background:#FEF2F2;color:var(--red)}
+  .tag-muted{background:var(--bg3);color:var(--muted)}
+  .pros-cons{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:12px}
+  .pros h4,.cons h4{font-size:0.78rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px}
+  .pros h4{color:var(--green)}
+  .cons h4{color:var(--red)}
+  .pros ul,.cons ul{list-style:none;padding:0}
+  .pros li,.cons li{font-size:0.88rem;color:var(--muted);padding:4px 0;line-height:1.6;font-weight:500}
+  .pros li::before{content:'+ ';color:var(--green);font-weight:700}
+  .cons li::before{content:'- ';color:var(--red);font-weight:700}
+
+  /* ── MIGRATION ── */
+  .migrate-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:40px}
+  .migrate-card{background:var(--bg);border:1px solid var(--border);border-radius:14px;overflow:hidden;transition:all 0.3s cubic-bezier(.4,0,.2,1)}
+  .migrate-card:hover{transform:translateY(-4px);box-shadow:0 16px 32px -8px rgba(0,0,0,0.08);border-color:var(--border2)}
+  .migrate-header{padding:18px 22px;background:var(--bg3);border-bottom:1px solid var(--border);font-size:0.88rem;font-weight:700}
+  .migrate-body{display:grid;grid-template-columns:1fr 1fr;min-height:0}
+  .migrate-side{padding:16px;font-family:'JetBrains Mono',monospace;font-size:0.75rem;line-height:1.7;overflow-x:auto}
+  .migrate-side.before{background:var(--code-bg);border-right:1px solid var(--border)}
+  .migrate-side.after{background:#FFFBEB08}
+  .migrate-label{font-family:'Satoshi',sans-serif;font-size:0.65rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--muted);margin-bottom:8px;display:block}
+  .migrate-label.new{color:var(--amber)}
+
+  /* ── DISCUSSION / SEO ARTICLE ── */
+  .article{max-width:800px;margin:0 auto;padding:0 72px}
+  .article h2{font-size:1.5rem;font-weight:700;letter-spacing:-0.02em;margin:48px 0 16px;line-height:1.3}
+  .article h3{font-size:1.1rem;font-weight:600;margin:32px 0 12px;letter-spacing:-0.01em}
+  .article p{font-size:1rem;line-height:1.85;color:var(--text);margin-bottom:18px}
+  .article ul{margin:0 0 16px 0;padding-left:0;list-style:none}
+  .article li{font-size:0.96rem;line-height:1.75;padding:5px 0}
+  .article li::before{content:'→ ';color:var(--amber);font-weight:600}
+  .article strong{font-weight:600;color:var(--text)}
+  .article code{background:var(--bg3);border:1px solid var(--border);padding:1px 6px;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.82em;color:var(--amber)}
+  .article blockquote{border-left:3px solid var(--amber);padding:12px 20px;margin:20px 0;background:var(--bg2);border-radius:0 8px 8px 0;font-size:0.9rem;color:var(--muted)}
+
+  /* ── CODE ── */
+  .code-block{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+  .code-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--bg3);border-bottom:1px solid var(--border)}
+  .code-dots{display:flex;gap:6px}
+  .code-dots span{width:10px;height:10px;border-radius:50%}
+  .code-dots span:nth-child(1){background:#FF5F57}
+  .code-dots span:nth-child(2){background:#FEBC2E}
+  .code-dots span:nth-child(3){background:#28C840}
+  .code-lang{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--muted)}
+  .code-block pre{padding:20px;margin:0;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:1.7;overflow-x:auto;color:var(--text)}
+  .kw{color:#A626A4}.fn{color:#4078F2}.str{color:#50A14F}.num{color:#986801}
+  .cm{color:#A0A1A7;font-style:italic}.cls{color:#C18401}.prop{color:#E45649}.var{color:#383A42}
+
+  /* ── CTA ── */
+  .terminal{background:#1E293B;border:1px solid #334155;border-radius:10px;overflow:hidden}
+  .terminal-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:#0F172A;border-bottom:1px solid #334155}
+  .terminal-title{font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:#64748B}
+  .terminal pre{padding:20px;margin:0;font-family:'JetBrains Mono',monospace;font-size:0.8rem;line-height:1.7;overflow-x:auto;color:#F1F5F9}
+  .t-prompt{color:#FBBF24}.t-cmd{color:#F1F5F9}
+  .cta-section{text-align:center;padding:80px 0 60px}
+  .cta-section h2{font-size:1.85rem;font-weight:700;letter-spacing:-0.025em;margin-bottom:12px}
+  .cta-section p{font-size:1rem;color:var(--muted);margin-bottom:32px;max-width:500px;margin-left:auto;margin-right:auto}
+  .cta-section .terminal{max-width:520px;margin:0 auto 32px;text-align:left}
+  .cta-buttons{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+  .cta-btn{display:inline-block;padding:12px 28px;border-radius:8px;font-size:0.9rem;font-weight:600;text-decoration:none;transition:all 0.2s}
+  .cta-primary{background:var(--amber);color:#fff}
+  .cta-primary:hover{background:var(--amber-dim)}
+  .cta-secondary{background:transparent;color:var(--text);border:1px solid var(--border2)}
+  .cta-secondary:hover{border-color:var(--text)}
+
+  /* ── FOOTER ── */
+  .footer{border-top:1px solid var(--border);padding:40px 72px;display:flex;justify-content:space-between;align-items:center;font-size:0.9rem;color:var(--muted)}
+  .footer a{color:var(--amber);text-decoration:none;font-weight:500}
+  .footer a:hover{text-decoration:underline}
+
+  /* ── FADE ── */
+  .fade-in{opacity:0;transform:translateY(16px);transition:opacity 0.5s ease,transform 0.5s ease}
+  .fade-in.visible{opacity:1;transform:translateY(0)}
+
+  /* ── RESPONSIVE ── */
+  @media(max-width:1280px){
+    .pkg-grid{grid-template-columns:repeat(2,1fr)}
+    .chart-grid,.dive-grid,.migrate-grid{grid-template-columns:1fr}
+  }
+  @media(max-width:900px){
+    .container,.article{padding:0 24px}
+    .navbar{padding:0 24px}
+    .nav-links .nav-link-text{display:none}
+    .hero{padding:64px 24px 48px}
+    .hero h1{font-size:2.2rem}
+    .section{padding:56px 0}
+    .pkg-grid{grid-template-columns:1fr}
+    .pros-cons{grid-template-columns:1fr}
+    .migrate-body{grid-template-columns:1fr}
+    .migrate-side.before{border-right:none;border-bottom:1px solid var(--border)}
+    .footer{flex-direction:column;text-align:center;gap:8px;padding:32px 24px}
+    .cta-buttons{flex-direction:column;align-items:stretch}
+    .cta-btn{text-align:center}
+    .bar-label{width:120px;font-size:0.72rem}
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav class="navbar">
+  <a href="index.html" class="nav-brand">
+    <div class="nav-logo">P</div>
+    <span class="nav-title">PDF Studio</span>
+    <span class="nav-sub">for Laravel</span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html" class="nav-link-text">Home</a>
+    <a href="user-guide.html" class="nav-link-text">Docs</a>
+    <a href="compare.html" class="nav-link-text active">Compare</a>
+    <a href="https://github.com/sarderiftekhar/pdf-studio" class="nav-link-text" target="_blank">GitHub</a>
+    <a href="index.html#get-started" class="nav-cta">Get Started</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="fade-in">
+      <div class="hero-eyebrow">// Package Comparison</div>
+      <h1>How <span class="accent">PDF Studio</span> compares</h1>
+      <p class="hero-desc">An honest, detailed comparison against the most popular Laravel PDF packages. Features, limitations, charts, code examples, and migration paths — all in one place.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── AT A GLANCE ── -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="text-center fade-in">
+      <div class="section-eyebrow">// At a Glance</div>
+      <h2>Four packages, side by side</h2>
+      <p class="section-lead centered">A quick overview of each package's positioning, popularity, and core capabilities.</p>
+    </div>
+    <div class="pkg-grid">
+      <div class="pkg-card highlighted fade-in">
+        <span class="pkg-badge badge-rec">RECOMMENDED</span>
+        <div class="pkg-name">PDF Studio</div>
+        <div class="pkg-author">by Sarder Iftekhar &middot; MIT</div>
+        <div class="pkg-stats">
+          <div class="pkg-stat"><span class="pkg-stat-label">Drivers</span><span class="pkg-stat-val">6</span></div>
+          <div class="pkg-stat"><span class="pkg-stat-label">CSS Support</span><span class="pkg-stat-val">Full</span></div>
+          <div class="pkg-stat"><span class="pkg-stat-label">PDF Manipulation</span><span class="pkg-stat-val">15+ ops</span></div>
+          <div class="pkg-stat"><span class="pkg-stat-label">Tests</span><span class="pkg-stat-val">367+</span></div>
+          <div class="pkg-stat"><span class="pkg-stat-label">Laravel</span><span class="pkg-stat-val">10, 11, 12</span></div>
+        </div>
+        <div class="pkg-verdict">All-in-one: rendering + manipulation + SaaS platform. Every feature free under MIT.</div>
+      </div>
+      <div class="pkg-card fade-in">
+        <span class="pkg-badge badge-pop">POPULAR</span>
+        <div class="pkg-name">spatie/laravel-pdf</div>
+        <div class="pkg-author">by Spatie &middot; MIT</div>
+        <div class="pkg-stats">
+          <div class="pkg-stat"><span class="pkg-stat-label">Downloads</span><span class="pkg-stat-val">3.1M+</span></div>
+          <div class="pkg-stat"><span class="pkg-stat-label">Stars</span><span class="pkg-stat-val">~985</span></div>
+          <div class="pkg-stat"><span class="pkg-stat-label">Drivers</span><span class="pkg-stat-val">5</span></div>
+          <div class="pkg-stat"><span class="pkg-stat-label">CSS Support</span><span class="pkg-stat-val">Full*</span></div>
+          <div class="pkg-stat"><span class="pkg-stat-label">PDF Manipulation</span><span class="pkg-stat-val">None</span></div>
+        </div>
+        <div class="pkg-verdict">Solid multi-driver renderer. No manipulation, no SaaS, no Blade directives, no barcodes.</div>
+      </div>
+      <div class="pkg-card fade-in">
+        <span class="pkg-badge badge-dl">MOST DOWNLOADED</span>
+        <div class="pkg-name">barryvdh/laravel-dompdf</div>
+        <div class="pkg-author">by Barry vd. Heuvel &middot; MIT</div>
+        <div class="pkg-stats">
+          <div class="pkg-stat"><span class="pkg-stat-label">Downloads</span><span class="pkg-stat-val">86M+</span></div>
+          <div class="pkg-stat"><span class="pkg-stat-label">Stars</span><span class="pkg-stat-val">~7,230</span></div>
+          <div class="pkg-stat"><span class="pkg-stat-label">Drivers</span><span class="pkg-stat-val">1</span></div>
+          <div class="pkg-stat"><span class="pkg-stat-label">CSS Support</span><span class="pkg-stat-val">CSS 2.1</span></div>
+          <div class="pkg-stat"><span class="pkg-stat-label">PDF Manipulation</span><span class="pkg-stat-val">None</span></div>
+        </div>
+        <div class="pkg-verdict">Battle-tested dompdf wrapper. Limited CSS, no Tailwind, no manipulation. Great for simple docs.</div>
+      </div>
+      <div class="pkg-card fade-in">
+        <span class="pkg-badge badge-leg">LEGACY</span>
+        <div class="pkg-name">barryvdh/laravel-snappy</div>
+        <div class="pkg-author">by Barry vd. Heuvel &middot; MIT</div>
+        <div class="pkg-stats">
+          <div class="pkg-stat"><span class="pkg-stat-label">Downloads</span><span class="pkg-stat-val">24M+</span></div>
+          <div class="pkg-stat"><span class="pkg-stat-label">Stars</span><span class="pkg-stat-val">~2,747</span></div>
+          <div class="pkg-stat"><span class="pkg-stat-label">Drivers</span><span class="pkg-stat-val">1</span></div>
+          <div class="pkg-stat"><span class="pkg-stat-label">CSS Support</span><span class="pkg-stat-val">Good</span></div>
+          <div class="pkg-stat"><span class="pkg-stat-label">PDF Manipulation</span><span class="pkg-stat-val">None</span></div>
+        </div>
+        <div class="pkg-verdict">wkhtmltopdf wrapper. Upstream engine is abandoned. Not recommended for new projects.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURE MATRIX ── -->
+<section class="section">
+  <div class="container">
+    <div class="text-center fade-in">
+      <div class="section-eyebrow">// Feature Matrix</div>
+      <h2>The full picture, feature by feature</h2>
+      <p class="section-lead centered">Every capability compared across all four packages. Green means supported, red means missing.</p>
+    </div>
+    <div class="table-wrap fade-in">
+      <table class="cmp-table">
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th class="col-highlight">PDF Studio</th>
+            <th>spatie/laravel-pdf</th>
+            <th>barryvdh/dompdf</th>
+            <th>barryvdh/snappy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- RENDERING -->
+          <tr class="cat-row"><td colspan="5">Rendering</td></tr>
+          <tr><td class="feat-name">Rendering drivers</td><td class="col-highlight"><strong>6</strong></td><td>5</td><td>1</td><td>1</td></tr>
+          <tr><td class="feat-name">Chromium (Browsershot)</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Cloudflare Browser</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Gotenberg</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">WeasyPrint</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">dompdf</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="check">&#10003;</span></td><td><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">wkhtmltopdf</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="check">&#10003;</span></td></tr>
+          <tr><td class="feat-name">TailwindCSS support</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="partial">~</span></td></tr>
+          <tr><td class="feat-name">Bootstrap support</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="partial">~</span></td></tr>
+          <tr><td class="feat-name">Custom font registration</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="partial">~</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Asset inlining (images, CSS)</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+
+          <!-- OUTPUT -->
+          <tr class="cat-row"><td colspan="5">Output</td></tr>
+          <tr><td class="feat-name">Download / stream / inline</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="check">&#10003;</span></td><td><span class="check">&#10003;</span></td><td><span class="check">&#10003;</span></td></tr>
+          <tr><td class="feat-name">Save to Storage disk</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="check">&#10003;</span></td><td><span class="partial">~</span></td><td><span class="partial">~</span></td></tr>
+          <tr><td class="feat-name">Base64 encoding</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Queue / async rendering</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Batch rendering</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Compose (multi-section merge)</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Render caching</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+
+          <!-- BLADE -->
+          <tr class="cat-row"><td colspan="5">Blade Directives</td></tr>
+          <tr><td class="feat-name">@pageBreak / @pageBreakBefore</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">@avoidBreak / @keepTogether</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">@showIf (conditional rendering)</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">@pageNumber</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">@barcode directive</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">@qrcode directive</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+
+          <!-- MANIPULATION -->
+          <tr class="cat-row"><td colspan="5">PDF Manipulation</td></tr>
+          <tr><td class="feat-name">Merge PDFs</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Split / chunk PDFs</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Watermarks (text &amp; image)</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Password protection</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">AcroForm fill</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Page rotate / reorder / remove</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Flatten form fields</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Embed file attachments</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Thumbnails from PDF</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Inspect / validate PDFs</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+
+          <!-- TEMPLATES -->
+          <tr class="cat-row"><td colspan="5">Templates &amp; Builder</td></tr>
+          <tr><td class="feat-name">Template registry</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Template versioning</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Visual builder (JSON schema)</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Table of contents</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+
+          <!-- SAAS -->
+          <tr class="cat-row"><td colspan="5">SaaS &amp; Multi-Tenancy</td></tr>
+          <tr><td class="feat-name">Hosted rendering API</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">API key management</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Workspaces &amp; RBAC</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Usage metering</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Render analytics</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+
+          <!-- DX -->
+          <tr class="cat-row"><td colspan="5">Developer Experience</td></tr>
+          <tr><td class="feat-name">Pdf::fake() test double</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Diagnostics CLI (doctor)</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Interactive dependency installer</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Livewire download helper</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+          <tr><td class="feat-name">Header/footer per-page control</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="partial">~</span></td></tr>
+          <tr><td class="feat-name">Auto-height paper</td><td class="col-highlight"><span class="check">&#10003;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td><td><span class="cross">&#10007;</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ── CHARTS ── -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="text-center fade-in">
+      <div class="section-eyebrow">// Visual Breakdown</div>
+      <h2>Capabilities at a glance</h2>
+      <p class="section-lead centered">How each package stacks up across key dimensions.</p>
+    </div>
+    <div class="chart-grid">
+      <div class="chart-box fade-in">
+        <h3>Rendering Drivers</h3>
+        <div class="bar-chart">
+          <div class="bar-row">
+            <div class="bar-label">PDF Studio</div>
+            <div class="bar-track"><div class="bar-fill amber" style="width:100%">6</div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">spatie/laravel-pdf</div>
+            <div class="bar-track"><div class="bar-fill cyan" style="width:83%">5</div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">barryvdh/dompdf</div>
+            <div class="bar-track"><div class="bar-fill gray" style="width:17%">1</div><span class="bar-val"></span></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">barryvdh/snappy</div>
+            <div class="bar-track"><div class="bar-fill gray" style="width:17%">1</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="chart-box fade-in">
+        <h3>Total Features (from matrix above)</h3>
+        <div class="bar-chart">
+          <div class="bar-row">
+            <div class="bar-label">PDF Studio</div>
+            <div class="bar-track"><div class="bar-fill amber" style="width:100%">45+</div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">spatie/laravel-pdf</div>
+            <div class="bar-track"><div class="bar-fill cyan" style="width:24%">11</div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">barryvdh/dompdf</div>
+            <div class="bar-track"><div class="bar-fill gray" style="width:9%">4</div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">barryvdh/snappy</div>
+            <div class="bar-track"><div class="bar-fill gray" style="width:9%">4</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="chart-box fade-in">
+        <h3>PDF Manipulation Operations</h3>
+        <div class="bar-chart">
+          <div class="bar-row">
+            <div class="bar-label">PDF Studio</div>
+            <div class="bar-track"><div class="bar-fill amber" style="width:100%">10</div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">spatie/laravel-pdf</div>
+            <div class="bar-track"><div class="bar-fill gray" style="width:10%">1</div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">barryvdh/dompdf</div>
+            <div class="bar-track"><div class="bar-fill gray" style="width:0%"><span class="bar-val">0</span></div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">barryvdh/snappy</div>
+            <div class="bar-track"><div class="bar-fill gray" style="width:0%"><span class="bar-val">0</span></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="chart-box fade-in">
+        <h3>Blade Directives</h3>
+        <div class="bar-chart">
+          <div class="bar-row">
+            <div class="bar-label">PDF Studio</div>
+            <div class="bar-track"><div class="bar-fill amber" style="width:100%">8+</div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">spatie/laravel-pdf</div>
+            <div class="bar-track"><div class="bar-fill gray" style="width:0%"><span class="bar-val">0</span></div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">barryvdh/dompdf</div>
+            <div class="bar-track"><div class="bar-fill gray" style="width:0%"><span class="bar-val">0</span></div></div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-label">barryvdh/snappy</div>
+            <div class="bar-track"><div class="bar-fill gray" style="width:0%"><span class="bar-val">0</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── DEEP DIVES ── -->
+<section class="section">
+  <div class="container">
+    <div class="text-center fade-in">
+      <div class="section-eyebrow">// Package Profiles</div>
+      <h2>A closer look at each package</h2>
+      <p class="section-lead centered">Strengths, weaknesses, and ideal use cases for each option.</p>
+    </div>
+    <div class="dive-grid">
+      <div class="dive-card highlighted fade-in">
+        <h3>PDF Studio</h3>
+        <div class="dive-pkg">sarder/pdfstudio</div>
+        <div class="tag-row">
+          <span class="tag tag-green">6 Drivers</span>
+          <span class="tag tag-green">MIT</span>
+          <span class="tag tag-green">Full CSS</span>
+          <span class="tag tag-green">Manipulation</span>
+          <span class="tag tag-green">SaaS</span>
+        </div>
+        <p>The only Laravel PDF package that combines rendering, manipulation, and a full SaaS platform in a single package. Six rendering drivers, 8+ Blade directives, barcode/QR generation, template versioning, visual builder, hosted API, workspaces, usage metering, and analytics — all under MIT with zero license fees.</p>
+        <div class="pros-cons">
+          <div class="pros">
+            <h4>Strengths</h4>
+            <ul>
+              <li>All-in-one: no need for multiple packages</li>
+              <li>Most rendering drivers (6)</li>
+              <li>Full PDF manipulation pipeline</li>
+              <li>SaaS-ready out of the box</li>
+              <li>367+ tests, PHPStan level 6</li>
+              <li>Pdf::fake() for testing</li>
+              <li>TailwindCSS + Bootstrap support</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>Trade-offs</h4>
+            <ul>
+              <li>Newer package, smaller community</li>
+              <li>Fewer Packagist downloads (so far)</li>
+              <li>Larger surface area to learn</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="dive-card fade-in">
+        <h3>spatie/laravel-pdf</h3>
+        <div class="dive-pkg">spatie/laravel-pdf v2</div>
+        <div class="tag-row">
+          <span class="tag tag-green">5 Drivers</span>
+          <span class="tag tag-green">MIT</span>
+          <span class="tag tag-green">Queue Support</span>
+          <span class="tag tag-yellow">Render Only</span>
+        </div>
+        <p>A well-maintained multi-driver renderer from Spatie, the most respected Laravel package vendor. V2 added Cloudflare, Gotenberg, WeasyPrint, and dompdf drivers alongside the original Browsershot. Clean API and excellent documentation, but strictly limited to rendering — no manipulation, no Blade directives, no SaaS features.</p>
+        <div class="pros-cons">
+          <div class="pros">
+            <h4>Strengths</h4>
+            <ul>
+              <li>Trusted Spatie brand</li>
+              <li>Clean, focused API</li>
+              <li>Good multi-driver support (v2)</li>
+              <li>Queue support</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>Limitations</h4>
+            <ul>
+              <li>No PDF manipulation at all</li>
+              <li>No Blade directives</li>
+              <li>No barcodes or QR codes</li>
+              <li>No template registry or versioning</li>
+              <li>No SaaS / multi-tenant features</li>
+              <li>No testing helpers (Pdf::fake)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="dive-card fade-in">
+        <h3>barryvdh/laravel-dompdf</h3>
+        <div class="dive-pkg">barryvdh/laravel-dompdf</div>
+        <div class="tag-row">
+          <span class="tag tag-green">Zero Deps</span>
+          <span class="tag tag-green">86M Downloads</span>
+          <span class="tag tag-red">CSS 2.1 Only</span>
+          <span class="tag tag-yellow">Render Only</span>
+        </div>
+        <p>The most downloaded Laravel PDF package ever. A thin wrapper around the dompdf library with Blade view support, streaming, and basic configuration. Perfect for simple documents where CSS limitations don't matter. However, it cannot render Tailwind, Flexbox, or Grid — and offers no manipulation features.</p>
+        <div class="pros-cons">
+          <div class="pros">
+            <h4>Strengths</h4>
+            <ul>
+              <li>Zero external dependencies</li>
+              <li>Simple setup (composer install and go)</li>
+              <li>Huge community / StackOverflow coverage</li>
+              <li>Battle-tested over 10+ years</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>Limitations</h4>
+            <ul>
+              <li>CSS 2.1 only — no Flexbox, Grid, Tailwind</li>
+              <li>Single driver, no switching</li>
+              <li>No manipulation, no merge, no watermark</li>
+              <li>No Blade directives</li>
+              <li>No queue or batch rendering</li>
+              <li>Struggles with complex layouts</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="dive-card fade-in">
+        <h3>barryvdh/laravel-snappy</h3>
+        <div class="dive-pkg">barryvdh/laravel-snappy</div>
+        <div class="tag-row">
+          <span class="tag tag-red">Engine Abandoned</span>
+          <span class="tag tag-yellow">Good CSS</span>
+          <span class="tag tag-muted">Legacy</span>
+        </div>
+        <p>A wrapper around wkhtmltopdf, which uses an older WebKit engine. It offered good CSS support for its time, but the upstream wkhtmltopdf project has been abandoned with no active maintainer. Not recommended for new projects. Existing users should plan a migration.</p>
+        <div class="pros-cons">
+          <div class="pros">
+            <h4>Strengths</h4>
+            <ul>
+              <li>No Node.js required</li>
+              <li>Decent CSS support (for 2018)</li>
+              <li>Header/footer support</li>
+            </ul>
+          </div>
+          <div class="cons">
+            <h4>Limitations</h4>
+            <ul>
+              <li>wkhtmltopdf is abandoned upstream</li>
+              <li>No modern CSS (Tailwind, Grid)</li>
+              <li>Single driver, no switching</li>
+              <li>No manipulation features</li>
+              <li>Security concerns (unmaintained binary)</li>
+              <li>Declining community support</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── MIGRATION ── -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="text-center fade-in">
+      <div class="section-eyebrow">// Migration Guide</div>
+      <h2>Switch in minutes, not days</h2>
+      <p class="section-lead centered">PDF Studio's fluent API is familiar to anyone who's used Laravel PDF packages. Here's what changes.</p>
+    </div>
+    <div class="migrate-grid">
+      <div class="migrate-card fade-in">
+        <div class="migrate-header">From barryvdh/laravel-dompdf</div>
+        <div class="migrate-body">
+          <div class="migrate-side before">
+            <span class="migrate-label">Before</span>
+<span class="kw">use</span> <span class="cls">Barryvdh\DomPDF\Facade\Pdf</span>;
+
+<span class="kw">return</span> <span class="cls">Pdf</span>::<span class="fn">loadView</span>(<span class="str">'invoice'</span>, <span class="var">$data</span>)
+    -><span class="fn">download</span>(<span class="str">'invoice.pdf'</span>);
+          </div>
+          <div class="migrate-side after">
+            <span class="migrate-label new">After (PDF Studio)</span>
+<span class="kw">use</span> <span class="cls">PdfStudio\Laravel\Facades\Pdf</span>;
+
+<span class="kw">return</span> <span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'invoice'</span>)
+    -><span class="fn">data</span>(<span class="var">$data</span>)
+    -><span class="fn">download</span>(<span class="str">'invoice.pdf'</span>);
+          </div>
+        </div>
+      </div>
+      <div class="migrate-card fade-in">
+        <div class="migrate-header">From spatie/laravel-pdf</div>
+        <div class="migrate-body">
+          <div class="migrate-side before">
+            <span class="migrate-label">Before</span>
+<span class="kw">use</span> <span class="cls">Spatie\LaravelPdf\Facades\Pdf</span>;
+
+<span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'invoice'</span>)
+    -><span class="fn">save</span>(<span class="str">'invoice.pdf'</span>);
+          </div>
+          <div class="migrate-side after">
+            <span class="migrate-label new">After (PDF Studio)</span>
+<span class="kw">use</span> <span class="cls">PdfStudio\Laravel\Facades\Pdf</span>;
+
+<span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'invoice'</span>)
+    -><span class="fn">save</span>(<span class="str">'invoice.pdf'</span>);
+          </div>
+        </div>
+      </div>
+      <div class="migrate-card fade-in">
+        <div class="migrate-header">From barryvdh/laravel-snappy</div>
+        <div class="migrate-body">
+          <div class="migrate-side before">
+            <span class="migrate-label">Before</span>
+<span class="kw">use</span> <span class="cls">Barryvdh\Snappy\Facades\SnappyPdf</span>;
+
+<span class="kw">return</span> <span class="cls">SnappyPdf</span>::<span class="fn">loadView</span>(<span class="str">'report'</span>, <span class="var">$data</span>)
+    -><span class="fn">download</span>(<span class="str">'report.pdf'</span>);
+          </div>
+          <div class="migrate-side after">
+            <span class="migrate-label new">After (PDF Studio)</span>
+<span class="kw">use</span> <span class="cls">PdfStudio\Laravel\Facades\Pdf</span>;
+
+<span class="kw">return</span> <span class="cls">Pdf</span>::<span class="fn">view</span>(<span class="str">'report'</span>)
+    -><span class="fn">data</span>(<span class="var">$data</span>)
+    -><span class="fn">download</span>(<span class="str">'report.pdf'</span>);
+          </div>
+        </div>
+      </div>
+      <div class="migrate-card fade-in">
+        <div class="migrate-header">Then unlock what others can't do</div>
+        <div class="migrate-body" style="grid-template-columns:1fr">
+          <div class="migrate-side after" style="border-right:none">
+            <span class="migrate-label new">New capabilities</span>
+<span class="cm">// Merge, watermark, protect — all in one chain</span>
+<span class="cls">Pdf</span>::<span class="fn">merge</span>([<span class="str">'cover.pdf'</span>, <span class="str">'report.pdf'</span>])
+    -><span class="fn">watermark</span>(<span class="str">'DRAFT'</span>, <span class="prop">opacity</span>: <span class="num">0.3</span>)
+    -><span class="fn">protect</span>(<span class="prop">ownerPassword</span>: <span class="str">'admin'</span>)
+    -><span class="fn">download</span>(<span class="str">'final.pdf'</span>);
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── DISCUSSION / SEO ARTICLE ── -->
+<section class="section">
+  <div class="article">
+    <div class="fade-in">
+      <div class="section-eyebrow">// In-Depth Discussion</div>
+      <h2>Why consider PDF Studio over established alternatives?</h2>
+
+      <p>The Laravel ecosystem has relied on a handful of PDF packages for years. <strong>barryvdh/laravel-dompdf</strong> has been the default choice since Laravel 4, and <strong>spatie/laravel-pdf</strong> modernized the space with Chromium-based rendering. Both are excellent at what they do. So why would you consider a newer package like PDF Studio?</p>
+
+      <p>The answer is scope. Every existing Laravel PDF package solves one problem: <em>turning HTML into a PDF file</em>. PDF Studio solves that problem too — with six rendering drivers — but it also solves the dozen problems that come <em>after</em> rendering.</p>
+
+      <h3>The "After Rendering" problem</h3>
+
+      <p>In real-world applications, generating a PDF is rarely the end of the workflow. You need to merge a cover page with a report. You need to watermark drafts. You need to password-protect contracts. You need to fill out government forms. You need to split a 200-page document into chunks for email. You need to generate a thumbnail for a file manager.</p>
+
+      <p>With existing packages, each of these requirements means pulling in another library, writing glue code, and maintaining multiple dependencies. With PDF Studio, they're all built in:</p>
+
+      <ul>
+        <li><code>Pdf::merge()</code> — combine PDFs with page range selection</li>
+        <li><code>->watermark()</code> — text or image watermarks, chainable after render</li>
+        <li><code>->protect()</code> — password protection with granular permissions</li>
+        <li><code>Pdf::acroform()</code> — fill PDF form fields programmatically</li>
+        <li><code>Pdf::split()</code> / <code>Pdf::chunk()</code> — divide large documents</li>
+        <li><code>Pdf::thumbnail()</code> — generate preview images from existing PDFs</li>
+      </ul>
+
+      <h3>The CSS framework gap</h3>
+
+      <p>If your application uses TailwindCSS — and in 2026, most Laravel applications do — <strong>barryvdh/laravel-dompdf cannot render your templates</strong>. DomPDF only supports CSS 2.1. No Flexbox, no Grid, no utility classes. You end up maintaining a completely separate stylesheet just for PDFs.</p>
+
+      <p>Spatie's laravel-pdf solves this with Chromium-based drivers, and PDF Studio does too. But PDF Studio goes further with <strong>first-class Bootstrap support</strong>, automatic CSS compilation and caching for Tailwind, and an asset resolver that inlines local images and stylesheets to prevent broken references across different rendering drivers.</p>
+
+      <h3>Blade directives that understand PDF layouts</h3>
+
+      <p>No other Laravel PDF package ships Blade directives designed for PDF-specific layout concerns. PDF Studio includes <code>@pageBreak</code>, <code>@avoidBreak</code>, <code>@keepTogether</code>, <code>@showIf</code>, and <code>@pageNumber</code> — all of which generate the correct CSS for controlling page breaks and conditional content across every supported rendering driver.</p>
+
+      <p>It also includes <code>@barcode</code> and <code>@qrcode</code> directives for embedding barcodes directly in Blade templates — a common requirement for invoices, shipping labels, and inventory documents that other packages leave entirely to third-party solutions.</p>
+
+      <h3>When you need more than a library: the SaaS layer</h3>
+
+      <p>If you're building a product that generates PDFs for customers — an invoicing tool, a reporting platform, a document signing service — you eventually need multi-tenancy, API access, usage tracking, and billing integration. These are not niche requirements; they're table stakes for any SaaS product that handles PDF generation.</p>
+
+      <p>PDF Studio includes all of this out of the box:</p>
+
+      <ul>
+        <li><strong>Workspaces with role-based access control</strong> — owner, admin, member, viewer roles with middleware protection</li>
+        <li><strong>API key management</strong> — SHA-256 hashed keys with prefix display, expiration, and revocation</li>
+        <li><strong>Hosted rendering API</strong> — sync and async endpoints with bearer token authentication</li>
+        <li><strong>Usage metering</strong> — idempotent tracking with BillableEvent dispatch for Stripe integration</li>
+        <li><strong>Render analytics</strong> — query success rates, render times, and byte totals per workspace</li>
+      </ul>
+
+      <p>Building these features from scratch typically takes weeks of development time. With PDF Studio, you enable them by setting <code>PDF_STUDIO_SAAS=true</code> in your <code>.env</code> and running migrations.</p>
+
+      <h3>Testing: a first-class concern</h3>
+
+      <p>None of the established packages provide a testing helper. When you test code that generates PDFs with barryvdh/laravel-dompdf or spatie/laravel-pdf, you either mock the facade yourself, set up a slow integration test with a real rendering engine, or skip the test entirely.</p>
+
+      <p>PDF Studio ships <code>Pdf::fake()</code> — a purpose-built test double with <strong>12 assertion methods</strong>: <code>assertRendered()</code>, <code>assertRenderedView()</code>, <code>assertDownloaded()</code>, <code>assertSavedTo()</code>, <code>assertDriverWas()</code>, <code>assertMerged()</code>, <code>assertWatermarked()</code>, <code>assertProtected()</code>, and more. Your tests run in milliseconds with zero external dependencies.</p>
+
+      <h3>Developer experience beyond rendering</h3>
+
+      <p>PDF Studio is the only Laravel PDF package that ships with a <strong>diagnostics command</strong> (<code>php artisan pdf-studio:doctor</code>) that checks your entire installation — PHP version, extensions, driver binaries, font paths, and performs a test render. It's the difference between debugging a cryptic error and getting a clear "[FAIL] wkhtmltopdf not found — Fix: Install wkhtmltopdf or update config path" message.</p>
+
+      <p>The <strong>interactive dependency installer</strong> (<code>php artisan pdf-studio:install</code>) lets you pick exactly which features you need. No bloated installs, no guessing which Composer packages correspond to which features.</p>
+
+      <h3>When should you stick with the alternatives?</h3>
+
+      <blockquote>Honesty builds trust. Here's when PDF Studio might not be your best choice.</blockquote>
+
+      <p><strong>Choose barryvdh/laravel-dompdf if:</strong> You need the absolute simplest setup for basic documents. No Node.js, no binaries, no configuration. If your PDFs are plain text with tables and basic styling, dompdf gets the job done with zero friction. Its 86M+ downloads mean StackOverflow has an answer for every edge case.</p>
+
+      <p><strong>Choose spatie/laravel-pdf if:</strong> You only need rendering (no manipulation), you're already invested in the Spatie ecosystem, and you value the brand trust that comes with Spatie's long track record. Their v2 driver architecture is well-designed and thoroughly documented.</p>
+
+      <p><strong>Choose PDF Studio if:</strong> You need any combination of rendering + manipulation + templates + SaaS features. If your project will eventually need merging, watermarking, form filling, multi-tenancy, or API access, PDF Studio saves you from integrating multiple packages later. It's the "buy once, use everything" option — except it's free.</p>
+
+      <h3>The bottom line</h3>
+
+      <p>PDF Studio isn't trying to replace barryvdh/laravel-dompdf or spatie/laravel-pdf. It's trying to be the package you wish existed when you realized your PDF workflow needed more than just rendering. If you've ever written glue code to merge PDFs, built a custom watermark pipeline, or wrestled with testing PDF output in a CI environment — PDF Studio was built for you.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="cta-section fade-in">
+      <h2>Ready to try PDF Studio?</h2>
+      <p>Install via Composer. The service provider and Pdf facade are auto-discovered. Zero configuration required.</p>
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="terminal-title">bash</span>
+        </div>
+        <pre><span class="t-prompt">$</span> <span class="t-cmd">composer require sarder/pdfstudio</span>
+<span class="t-prompt">$</span> <span class="t-cmd">php artisan pdf-studio:install</span></pre>
+      </div>
+      <div class="cta-buttons">
+        <a href="user-guide.html" class="cta-btn cta-primary">Read the Documentation</a>
+        <a href="https://github.com/sarderiftekhar/pdf-studio" class="cta-btn cta-secondary" target="_blank">View on GitHub</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer class="footer">
+  <div>PDF Studio for Laravel &mdash; MIT License &mdash; <a href="https://github.com/sarderiftekhar/pdf-studio" target="_blank">GitHub</a></div>
+  <div>Made with care by <a href="https://github.com/sarderiftekhar" target="_blank">Sarder Iftekhar</a></div>
+</footer>
+
+<script>
+  // Fade-in observer
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Sticky table header
+  (function() {
+    const tableWrap = document.querySelector('.table-wrap');
+    const table = document.querySelector('.cmp-table');
+    if (!tableWrap || !table) return;
+    const thead = table.querySelector('thead');
+    if (!thead) return;
+
+    // Create floating header
+    const stickyDiv = document.createElement('div');
+    stickyDiv.className = 'sticky-header';
+    const stickyTable = document.createElement('table');
+    stickyTable.appendChild(thead.cloneNode(true));
+    stickyDiv.appendChild(stickyTable);
+    document.body.appendChild(stickyDiv);
+
+    function syncWidths() {
+      const origCells = thead.querySelectorAll('th');
+      const cloneCells = stickyDiv.querySelectorAll('th');
+      const tableRect = table.getBoundingClientRect();
+      stickyTable.style.width = tableRect.width + 'px';
+      stickyDiv.style.left = tableRect.left + 'px';
+      stickyDiv.style.right = 'auto';
+      stickyDiv.style.width = tableWrap.clientWidth + 'px';
+      origCells.forEach((cell, i) => {
+        if (cloneCells[i]) cloneCells[i].style.width = cell.getBoundingClientRect().width + 'px';
+      });
+    }
+
+    function onScroll() {
+      const wrapRect = tableWrap.getBoundingClientRect();
+      const navHeight = 60;
+      const show = wrapRect.top < navHeight && wrapRect.bottom > navHeight + 60;
+      stickyDiv.classList.toggle('visible', show);
+      if (show) {
+        syncWidths();
+        stickyDiv.scrollLeft = tableWrap.scrollLeft;
+      }
+    }
+
+    tableWrap.addEventListener('scroll', () => {
+      if (stickyDiv.classList.contains('visible')) {
+        stickyDiv.scrollLeft = tableWrap.scrollLeft;
+      }
+    });
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', syncWidths);
+  })();
+</script>
+</body>
+</html>
