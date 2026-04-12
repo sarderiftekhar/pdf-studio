@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.0] - 2026-04-12
+
+### Added
+- **Laravel 13 Support** — Added compatibility with Laravel 13.x (`illuminate/contracts`, `illuminate/database`, `illuminate/support` ^13.0)
+- **CI Matrix Expansion** — Tests now run against Laravel 11, 12, and 13 across PHP 8.2, 8.3, and 8.4
+
+### Changed
+- **PHPStan 2.0** — Upgraded static analysis from PHPStan 1.x to 2.0; removed deprecated `bleedingEdge.neon` include (now default in v2)
+- **Pest 3 Only** — Dropped Pest 2.x support; dev dependency now requires `^3.0` for pest, pest-plugin-arch, and pest-plugin-laravel
+- **Orchestra Testbench** — Added `^11.0` support for Laravel 13 testing
+- **Laravel Pint** — Added `^2.0` support alongside existing `^1.0`
+- **chillerlan/php-qrcode** — Added `^6.0` support alongside existing `^5.0`
+- **CI PHP Version** — Static analysis and code style checks now run on PHP 8.3 (previously 8.2)
+- **Laravel 13 + PHP 8.2 Exclusion** — CI matrix excludes PHP 8.2 with Laravel 13 (requires PHP 8.3+)
+
 ## [2.0.0] - 2026-03-08
 
 ### Added
