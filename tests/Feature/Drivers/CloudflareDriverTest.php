@@ -33,10 +33,7 @@ it('reports correct capabilities', function () {
 });
 
 it('builds a cloudflare pdf payload with readiness and print options', function () {
-    $driver = new class([
-        'account_id' => 'acc_123',
-        'api_token' => 'token_123',
-    ]) extends CloudflareDriver
+    $driver = new class(['account_id' => 'acc_123', 'api_token' => 'token_123']) extends CloudflareDriver
     {
         /** @var array{url: string, payload: array<string, mixed>, timeout: int}|null */
         public ?array $capturedRequest = null;
@@ -103,10 +100,7 @@ it('throws when cloudflare credentials are missing', function () {
 })->throws(DriverException::class, 'account_id');
 
 it('throws on non-success cloudflare responses', function () {
-    $driver = new class([
-        'account_id' => 'acc_123',
-        'api_token' => 'token_123',
-    ]) extends CloudflareDriver
+    $driver = new class(['account_id' => 'acc_123', 'api_token' => 'token_123']) extends CloudflareDriver
     {
         protected function sendRequest(string $url, array $payload, int $timeout): array
         {

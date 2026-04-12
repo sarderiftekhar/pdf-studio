@@ -134,10 +134,6 @@ class WeasyPrintDriver implements RendererContract
         $tags = '';
 
         foreach ($options->metadata as $name => $value) {
-            if (!is_scalar($value) && $value !== null) {
-                continue;
-            }
-
             $content = htmlspecialchars((string) ($value ?? ''), ENT_QUOTES, 'UTF-8');
             $metaName = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
             $tags .= "<meta name=\"{$metaName}\" content=\"{$content}\">";

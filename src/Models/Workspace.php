@@ -2,6 +2,7 @@
 
 namespace PdfStudio\Laravel\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string $name
  * @property string $slug
  *
- * @mixin \Illuminate\Database\Eloquent\Builder<Workspace>
+ * @mixin Builder<Workspace>
  */
 class Workspace extends Model
 {

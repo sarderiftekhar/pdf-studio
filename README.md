@@ -2,7 +2,7 @@
 
 Design, preview, and generate PDFs using HTML and TailwindCSS in Laravel.
 
-[![Tests](https://img.shields.io/badge/tests-367%20passing-brightgreen)](tests)
+[![Tests](https://img.shields.io/badge/tests-527%20passing-brightgreen)](tests)
 [![PHPStan](https://img.shields.io/badge/phpstan-level%206-blue)](phpstan.neon)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
@@ -47,8 +47,8 @@ Design, preview, and generate PDFs using HTML and TailwindCSS in Laravel.
 
 ## Requirements
 
-- **PHP** >= 8.1
-- **Laravel** 10.x, 11.x, or 12.x
+- **PHP** >= 8.2
+- **Laravel** 11.x, 12.x, or 13.x
 
 ### Optional Dependencies
 

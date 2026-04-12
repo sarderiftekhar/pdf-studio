@@ -1,9 +1,12 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
+use PdfStudio\Laravel\Jobs\RenderPdfJob;
 use PdfStudio\Laravel\Models\ApiKey;
 use PdfStudio\Laravel\Models\RenderJob;
 use PdfStudio\Laravel\Models\Workspace;
+use PdfStudio\Laravel\PdfStudioServiceProvider;
 
 uses(RefreshDatabase::class);
 
@@ -21,7 +24,7 @@ function setupSaasWorkspace(): array
     ]);
 
     // Re-register routes
-    $provider = app()->getProvider(\PdfStudio\Laravel\PdfStudioServiceProvider::class);
+    $provider = app()->getProvider(PdfStudioServiceProvider::class);
     $provider->boot();
 
     $workspace = Workspace::create(['name' => 'Acme', 'slug' => 'acme']);
@@ -48,7 +51,7 @@ it('renders PDF synchronously via API', function () {
 });
 
 it('creates async render job', function () {
-    \Illuminate\Support\Facades\Queue::fake();
+    Queue::fake();
 
     $setup = setupSaasWorkspace();
 
@@ -77,7 +80,7 @@ it('rejects sync API views that are not explicitly allowed', function () {
 });
 
 it('rejects async API views that are not explicitly allowed', function () {
-    \Illuminate\Support\Facades\Queue::fake();
+    Queue::fake();
 
     $setup = setupSaasWorkspace();
     config([
@@ -103,7 +106,7 @@ it('rejects API views when no allowlist or registered templates exist', function
 });
 
 it('dispatches async HTML renders without losing the html payload', function () {
-    \Illuminate\Support\Facades\Queue::fake();
+    Queue::fake();
 
     $setup = setupSaasWorkspace();
 
@@ -114,9 +117,9 @@ it('dispatches async HTML renders without losing the html payload', function () 
 
     $response->assertStatus(202);
 
-    \Illuminate\Support\Facades\Queue::assertPushed(
-        \PdfStudio\Laravel\Jobs\RenderPdfJob::class,
-        fn (\PdfStudio\Laravel\Jobs\RenderPdfJob $job) => $job->html === '<h1>Async HTML</h1>'
+    Queue::assertPushed(
+        RenderPdfJob::class,
+        fn (RenderPdfJob $job) => $job->html === '<h1>Async HTML</h1>'
             && $job->view === ''
     );
 });
@@ -169,7 +172,7 @@ it('rejects unauthenticated requests', function () {
         'pdf-studio.saas.api.middleware' => [],
     ]);
 
-    $provider = app()->getProvider(\PdfStudio\Laravel\PdfStudioServiceProvider::class);
+    $provider = app()->getProvider(PdfStudioServiceProvider::class);
     $provider->boot();
 
     $response = $this->postJson('/api/pdf-studio/render', [

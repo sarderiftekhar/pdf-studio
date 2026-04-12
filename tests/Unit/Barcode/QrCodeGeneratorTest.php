@@ -1,6 +1,9 @@
 <?php
 
 use PdfStudio\Laravel\Barcode\QrCodeGenerator;
+use PdfStudio\Laravel\Tests\TestCase;
+
+uses(TestCase::class);
 
 it('generates SVG QR code', function () {
     $generator = new QrCodeGenerator;

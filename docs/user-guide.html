@@ -763,17 +763,17 @@
 
   <!-- HERO -->
   <header class="hero">
-    <div class="hero-eyebrow">Documentation · v2.0.0</div>
+    <div class="hero-eyebrow">Documentation · v3.0.0</div>
     <h1>PDF <span>Studio</span><br>for Laravel</h1>
     <p class="hero-desc">Design, preview, and generate PDFs using HTML and TailwindCSS. From simple invoices to hosted rendering platforms.</p>
     <p style="margin-top:0.6rem;font-size:0.82rem;opacity:0.6;letter-spacing:0.03em;">Free &amp; open source · MIT License · All features included</p>
     <div class="hero-stats">
       <div class="stat">
-        <div class="stat-num">367</div>
+        <div class="stat-num">527</div>
         <div class="stat-label">Tests Passing</div>
       </div>
       <div class="stat">
-        <div class="stat-num">3</div>
+        <div class="stat-num">7</div>
         <div class="stat-label">PDF Drivers</div>
       </div>
       <div class="stat">
@@ -1736,7 +1736,7 @@
 
     <div class="divider"></div>
 
-    <!-- ══════════════ PDF MANIPULATION (v2.0.0) ══════════════ -->
+    <!-- ══════════════ PDF MANIPULATION ══════════════ -->
 
     <!-- ── MERGING ── -->
     <section class="section fade-in" id="merging">
@@ -2087,7 +2087,7 @@
 
 <span class="t-out">  PDF Studio Diagnostics
 
-  [PASS] PHP Version >= 8.1
+  [PASS] PHP Version >= 8.2
   [PASS] Memory Limit (512M)
   [PASS] Node.js (v22.16.0)
   [PASS] dompdf/dompdf installed
@@ -2102,7 +2102,7 @@
       <table class="data-table">
         <thead><tr><th>Check</th><th>Description</th></tr></thead>
         <tbody>
-          <tr><td>PHP Version</td><td>Verifies PHP >= 8.1</td></tr>
+          <tr><td>PHP Version</td><td>Verifies PHP >= 8.2</td></tr>
           <tr><td>Memory Limit</td><td>Ensures >= 128MB</td></tr>
           <tr><td>Node.js</td><td>Required for Chromium driver</td></tr>
           <tr><td>dompdf</td><td>Checks if dompdf/dompdf is installed</td></tr>
@@ -2399,7 +2399,7 @@
 <span class="t-prompt">$</span> <span class="t-cmd">composer analyse</span>       <span class="t-dim"># phpstan level 6</span>
 <span class="t-prompt">$</span> <span class="t-cmd">composer lint</span>          <span class="t-dim"># laravel pint</span>
 
-<span class="t-out">  Tests:    367 passed, 9 skipped
+<span class="t-out">  Tests:    527 passed, 12 skipped
   Duration: 4.23s</span></pre>
       </div>
 
@@ -2842,7 +2842,7 @@ $colorClass = match($status) {
     <section class="section fade-in" id="livewire">
       <div class="section-eyebrow ey-base">// 28 · Framework Integrations</div>
       <h2>Livewire</h2>
-      <p class="section-lead">PDF Studio integrates natively with Livewire — call the <code>Pdf</code> facade directly from any Livewire component action. In v2.0.0, use the dedicated <code>livewireDownload()</code> method for reliable downloads.</p>
+      <p class="section-lead">PDF Studio integrates natively with Livewire — call the <code>Pdf</code> facade directly from any Livewire component action. Use the dedicated <code>livewireDownload()</code> method for reliable downloads.</p>
 
       <h3>livewireDownload() — recommended <span class="nav-badge nb-saas" style="vertical-align:middle;">v2</span></h3>
       <p>The <code>livewireDownload()</code> method returns a <code>StreamedResponse</code> that bypasses Livewire's response interception, fixing download issues with Livewire 3 and Filament.</p>

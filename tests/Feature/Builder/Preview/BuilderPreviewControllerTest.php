@@ -1,5 +1,7 @@
 <?php
 
+use PdfStudio\Laravel\PdfStudioServiceProvider;
+
 beforeEach(function () {
     $this->app['config']->set('pdf-studio.preview.enabled', true);
     $this->app['config']->set('pdf-studio.preview.environment_gate', false);
@@ -7,7 +9,7 @@ beforeEach(function () {
 
     // Register builder preview routes since they're registered at boot time
     // and we changed config after boot
-    $provider = $this->app->make(\PdfStudio\Laravel\PdfStudioServiceProvider::class, ['app' => $this->app]);
+    $provider = $this->app->make(PdfStudioServiceProvider::class, ['app' => $this->app]);
     $provider->boot();
 });
 

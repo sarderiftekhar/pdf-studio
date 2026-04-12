@@ -3,8 +3,8 @@
 namespace PdfStudio\Laravel\Pipeline;
 
 use Closure;
-use PdfStudio\Laravel\Fonts\FontCssGenerator;
 use PdfStudio\Laravel\DTOs\RenderContext;
+use PdfStudio\Laravel\Fonts\FontCssGenerator;
 
 class CssInjector
 {

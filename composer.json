@@ -12,19 +12,19 @@
     ],
     "require": {
         "php": "^8.2",
-        "illuminate/contracts": "^11.0|^12.0",
-        "illuminate/database": "^11.0|^12.0",
-        "illuminate/support": "^11.0|^12.0"
+        "illuminate/contracts": "^11.0|^12.0|^13.0",
+        "illuminate/database": "^11.0|^12.0|^13.0",
+        "illuminate/support": "^11.0|^12.0|^13.0"
     },
     "require-dev": {
-        "chillerlan/php-qrcode": "^5.0",
+        "chillerlan/php-qrcode": "^5.0|^6.0",
         "dompdf/dompdf": "^3.1",
-        "laravel/pint": "^1.0",
-        "orchestra/testbench": "^9.0|^10.0",
-        "pestphp/pest": "^2.0|^3.0",
-        "pestphp/pest-plugin-arch": "^2.0|^3.0",
-        "pestphp/pest-plugin-laravel": "^2.0|^3.0",
-        "phpstan/phpstan": "^1.10",
+        "laravel/pint": "^1.0|^2.0",
+        "orchestra/testbench": "^9.0|^10.0|^11.0",
+        "pestphp/pest": "^3.0|^4.0",
+        "pestphp/pest-plugin-arch": "^3.0|^4.0",
+        "pestphp/pest-plugin-laravel": "^3.0|^4.0",
+        "phpstan/phpstan": "^2.0",
         "picqer/php-barcode-generator": "^3.0",
         "spatie/browsershot": "^5.2"
     },
@@ -34,7 +34,7 @@
         "setasign/fpdi": "Required for PDF merging and watermarking (^2.3)",
         "mikehaertl/php-pdftk": "Required for AcroForm filling and password protection (^4.0)",
         "picqer/php-barcode-generator": "Required for @barcode Blade directive (^3.0)",
-        "chillerlan/php-qrcode": "Required for @qrcode Blade directive (^5.0)",
+        "chillerlan/php-qrcode": "Required for @qrcode Blade directive (^5.0|^6.0)",
         "ext-imagick": "Required for PDF thumbnail generation from existing files"
     },
     "autoload": {

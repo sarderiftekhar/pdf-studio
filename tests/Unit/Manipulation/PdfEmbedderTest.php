@@ -30,11 +30,7 @@ it('builds a gotenberg embed request and returns a PdfResult', function () {
     $attachmentPath = tempnam(sys_get_temp_dir(), 'pdfstudio_embed_');
     file_put_contents($attachmentPath, 'embedded-data');
 
-    $embedder = new class([
-        'url' => 'http://gotenberg.test',
-        'timeout' => 60,
-        'headers' => [],
-    ]) extends PdfEmbedder
+    $embedder = new class(['url' => 'http://gotenberg.test', 'timeout' => 60, 'headers' => []]) extends PdfEmbedder
     {
         /** @var array{url: string, headers: array<string, string>, body: string, timeout: int}|null */
         public ?array $capturedRequest = null;
@@ -75,11 +71,7 @@ it('throws on non-success gotenberg embed responses', function () {
     $attachmentPath = tempnam(sys_get_temp_dir(), 'pdfstudio_embed_');
     file_put_contents($attachmentPath, 'embedded-data');
 
-    $embedder = new class([
-        'url' => 'http://gotenberg.test',
-        'timeout' => 60,
-        'headers' => [],
-    ]) extends PdfEmbedder
+    $embedder = new class(['url' => 'http://gotenberg.test', 'timeout' => 60, 'headers' => []]) extends PdfEmbedder
     {
         protected function sendRequest(string $url, array $headers, string $body, int $timeout): array
         {
@@ -104,11 +96,7 @@ it('throws when gotenberg returns non-pdf output for embed requests', function (
     $attachmentPath = tempnam(sys_get_temp_dir(), 'pdfstudio_embed_');
     file_put_contents($attachmentPath, 'embedded-data');
 
-    $embedder = new class([
-        'url' => 'http://gotenberg.test',
-        'timeout' => 60,
-        'headers' => [],
-    ]) extends PdfEmbedder
+    $embedder = new class(['url' => 'http://gotenberg.test', 'timeout' => 60, 'headers' => []]) extends PdfEmbedder
     {
         protected function sendRequest(string $url, array $headers, string $body, int $timeout): array
         {

@@ -87,14 +87,14 @@ class GotenbergDriver implements RendererContract
         }
 
         foreach ($options->attachments as $attachment) {
+            $name = $attachment['name'];
             $path = $attachment['path'] ?? null;
-            $name = $attachment['name'] ?? null;
 
-            if (!is_string($path) || $path === '' || !is_file($path)) {
+            if ($path === null || $path === '' || !is_file($path)) {
                 throw new DriverException('Gotenberg attachments require a valid file path.');
             }
 
-            $filename = is_string($name) && $name !== '' ? $name : basename($path);
+            $filename = $name !== '' ? $name : basename($path);
             $content = file_get_contents($path);
 
             if ($content === false) {
@@ -106,7 +106,7 @@ class GotenbergDriver implements RendererContract
                 'embeds',
                 $filename,
                 $content,
-                is_string($attachment['mime'] ?? null) ? $attachment['mime'] : 'application/octet-stream',
+                ($attachment['mime'] ?? null) !== null && $attachment['mime'] !== '' ? $attachment['mime'] : 'application/octet-stream',
             );
         }
 
@@ -249,6 +249,7 @@ class GotenbergDriver implements RendererContract
             ],
         ]);
 
+        $http_response_header = [];
         $responseBody = @file_get_contents($url, false, $context);
 
         if ($responseBody === false) {
@@ -259,7 +260,7 @@ class GotenbergDriver implements RendererContract
 
         $status = 0;
 
-        foreach ($http_response_header ?? [] as $line) {
+        foreach ($http_response_header as $line) {
             if (preg_match('#^HTTP/\S+\s+(\d{3})#', $line, $matches) === 1) {
                 $status = (int) $matches[1];
                 break;

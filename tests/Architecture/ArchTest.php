@@ -1,5 +1,15 @@
 <?php
 
+use Illuminate\Console\Command;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\Model;
+use PdfStudio\Laravel\Builder\Schema\Block;
+use PdfStudio\Laravel\Contracts\AccessControlContract;
+use PdfStudio\Laravel\Contracts\AnalyticsServiceContract;
+use PdfStudio\Laravel\Contracts\RendererContract;
+use PdfStudio\Laravel\Contracts\TemplateVersionServiceContract;
+use PdfStudio\Laravel\Contracts\UsageMeterContract;
+
 arch()->preset()->php();
 
 arch('contracts are interfaces')
@@ -21,7 +31,7 @@ arch('pipeline stages have handle method')
 
 arch('drivers implement RendererContract')
     ->expect('PdfStudio\Laravel\Drivers')
-    ->toImplement(\PdfStudio\Laravel\Contracts\RendererContract::class)
+    ->toImplement(RendererContract::class)
     ->ignoring('PdfStudio\Laravel\Drivers\DriverManager')
     ->ignoring('PdfStudio\Laravel\Drivers\CapabilityValidator');
 
@@ -31,7 +41,7 @@ arch('cache classes have flush method')
 
 arch('commands extend Illuminate Command')
     ->expect('PdfStudio\Laravel\Commands')
-    ->toExtend(\Illuminate\Console\Command::class);
+    ->toExtend(Command::class);
 
 arch('events are simple DTOs')
     ->expect('PdfStudio\Laravel\Events')
@@ -53,7 +63,7 @@ arch('template exceptions extend RuntimeException')
 
 arch('jobs implement ShouldQueue')
     ->expect('PdfStudio\Laravel\Jobs')
-    ->toImplement(\Illuminate\Contracts\Queue\ShouldQueue::class);
+    ->toImplement(ShouldQueue::class);
 
 arch('listeners have handle methods')
     ->expect('PdfStudio\Laravel\Listeners')
@@ -61,15 +71,15 @@ arch('listeners have handle methods')
 
 arch('models extend Eloquent Model')
     ->expect('PdfStudio\Laravel\Models')
-    ->toExtend(\Illuminate\Database\Eloquent\Model::class);
+    ->toExtend(Model::class);
 
 arch('services implement their contracts')
     ->expect('PdfStudio\Laravel\Services\TemplateVersionService')
-    ->toImplement(\PdfStudio\Laravel\Contracts\TemplateVersionServiceContract::class);
+    ->toImplement(TemplateVersionServiceContract::class);
 
 arch('access control service implements contract')
     ->expect('PdfStudio\Laravel\Services\AccessControl')
-    ->toImplement(\PdfStudio\Laravel\Contracts\AccessControlContract::class);
+    ->toImplement(AccessControlContract::class);
 
 arch('middleware has handle method')
     ->expect('PdfStudio\Laravel\Http\Middleware')
@@ -77,7 +87,7 @@ arch('middleware has handle method')
 
 arch('builder schema blocks extend Block')
     ->expect('PdfStudio\Laravel\Builder\Schema')
-    ->toExtend(\PdfStudio\Laravel\Builder\Schema\Block::class)
+    ->toExtend(Block::class)
     ->ignoring('PdfStudio\Laravel\Builder\Schema\Block')
     ->ignoring('PdfStudio\Laravel\Builder\Schema\DocumentSchema')
     ->ignoring('PdfStudio\Laravel\Builder\Schema\StyleTokens')
@@ -98,15 +108,15 @@ arch('api controllers have action methods')
 
 arch('render job model extends Eloquent Model')
     ->expect('PdfStudio\Laravel\Models\RenderJob')
-    ->toExtend(\Illuminate\Database\Eloquent\Model::class);
+    ->toExtend(Model::class);
 
 arch('usage meter implements contract')
     ->expect('PdfStudio\Laravel\Services\UsageMeter')
-    ->toImplement(\PdfStudio\Laravel\Contracts\UsageMeterContract::class);
+    ->toImplement(UsageMeterContract::class);
 
 arch('analytics service implements contract')
     ->expect('PdfStudio\Laravel\Services\AnalyticsService')
-    ->toImplement(\PdfStudio\Laravel\Contracts\AnalyticsServiceContract::class);
+    ->toImplement(AnalyticsServiceContract::class);
 
 arch('billable event is final DTO')
     ->expect('PdfStudio\Laravel\Events\BillableEvent')

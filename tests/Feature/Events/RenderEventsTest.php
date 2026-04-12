@@ -37,7 +37,7 @@ it('dispatches RenderFailed on render error', function () {
 
     try {
         Pdf::render();
-    } catch (\Throwable) {
+    } catch (Throwable) {
         // Expected
     }
 

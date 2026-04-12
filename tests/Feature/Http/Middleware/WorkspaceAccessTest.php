@@ -8,6 +8,8 @@ use PdfStudio\Laravel\Http\Middleware\WorkspaceAccess;
 use PdfStudio\Laravel\Models\Workspace;
 use PdfStudio\Laravel\Models\WorkspaceMember;
 use PdfStudio\Laravel\Services\AccessControl;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 uses(RefreshDatabase::class);
 
@@ -46,7 +48,7 @@ it('denies access for non-members with 403', function () {
     $middleware = new WorkspaceAccess(new AccessControl);
 
     expect(fn () => $middleware->handle($request, fn () => new Response('OK')))
-        ->toThrow(\Symfony\Component\HttpKernel\Exception\HttpException::class);
+        ->toThrow(HttpException::class);
 });
 
 it('returns 404 for non-existent workspace', function () {
@@ -55,7 +57,7 @@ it('returns 404 for non-existent workspace', function () {
     $middleware = new WorkspaceAccess(new AccessControl);
 
     expect(fn () => $middleware->handle($request, fn () => new Response('OK')))
-        ->toThrow(\Symfony\Component\HttpKernel\Exception\NotFoundHttpException::class);
+        ->toThrow(NotFoundHttpException::class);
 });
 
 it('denies access when no user is authenticated', function () {
@@ -66,5 +68,5 @@ it('denies access when no user is authenticated', function () {
     $middleware = new WorkspaceAccess(new AccessControl);
 
     expect(fn () => $middleware->handle($request, fn () => new Response('OK')))
-        ->toThrow(\Symfony\Component\HttpKernel\Exception\HttpException::class);
+        ->toThrow(HttpException::class);
 });

@@ -1,15 +1,19 @@
-includes:
-    - ./vendor/phpstan/phpstan/conf/bleedingEdge.neon
-
 parameters:
     level: 6
     paths:
         - src
+    excludePaths:
+        # These files depend on optional packages (setasign/fpdi, mikehaertl/php-pdftk)
+        # that are not installed in dev. PHPStan 2.0 requires excludePaths for
+        # class-not-found errors in optional dependencies.
+        - src/Manipulation/AcroFormFiller.php
+        - src/Manipulation/PdfChunker.php
+        - src/Manipulation/PdfFlattener.php
+        - src/Manipulation/PdfMerger.php
+        - src/Manipulation/PdfPageCounter.php
+        - src/Manipulation/PdfPageEditor.php
+        - src/Manipulation/PdfPageRotator.php
+        - src/Manipulation/PdfProtector.php
+        - src/Manipulation/PdfSplitter.php
+        - src/Manipulation/PdfWatermarker.php
     tmpDir: build/phpstan
-    ignoreErrors:
-        # Optional dependencies (in composer.json suggest)
-        - '#class setasign\\Fpdi\\Fpdi#'
-        - '#class mikehaertl\\pdftk\\Pdf#'
-        - '#has invalid type setasign\\Fpdi\\Fpdi#'
-        # tempnam() can return false, which gets appended to the array
-        - '#by-ref type of method PdfStudio\\Laravel\\Manipulation\\PdfMerger::resolveSourcePath#'

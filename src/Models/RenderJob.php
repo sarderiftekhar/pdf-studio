@@ -2,9 +2,11 @@
 
 namespace PdfStudio\Laravel\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 
 /**
  * @property string $id
@@ -20,9 +22,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int|null $bytes
  * @property float|null $render_time_ms
  * @property string|null $error
- * @property \Illuminate\Support\Carbon|null $completed_at
+ * @property Carbon|null $completed_at
  *
- * @mixin \Illuminate\Database\Eloquent\Builder<RenderJob>
+ * @mixin Builder<RenderJob>
  */
 class RenderJob extends Model
 {

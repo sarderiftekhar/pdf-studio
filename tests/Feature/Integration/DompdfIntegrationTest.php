@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Storage;
 use PdfStudio\Laravel\Facades\Pdf;
 use PdfStudio\Laravel\Output\PdfResult;
 use PdfStudio\Laravel\Output\StorageResult;
@@ -46,12 +47,12 @@ it('downloads a real PDF', function () {
 });
 
 it('saves a real PDF to storage', function () {
-    \Illuminate\Support\Facades\Storage::fake('local');
+    Storage::fake('local');
 
     $storageResult = Pdf::html('<html><body><h1>Save</h1></body></html>')
         ->save('output.pdf', 'local');
 
     expect($storageResult)->toBeInstanceOf(StorageResult::class)
         ->and($storageResult->bytes)->toBeGreaterThan(100);
-    \Illuminate\Support\Facades\Storage::disk('local')->assertExists('output.pdf');
+    Storage::disk('local')->assertExists('output.pdf');
 });

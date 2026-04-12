@@ -20,9 +20,7 @@ it('throws when fpdi is not available for page counting', function () {
 it('returns the page count when counting is stubbed', function () {
     $counter = new class extends PdfPageCounter
     {
-        protected function ensureFpdiAvailable(): void
-        {
-        }
+        protected function ensureFpdiAvailable(): void {}
 
         protected function countFromFile(string $inputFile): int
         {

@@ -25,6 +25,7 @@ class RenderOptions
         public ?string $waitUntil = null,
         public ?int $waitDelayMs = null,
         public ?string $waitForSelector = null,
+        /** @var array<string, mixed> */
         public array $waitForSelectorOptions = [],
         public ?string $waitForFunction = null,
         public int $waitForFunctionTimeout = 0,

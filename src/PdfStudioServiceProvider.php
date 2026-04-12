@@ -2,6 +2,7 @@
 
 namespace PdfStudio\Laravel;
 
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
 class PdfStudioServiceProvider extends ServiceProvider
@@ -244,47 +245,47 @@ class PdfStudioServiceProvider extends ServiceProvider
 
     protected function registerBladeDirectives(): void
     {
-        \Illuminate\Support\Facades\Blade::directive('pageBreak', function () {
+        Blade::directive('pageBreak', function () {
             return '<?php echo \'<div style="page-break-after: always; break-after: page;"></div>\'; ?>';
         });
 
-        \Illuminate\Support\Facades\Blade::directive('pageBreakBefore', function () {
+        Blade::directive('pageBreakBefore', function () {
             return '<?php echo \'<div style="page-break-before: always; break-before: page;"></div>\'; ?>';
         });
 
-        \Illuminate\Support\Facades\Blade::directive('avoidBreak', function () {
+        Blade::directive('avoidBreak', function () {
             return '<?php echo \'<div style="page-break-inside: avoid; break-inside: avoid;">\'; ?>';
         });
 
-        \Illuminate\Support\Facades\Blade::directive('endAvoidBreak', function () {
+        Blade::directive('endAvoidBreak', function () {
             return '<?php echo \'</div>\'; ?>';
         });
 
-        \Illuminate\Support\Facades\Blade::directive('pageNumber', function ($expression) {
+        Blade::directive('pageNumber', function ($expression) {
             return "<?php echo app(\PdfStudio\Laravel\Layout\PageNumberGenerator::class)->footer({$expression}); ?>";
         });
 
-        \Illuminate\Support\Facades\Blade::directive('showIf', function ($expression) {
+        Blade::directive('showIf', function ($expression) {
             return "<?php if(!({$expression})): echo '<div style=\"display: none;\">'; else: echo '<div>'; endif; ?>";
         });
 
-        \Illuminate\Support\Facades\Blade::directive('endShowIf', function () {
+        Blade::directive('endShowIf', function () {
             return '<?php echo \'</div>\'; ?>';
         });
 
-        \Illuminate\Support\Facades\Blade::directive('keepTogether', function () {
+        Blade::directive('keepTogether', function () {
             return '<?php echo \'<div style="page-break-inside: avoid; break-inside: avoid;">\'; ?>';
         });
 
-        \Illuminate\Support\Facades\Blade::directive('endKeepTogether', function () {
+        Blade::directive('endKeepTogether', function () {
             return '<?php echo \'</div>\'; ?>';
         });
 
-        \Illuminate\Support\Facades\Blade::directive('barcode', function ($expression) {
+        Blade::directive('barcode', function ($expression) {
             return "<?php echo app(\PdfStudio\Laravel\Barcode\BarcodeGenerator::class)->generate({$expression}); ?>";
         });
 
-        \Illuminate\Support\Facades\Blade::directive('qrcode', function ($expression) {
+        Blade::directive('qrcode', function ($expression) {
             return "<?php echo app(\PdfStudio\Laravel\Barcode\QrCodeGenerator::class)->generate({$expression}); ?>";
         });
     }

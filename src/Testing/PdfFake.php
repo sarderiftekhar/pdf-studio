@@ -4,6 +4,7 @@ namespace PdfStudio\Laravel\Testing;
 
 use Closure;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\Response;
 use PdfStudio\Laravel\Output\PdfResult;
 use PdfStudio\Laravel\Output\StorageResult;
 use PdfStudio\Laravel\PdfBuilder;
@@ -63,7 +64,7 @@ class PdfFake extends PdfBuilder
         );
     }
 
-    public function download(string $filename): \Illuminate\Http\Response
+    public function download(string $filename): Response
     {
         $this->downloads[] = $filename;
 
@@ -230,12 +231,15 @@ class PdfFake extends PdfBuilder
     {
         $lastRender = $this->lastRender();
 
-        $matched = collect($lastRender['options']->attachments)->contains(function (array $attachment) use ($path, $name) {
+        /** @var array<int, array{name: string, content?: string|null, path?: string|null, mime?: string|null}> $attachments */
+        $attachments = $lastRender['options']->attachments;
+
+        $matched = collect($attachments)->contains(function (array $attachment) use ($path, $name) {
             if (($attachment['path'] ?? null) !== $path) {
                 return false;
             }
 
-            return $name === null || ($attachment['name'] ?? null) === $name;
+            return $name === null || $attachment['name'] === $name;
         });
 
         Assert::assertTrue($matched, "Expected rendered PDF to include attachment [{$path}].");

@@ -1,5 +1,6 @@
 <?php
 
+use PdfStudio\Laravel\Contracts\WatermarkerContract;
 use PdfStudio\Laravel\DTOs\WatermarkOptions;
 use PdfStudio\Laravel\Exceptions\ManipulationException;
 use PdfStudio\Laravel\Manipulation\PdfWatermarker;
@@ -10,7 +11,7 @@ uses(TestCase::class);
 it('implements WatermarkerContract', function () {
     $watermarker = new PdfWatermarker;
 
-    expect($watermarker)->toBeInstanceOf(\PdfStudio\Laravel\Contracts\WatermarkerContract::class);
+    expect($watermarker)->toBeInstanceOf(WatermarkerContract::class);
 });
 
 it('output method throws exception', function () {

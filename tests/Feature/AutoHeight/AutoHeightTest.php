@@ -1,13 +1,15 @@
 <?php
 
+use PdfStudio\Laravel\Drivers\FakeDriver;
 use PdfStudio\Laravel\Facades\Pdf;
+use PdfStudio\Laravel\PdfBuilder;
 
 beforeEach(function () {
     $this->app['config']->set('pdf-studio.default_driver', 'fake');
 });
 
 it('sets autoHeight via contentFit method', function () {
-    $builder = app(\PdfStudio\Laravel\PdfBuilder::class);
+    $builder = app(PdfBuilder::class);
 
     $builder->html('<h1>Test</h1>')->contentFit();
 
@@ -18,7 +20,7 @@ it('sets autoHeight via contentFit method', function () {
 });
 
 it('contentFit accepts custom maxHeight', function () {
-    $builder = app(\PdfStudio\Laravel\PdfBuilder::class);
+    $builder = app(PdfBuilder::class);
 
     $builder->html('<h1>Test</h1>')->contentFit(3000);
 
@@ -29,7 +31,7 @@ it('contentFit accepts custom maxHeight', function () {
 });
 
 it('autoHeight is an alias for contentFit', function () {
-    $builder = app(\PdfStudio\Laravel\PdfBuilder::class);
+    $builder = app(PdfBuilder::class);
 
     $builder->html('<h1>Test</h1>')->autoHeight(4000);
 
@@ -40,7 +42,7 @@ it('autoHeight is an alias for contentFit', function () {
 });
 
 it('autoHeight defaults to false', function () {
-    $builder = app(\PdfStudio\Laravel\PdfBuilder::class);
+    $builder = app(PdfBuilder::class);
 
     $builder->html('<h1>Test</h1>');
 
@@ -59,7 +61,7 @@ it('renders with contentFit using fake driver', function () {
 
 it('all drivers report autoHeight capability', function () {
     $drivers = [
-        \PdfStudio\Laravel\Drivers\FakeDriver::class,
+        FakeDriver::class,
     ];
 
     foreach ($drivers as $driverClass) {

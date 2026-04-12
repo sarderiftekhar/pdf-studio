@@ -2,8 +2,10 @@
 
 namespace PdfStudio\Laravel\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 /**
@@ -11,12 +13,12 @@ use Illuminate\Support\Str;
  * @property string $name
  * @property string $key
  * @property string $prefix
- * @property \Illuminate\Support\Carbon|null $last_used_at
- * @property \Illuminate\Support\Carbon|null $expires_at
- * @property \Illuminate\Support\Carbon|null $revoked_at
+ * @property Carbon|null $last_used_at
+ * @property Carbon|null $expires_at
+ * @property Carbon|null $revoked_at
  * @property-read Workspace $workspace
  *
- * @mixin \Illuminate\Database\Eloquent\Builder<ApiKey>
+ * @mixin Builder<ApiKey>
  */
 class ApiKey extends Model
 {

@@ -4,6 +4,10 @@ use PdfStudio\Laravel\DTOs\RenderContext;
 use PdfStudio\Laravel\Exceptions\RenderException;
 use PdfStudio\Laravel\Pipeline\AssetResolver;
 
+beforeEach(function () {
+    config(['pdf-studio.assets.allowed_roots' => [sys_get_temp_dir()]]);
+});
+
 it('inlines local image sources as data uris', function () {
     $imagePath = tempnam(sys_get_temp_dir(), 'pdfstudio_asset_').'.png';
     file_put_contents($imagePath, 'fake-image');

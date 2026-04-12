@@ -2,6 +2,7 @@
 
 namespace PdfStudio\Laravel\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $quantity
  * @property array<string, mixed>|null $metadata
  *
- * @mixin \Illuminate\Database\Eloquent\Builder<UsageRecord>
+ * @mixin Builder<UsageRecord>
  */
 class UsageRecord extends Model
 {

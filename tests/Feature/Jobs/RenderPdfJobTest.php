@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Storage;
 use PdfStudio\Laravel\Jobs\RenderPdfJob;
@@ -15,7 +16,7 @@ it('implements ShouldQueue', function () {
         outputPath: 'test.pdf',
     );
 
-    expect($job)->toBeInstanceOf(\Illuminate\Contracts\Queue\ShouldQueue::class);
+    expect($job)->toBeInstanceOf(ShouldQueue::class);
 });
 
 it('renders and saves PDF to storage when handled', function () {

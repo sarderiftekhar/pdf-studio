@@ -4,6 +4,7 @@ use PdfStudio\Laravel\DTOs\WatermarkOptions;
 use PdfStudio\Laravel\Output\PdfResult;
 use PdfStudio\Laravel\Testing\PdfFake;
 use PdfStudio\Laravel\Tests\TestCase;
+use PHPUnit\Framework\AssertionFailedError;
 
 uses(TestCase::class);
 
@@ -145,7 +146,7 @@ it('fails assertRenderedView when view not rendered', function () {
     $fake->html('<h1>Test</h1>')->render();
 
     expect(fn () => $fake->assertRenderedView('missing.view'))
-        ->toThrow(\PHPUnit\Framework\AssertionFailedError::class);
+        ->toThrow(AssertionFailedError::class);
 });
 
 it('fails assertNothingRendered when renders exist', function () {
@@ -153,5 +154,5 @@ it('fails assertNothingRendered when renders exist', function () {
     $fake->html('<h1>Test</h1>')->render();
 
     expect(fn () => $fake->assertNothingRendered())
-        ->toThrow(\PHPUnit\Framework\AssertionFailedError::class);
+        ->toThrow(AssertionFailedError::class);
 });

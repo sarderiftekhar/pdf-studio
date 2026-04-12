@@ -1,5 +1,6 @@
 <?php
 
+use PdfStudio\Laravel\Cache\CssCache;
 use PdfStudio\Laravel\Contracts\CssCompilerContract;
 use PdfStudio\Laravel\DTOs\RenderContext;
 use PdfStudio\Laravel\Pipeline\TailwindCompiler;
@@ -83,7 +84,7 @@ it('uses cached CSS when available', function () {
     // because the cache hit will short-circuit before compilation.
     $this->app['config']->set('pdf-studio.tailwind.binary', '/usr/bin/true');
 
-    $cache = app(\PdfStudio\Laravel\Cache\CssCache::class);
+    $cache = app(CssCache::class);
     $html = '<div class="text-blue-500">Cached</div>';
     $cacheKey = $cache->key($html);
     $cache->put($cacheKey, '.cached-css { color: blue; }');

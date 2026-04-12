@@ -65,7 +65,7 @@ class AssetResolver
         $images = $dom->getElementsByTagName('img');
 
         foreach ($images as $image) {
-            $src = $image->getAttribute('src');
+            $src = urldecode($image->getAttribute('src'));
 
             if ($src === '') {
                 continue;
@@ -111,7 +111,7 @@ class AssetResolver
                 continue;
             }
 
-            $href = $link->getAttribute('href');
+            $href = urldecode($link->getAttribute('href'));
 
             if ($href === '') {
                 continue;
@@ -228,7 +228,7 @@ class AssetResolver
     {
         $candidates = [];
 
-        if (str_starts_with($source, '/')) {
+        if (str_starts_with($source, '/') || preg_match('/^[A-Za-z]:[\\\\\/]/', $source)) {
             $candidates[] = $source;
         }
 
@@ -242,7 +242,7 @@ class AssetResolver
         $allowedRoots = $this->allowedAssetRoots();
 
         foreach ($candidates as $candidate) {
-            if (!is_string($candidate) || !is_file($candidate) || !is_readable($candidate)) {
+            if (!is_file($candidate) || !is_readable($candidate)) {
                 continue;
             }
 
@@ -271,7 +271,7 @@ class AssetResolver
         $configured = $this->app['config']->get('pdf-studio.assets.allowed_roots', []);
 
         if ($configured !== []) {
-            return array_map(static fn (string $path): string => rtrim((string) realpath($path), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR, array_filter($configured, static fn ($p): bool => is_string($p) && realpath($p) !== false));
+            return array_map(static fn (string $path): string => rtrim((string) realpath($path), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR, array_filter($configured, static fn (string $p): bool => realpath($p) !== false));
         }
 
         $roots = [];

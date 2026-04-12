@@ -3,8 +3,11 @@
 namespace PdfStudio\Laravel\Facades;
 
 use Illuminate\Support\Facades\Facade;
+use PdfStudio\Laravel\Exceptions\RenderException;
 use PdfStudio\Laravel\PdfBuilder;
 use PdfStudio\Laravel\Testing\PdfFake;
+use PdfStudio\Laravel\Thumbnail\ThumbnailGenerator;
+use PdfStudio\Laravel\Thumbnail\ThumbnailResult;
 
 /**
  * @method static PdfBuilder view(string $view)
@@ -83,15 +86,15 @@ class Pdf extends Facade
         return $fake;
     }
 
-    public static function thumbnailFromFile(string $path, int $page = 1, int $width = 300, string $format = 'png', int $quality = 85): \PdfStudio\Laravel\Thumbnail\ThumbnailResult
+    public static function thumbnailFromFile(string $path, int $page = 1, int $width = 300, string $format = 'png', int $quality = 85): ThumbnailResult
     {
         $content = file_get_contents($path);
 
         if ($content === false) {
-            throw new \PdfStudio\Laravel\Exceptions\RenderException("Cannot read file: {$path}");
+            throw new RenderException("Cannot read file: {$path}");
         }
 
-        $generator = static::getFacadeApplication()->make(\PdfStudio\Laravel\Thumbnail\ThumbnailGenerator::class);
+        $generator = static::getFacadeApplication()->make(ThumbnailGenerator::class);
 
         return $generator->generate($content, $page, $width, $format, $quality);
     }

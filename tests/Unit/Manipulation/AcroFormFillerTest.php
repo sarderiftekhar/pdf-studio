@@ -1,5 +1,6 @@
 <?php
 
+use PdfStudio\Laravel\Contracts\AcroFormContract;
 use PdfStudio\Laravel\Exceptions\ManipulationException;
 use PdfStudio\Laravel\Manipulation\AcroFormFiller;
 use PdfStudio\Laravel\Tests\TestCase;
@@ -9,7 +10,7 @@ uses(TestCase::class);
 it('implements AcroFormContract', function () {
     $filler = new AcroFormFiller;
 
-    expect($filler)->toBeInstanceOf(\PdfStudio\Laravel\Contracts\AcroFormContract::class);
+    expect($filler)->toBeInstanceOf(AcroFormContract::class);
 });
 
 it('output method throws exception', function () {

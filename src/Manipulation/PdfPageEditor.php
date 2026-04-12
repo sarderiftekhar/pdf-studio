@@ -94,14 +94,14 @@ class PdfPageEditor
     }
 
     /**
-     * @param  array<int, int>  $pages
+     * @param  array<int, mixed>  $pages
      * @return array<int, int>
      */
     protected function normalizePages(array $pages): array
     {
         return array_values(array_map(
-            static fn (int $page): int => (int) $page,
-            array_filter($pages, static fn ($page): bool => is_int($page) || ctype_digit((string) $page))
+            static fn (mixed $page): int => (int) $page,
+            array_filter($pages, static fn (mixed $v): bool => is_int($v) || (is_string($v) && ctype_digit($v)))
         ));
     }
 

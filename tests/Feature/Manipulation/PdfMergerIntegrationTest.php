@@ -2,6 +2,7 @@
 
 use PdfStudio\Laravel\Facades\Pdf;
 use PdfStudio\Laravel\Output\PdfResult;
+use PdfStudio\Laravel\PdfBuilder;
 
 beforeEach(function () {
     $this->app['config']->set('pdf-studio.default_driver', 'fake');
@@ -40,7 +41,7 @@ it('PdfFake tracks multiple merge calls', function () {
 
 it('PdfBuilder merge method delegates to MergerContract', function () {
     // Verify that PdfBuilder::merge() resolves MergerContract from container
-    $builder = app(\PdfStudio\Laravel\PdfBuilder::class);
+    $builder = app(PdfBuilder::class);
 
-    expect($builder)->toBeInstanceOf(\PdfStudio\Laravel\PdfBuilder::class);
+    expect($builder)->toBeInstanceOf(PdfBuilder::class);
 });
