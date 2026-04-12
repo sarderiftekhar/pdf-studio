@@ -2,7 +2,18 @@
 
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
+use PdfStudio\Laravel\Contracts\MergerContract;
 use PdfStudio\Laravel\Facades\Pdf;
+use PdfStudio\Laravel\Manipulation\PdfChunker;
+use PdfStudio\Laravel\Manipulation\PdfEmbedder;
+use PdfStudio\Laravel\Manipulation\PdfFlattener;
+use PdfStudio\Laravel\Manipulation\PdfInspector;
+use PdfStudio\Laravel\Manipulation\PdfMetadataReader;
+use PdfStudio\Laravel\Manipulation\PdfPageCounter;
+use PdfStudio\Laravel\Manipulation\PdfPageEditor;
+use PdfStudio\Laravel\Manipulation\PdfPageRotator;
+use PdfStudio\Laravel\Manipulation\PdfSplitter;
+use PdfStudio\Laravel\Manipulation\PdfValidator;
 use PdfStudio\Laravel\Output\PdfResult;
 use PdfStudio\Laravel\Output\StorageResult;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -75,7 +86,7 @@ it('passes render options through to the driver', function () {
 });
 
 it('composes multiple documents and merges them', function () {
-    $merger = new class implements \PdfStudio\Laravel\Contracts\MergerContract
+    $merger = new class implements MergerContract
     {
         public array $sources = [];
 
@@ -91,7 +102,7 @@ it('composes multiple documents and merges them', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Contracts\MergerContract::class, $merger);
+    $this->app->instance(MergerContract::class, $merger);
 
     $result = Pdf::compose([
         [
@@ -119,7 +130,7 @@ it('throws when composed document input is invalid', function () {
     Pdf::compose([
         ['data' => ['name' => 'Missing source']],
     ]);
-})->throws(\InvalidArgumentException::class, 'either [view] or [html]');
+})->throws(InvalidArgumentException::class, 'either [view] or [html]');
 
 it('splits an existing pdf through the builder', function () {
     $splitter = new class
@@ -133,7 +144,7 @@ it('splits an existing pdf through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfSplitter::class, $splitter);
+    $this->app->instance(PdfSplitter::class, $splitter);
 
     $results = Pdf::split('%PDF-fake', ['1-2', '3-4']);
 
@@ -161,7 +172,7 @@ it('splits an existing pdf file through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfSplitter::class, $splitter);
+    $this->app->instance(PdfSplitter::class, $splitter);
 
     $results = Pdf::splitFile($pdfPath, ['1-2', '3-4']);
 
@@ -184,7 +195,7 @@ it('reorders pages in an existing pdf through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfPageEditor::class, $editor);
+    $this->app->instance(PdfPageEditor::class, $editor);
 
     $result = Pdf::reorderPages('%PDF-fake', [3, 1, 2]);
 
@@ -206,7 +217,7 @@ it('reorders pages in an existing pdf file through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfPageEditor::class, $editor);
+    $this->app->instance(PdfPageEditor::class, $editor);
 
     $result = Pdf::reorderPagesFile($pdfPath, [2, 1]);
 
@@ -227,7 +238,7 @@ it('removes pages from an existing pdf through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfPageEditor::class, $editor);
+    $this->app->instance(PdfPageEditor::class, $editor);
 
     $result = Pdf::removePages('%PDF-fake', [2, 4]);
 
@@ -249,7 +260,7 @@ it('removes pages from an existing pdf file through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfPageEditor::class, $editor);
+    $this->app->instance(PdfPageEditor::class, $editor);
 
     $result = Pdf::removePagesFile($pdfPath, [1]);
 
@@ -271,7 +282,7 @@ it('rotates pages in an existing pdf through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfPageRotator::class, $rotator);
+    $this->app->instance(PdfPageRotator::class, $rotator);
 
     $result = Pdf::rotatePages('%PDF-fake', 90, [1, 3]);
 
@@ -294,7 +305,7 @@ it('rotates pages in an existing pdf file through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfPageRotator::class, $rotator);
+    $this->app->instance(PdfPageRotator::class, $rotator);
 
     $result = Pdf::rotatePagesFile($pdfPath, 180);
 
@@ -316,7 +327,7 @@ it('flattens an existing pdf through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfFlattener::class, $flattener);
+    $this->app->instance(PdfFlattener::class, $flattener);
 
     $result = Pdf::flattenPdf('%PDF-fake');
 
@@ -343,7 +354,7 @@ it('flattens an existing pdf file through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfFlattener::class, $flattener);
+    $this->app->instance(PdfFlattener::class, $flattener);
 
     $result = Pdf::flattenPdfFile($pdfPath);
 
@@ -364,7 +375,7 @@ it('counts pages in an existing pdf through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfPageCounter::class, $counter);
+    $this->app->instance(PdfPageCounter::class, $counter);
 
     expect(Pdf::pageCount('%PDF-fake'))->toBe(9);
 });
@@ -380,7 +391,7 @@ it('checks whether in-memory content looks like a pdf through the builder', func
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfValidator::class, $validator);
+    $this->app->instance(PdfValidator::class, $validator);
 
     expect(Pdf::isPdf('%PDF-fake'))->toBeTrue();
 });
@@ -395,7 +406,7 @@ it('asserts in-memory pdf content through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfValidator::class, $validator);
+    $this->app->instance(PdfValidator::class, $validator);
 
     Pdf::assertPdf('%PDF-fake', 'upload');
 
@@ -416,7 +427,7 @@ it('counts pages in an existing pdf file through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfPageCounter::class, $counter);
+    $this->app->instance(PdfPageCounter::class, $counter);
 
     expect(Pdf::pageCountFile($pdfPath))->toBe(11);
 
@@ -437,7 +448,7 @@ it('checks whether a pdf file looks like a pdf through the builder', function ()
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfValidator::class, $validator);
+    $this->app->instance(PdfValidator::class, $validator);
 
     expect(Pdf::isPdfFile($pdfPath))->toBeTrue();
 
@@ -457,7 +468,7 @@ it('asserts a pdf file through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfValidator::class, $validator);
+    $this->app->instance(PdfValidator::class, $validator);
 
     Pdf::assertPdfFile($pdfPath, 'source file');
 
@@ -481,7 +492,7 @@ it('inspects in-memory pdf content through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfInspector::class, $inspector);
+    $this->app->instance(PdfInspector::class, $inspector);
 
     expect(Pdf::inspectPdf('%PDF-fake'))->toBe([
         'valid' => true,
@@ -508,7 +519,7 @@ it('inspects a pdf file through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfInspector::class, $inspector);
+    $this->app->instance(PdfInspector::class, $inspector);
 
     expect(Pdf::inspectPdfFile($pdfPath))->toBe([
         'valid' => true,
@@ -533,7 +544,7 @@ it('reads pdf metadata through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfMetadataReader::class, $reader);
+    $this->app->instance(PdfMetadataReader::class, $reader);
 
     expect(Pdf::readPdfMetadata('%PDF-fake'))->toBe([
         'Title' => 'Annual Report',
@@ -557,7 +568,7 @@ it('reads pdf metadata from a file through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfMetadataReader::class, $reader);
+    $this->app->instance(PdfMetadataReader::class, $reader);
 
     expect(Pdf::readPdfMetadataFile($pdfPath))->toBe([
         'Title' => 'Stored Report',
@@ -581,7 +592,7 @@ it('chunks an existing pdf through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfChunker::class, $chunker);
+    $this->app->instance(PdfChunker::class, $chunker);
 
     $results = Pdf::chunk('%PDF-fake', 2);
 
@@ -603,7 +614,7 @@ it('plans chunk ranges for an existing pdf through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfChunker::class, $chunker);
+    $this->app->instance(PdfChunker::class, $chunker);
 
     expect(Pdf::chunkRanges('%PDF-fake', 4))->toBe(['1-4', '5-8', '9-9']);
 });
@@ -623,7 +634,7 @@ it('builds a chunk plan for an existing pdf through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfChunker::class, $chunker);
+    $this->app->instance(PdfChunker::class, $chunker);
 
     expect(Pdf::chunkPlan('%PDF-fake', 4))->toBe([
         ['index' => 1, 'start' => 1, 'end' => 4, 'pages' => 4, 'range' => '1-4'],
@@ -648,7 +659,7 @@ it('chunks an existing pdf file through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfChunker::class, $chunker);
+    $this->app->instance(PdfChunker::class, $chunker);
 
     $results = Pdf::chunkFile($pdfPath, 2);
 
@@ -673,7 +684,7 @@ it('plans chunk ranges for an existing pdf file through the builder', function (
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfChunker::class, $chunker);
+    $this->app->instance(PdfChunker::class, $chunker);
 
     expect(Pdf::chunkRangesFile($pdfPath, 4))->toBe(['1-4', '5-8']);
 
@@ -698,7 +709,7 @@ it('builds a chunk plan for an existing pdf file through the builder', function 
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfChunker::class, $chunker);
+    $this->app->instance(PdfChunker::class, $chunker);
 
     expect(Pdf::chunkPlanFile($pdfPath, 4))->toBe([
         ['index' => 1, 'start' => 1, 'end' => 4, 'pages' => 4, 'range' => '1-4'],
@@ -725,7 +736,7 @@ it('embeds files into an existing pdf through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfEmbedder::class, $embedder);
+    $this->app->instance(PdfEmbedder::class, $embedder);
 
     $result = Pdf::embedFiles('%PDF-fake', [[
         'path' => '/tmp/report.csv',
@@ -757,7 +768,7 @@ it('embeds files into an existing pdf file through the builder', function () {
         }
     };
 
-    $this->app->instance(\PdfStudio\Laravel\Manipulation\PdfEmbedder::class, $embedder);
+    $this->app->instance(PdfEmbedder::class, $embedder);
 
     $result = Pdf::embedFilesIntoFile($pdfPath, [[
         'path' => '/tmp/report.csv',

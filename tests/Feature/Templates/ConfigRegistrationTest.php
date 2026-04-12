@@ -1,5 +1,6 @@
 <?php
 
+use PdfStudio\Laravel\PdfStudioServiceProvider;
 use PdfStudio\Laravel\Templates\TemplateRegistry;
 
 it('registers templates from config on boot', function () {
@@ -17,7 +18,7 @@ it('registers templates from config on boot', function () {
     ]);
 
     // Re-boot to pick up config
-    $provider = $this->app->make(\PdfStudio\Laravel\PdfStudioServiceProvider::class, ['app' => $this->app]);
+    $provider = $this->app->make(PdfStudioServiceProvider::class, ['app' => $this->app]);
     $provider->boot();
 
     $registry = $this->app->make(TemplateRegistry::class);

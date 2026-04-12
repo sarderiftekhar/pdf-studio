@@ -7,6 +7,7 @@ use Illuminate\Routing\Route;
 use PdfStudio\Laravel\Http\Middleware\ApiKeyAuth;
 use PdfStudio\Laravel\Models\ApiKey;
 use PdfStudio\Laravel\Models\Workspace;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 uses(RefreshDatabase::class);
 
@@ -50,7 +51,7 @@ it('rejects request without API key', function () {
     $middleware = new ApiKeyAuth;
 
     expect(fn () => $middleware->handle($request, fn () => new Response('OK')))
-        ->toThrow(\Symfony\Component\HttpKernel\Exception\HttpException::class);
+        ->toThrow(HttpException::class);
 });
 
 it('rejects revoked API key', function () {
@@ -68,7 +69,7 @@ it('rejects revoked API key', function () {
     $middleware = new ApiKeyAuth;
 
     expect(fn () => $middleware->handle($request, fn () => new Response('OK')))
-        ->toThrow(\Symfony\Component\HttpKernel\Exception\HttpException::class);
+        ->toThrow(HttpException::class);
 });
 
 it('rejects expired API key', function () {
@@ -86,5 +87,5 @@ it('rejects expired API key', function () {
     $middleware = new ApiKeyAuth;
 
     expect(fn () => $middleware->handle($request, fn () => new Response('OK')))
-        ->toThrow(\Symfony\Component\HttpKernel\Exception\HttpException::class);
+        ->toThrow(HttpException::class);
 });

@@ -1,11 +1,13 @@
 <?php
 
+use Illuminate\Events\Dispatcher;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Log;
 use PdfStudio\Laravel\Events\RenderCompleted;
 use PdfStudio\Laravel\Events\RenderFailed;
 use PdfStudio\Laravel\Events\RenderStarting;
 use PdfStudio\Laravel\Listeners\RenderLogger;
+use PdfStudio\Laravel\PdfStudioServiceProvider;
 
 beforeEach(function () {
     $this->app['config']->set('pdf-studio.default_driver', 'fake');
@@ -15,7 +17,7 @@ beforeEach(function () {
 
 it('listens for render events when logging is enabled', function () {
     // Re-boot to register listeners
-    $provider = $this->app->make(\PdfStudio\Laravel\PdfStudioServiceProvider::class, ['app' => $this->app]);
+    $provider = $this->app->make(PdfStudioServiceProvider::class, ['app' => $this->app]);
     $provider->boot();
 
     $hasStartingListener = Event::hasListeners(RenderStarting::class);
@@ -31,9 +33,9 @@ it('does not register listeners when logging is disabled', function () {
     $this->app['config']->set('pdf-studio.logging.enabled', false);
 
     // Fresh event dispatcher
-    $this->app->instance('events', new \Illuminate\Events\Dispatcher($this->app));
+    $this->app->instance('events', new Dispatcher($this->app));
 
-    $provider = $this->app->make(\PdfStudio\Laravel\PdfStudioServiceProvider::class, ['app' => $this->app]);
+    $provider = $this->app->make(PdfStudioServiceProvider::class, ['app' => $this->app]);
     $provider->boot();
 
     $hasStartingListener = Event::hasListeners(RenderStarting::class);

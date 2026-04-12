@@ -1,5 +1,6 @@
 <?php
 
+use PdfStudio\Laravel\Contracts\MergerContract;
 use PdfStudio\Laravel\Exceptions\ManipulationException;
 use PdfStudio\Laravel\Manipulation\PdfMerger;
 use PdfStudio\Laravel\Tests\TestCase;
@@ -24,7 +25,7 @@ it('throws exception when fpdi is not installed', function () {
 it('implements MergerContract', function () {
     $merger = new PdfMerger;
 
-    expect($merger)->toBeInstanceOf(\PdfStudio\Laravel\Contracts\MergerContract::class);
+    expect($merger)->toBeInstanceOf(MergerContract::class);
 });
 
 it('parsePageRange handles single pages', function () {

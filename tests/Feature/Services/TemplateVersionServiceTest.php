@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PdfStudio\Laravel\DTOs\TemplateDefinition;
+use PdfStudio\Laravel\Exceptions\TemplateNotFoundException;
 use PdfStudio\Laravel\Models\TemplateVersion;
 use PdfStudio\Laravel\Services\TemplateVersionService;
 
@@ -93,8 +94,8 @@ it('returns diff metadata between two versions', function () {
 
 it('throws when restoring non-existent version', function () {
     $this->service->restore('invoice', 99);
-})->throws(\PdfStudio\Laravel\Exceptions\TemplateNotFoundException::class);
+})->throws(TemplateNotFoundException::class);
 
 it('throws when diffing non-existent versions', function () {
     $this->service->diff('invoice', 1, 2);
-})->throws(\PdfStudio\Laravel\Exceptions\TemplateNotFoundException::class);
+})->throws(TemplateNotFoundException::class);

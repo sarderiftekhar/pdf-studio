@@ -1,6 +1,8 @@
 <?php
 
 use PdfStudio\Laravel\Facades\Pdf;
+use PdfStudio\Laravel\PdfBuilder;
+use PHPUnit\Framework\AssertionFailedError;
 
 beforeEach(function () {
     $this->app['config']->set('pdf-studio.default_driver', 'fake');
@@ -37,7 +39,7 @@ it('sets owner password only', function () {
 });
 
 it('sets permissions array', function () {
-    $builder = app(\PdfStudio\Laravel\PdfBuilder::class);
+    $builder = app(PdfBuilder::class);
 
     $builder->html('<h1>Test</h1>')
         ->protect(ownerPassword: 'admin', permissions: ['Printing', 'CopyContents']);
@@ -49,7 +51,7 @@ it('sets permissions array', function () {
 });
 
 it('protection options stored in RenderOptions', function () {
-    $builder = app(\PdfStudio\Laravel\PdfBuilder::class);
+    $builder = app(PdfBuilder::class);
 
     $builder->html('<h1>Test</h1>')
         ->protect(userPassword: 'user', ownerPassword: 'owner', permissions: ['Printing']);
@@ -66,5 +68,5 @@ it('not protected by default', function () {
 
     $fake->html('<h1>Test</h1>')->render();
 
-    expect(fn () => $fake->assertProtected())->toThrow(\PHPUnit\Framework\AssertionFailedError::class);
+    expect(fn () => $fake->assertProtected())->toThrow(AssertionFailedError::class);
 })->skip('PHPUnit assertion class name varies');

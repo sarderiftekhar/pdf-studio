@@ -1,6 +1,7 @@
 <?php
 
 use PdfStudio\Laravel\Tests\TestCase;
+use Spatie\Browsershot\Browsershot;
 
 pest()->extend(TestCase::class)->in('Feature');
 
@@ -15,7 +16,7 @@ function chromiumAvailable(): bool
         return $available;
     }
 
-    if (!class_exists(\Spatie\Browsershot\Browsershot::class)) {
+    if (!class_exists(Browsershot::class)) {
         return $available = false;
     }
 
@@ -29,7 +30,7 @@ function chromiumAvailable(): bool
         $output = shell_exec('node -e "console.log(require(\'puppeteer\').executablePath())" 2>&1');
 
         return $available = is_string($output) && is_file(trim($output));
-    } catch (\Throwable) {
+    } catch (Throwable) {
         return $available = false;
     }
 }

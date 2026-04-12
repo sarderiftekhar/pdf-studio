@@ -80,9 +80,9 @@ class PdfEmbedder
         $parts[] = $this->filePart($boundary, 'files', 'document.pdf', $pdfContent, 'application/pdf');
 
         foreach ($files as $file) {
-            $path = $file['path'] ?? null;
+            $path = $file['path'];
 
-            if (!is_string($path) || $path === '' || !is_file($path)) {
+            if ($path === '' || !is_file($path)) {
                 throw new ManipulationException('Embedded files require a valid file path.');
             }
 
@@ -92,11 +92,11 @@ class PdfEmbedder
                 throw new ManipulationException("Unable to read embedded file [{$path}].");
             }
 
-            $filename = isset($file['name']) && is_string($file['name']) && $file['name'] !== ''
+            $filename = isset($file['name']) && $file['name'] !== ''
                 ? $file['name']
                 : basename($path);
 
-            $mime = isset($file['mime']) && is_string($file['mime']) && $file['mime'] !== ''
+            $mime = isset($file['mime']) && $file['mime'] !== ''
                 ? $file['mime']
                 : 'application/octet-stream';
 
@@ -143,6 +143,7 @@ class PdfEmbedder
             ],
         ]);
 
+        $http_response_header = [];
         $responseBody = @file_get_contents($url, false, $context);
 
         if ($responseBody === false) {
@@ -153,7 +154,7 @@ class PdfEmbedder
 
         $status = 0;
 
-        foreach ($http_response_header ?? [] as $line) {
+        foreach ($http_response_header as $line) {
             if (preg_match('#^HTTP/\S+\s+(\d{3})#', $line, $matches) === 1) {
                 $status = (int) $matches[1];
                 break;

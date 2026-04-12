@@ -1,13 +1,14 @@
 <?php
 
 use PdfStudio\Laravel\Facades\Pdf;
+use PdfStudio\Laravel\PdfBuilder;
 
 beforeEach(function () {
     $this->app['config']->set('pdf-studio.default_driver', 'fake');
 });
 
 it('sets headerExceptFirst option', function () {
-    $builder = app(\PdfStudio\Laravel\PdfBuilder::class);
+    $builder = app(PdfBuilder::class);
 
     $builder->html('<h1>Test</h1>')->headerExceptFirst();
 
@@ -15,7 +16,7 @@ it('sets headerExceptFirst option', function () {
 });
 
 it('sets footerExceptLast option', function () {
-    $builder = app(\PdfStudio\Laravel\PdfBuilder::class);
+    $builder = app(PdfBuilder::class);
 
     $builder->html('<h1>Test</h1>')->footerExceptLast();
 
@@ -23,7 +24,7 @@ it('sets footerExceptLast option', function () {
 });
 
 it('sets headerOnPages option', function () {
-    $builder = app(\PdfStudio\Laravel\PdfBuilder::class);
+    $builder = app(PdfBuilder::class);
 
     $builder->html('<h1>Test</h1>')->headerOnPages([1, 3, 5]);
 
@@ -31,7 +32,7 @@ it('sets headerOnPages option', function () {
 });
 
 it('sets headerExcludePages option', function () {
-    $builder = app(\PdfStudio\Laravel\PdfBuilder::class);
+    $builder = app(PdfBuilder::class);
 
     $builder->html('<h1>Test</h1>')->headerExcludePages([2, 4]);
 
@@ -39,7 +40,7 @@ it('sets headerExcludePages option', function () {
 });
 
 it('sets footerExcludePages option', function () {
-    $builder = app(\PdfStudio\Laravel\PdfBuilder::class);
+    $builder = app(PdfBuilder::class);
 
     $builder->html('<h1>Test</h1>')->footerExcludePages([1, 5]);
 
@@ -47,7 +48,7 @@ it('sets footerExcludePages option', function () {
 });
 
 it('defaults to no header/footer exclusions', function () {
-    $builder = app(\PdfStudio\Laravel\PdfBuilder::class);
+    $builder = app(PdfBuilder::class);
     $builder->html('<h1>Test</h1>');
 
     $options = $builder->getContext()->options;
@@ -60,7 +61,7 @@ it('defaults to no header/footer exclusions', function () {
 });
 
 it('supports chaining multiple header/footer options', function () {
-    $builder = app(\PdfStudio\Laravel\PdfBuilder::class);
+    $builder = app(PdfBuilder::class);
 
     $result = $builder->html('<h1>Test</h1>')
         ->headerExceptFirst()
@@ -68,7 +69,7 @@ it('supports chaining multiple header/footer options', function () {
         ->headerExcludePages([3])
         ->footerExcludePages([1, 2]);
 
-    expect($result)->toBeInstanceOf(\PdfStudio\Laravel\PdfBuilder::class);
+    expect($result)->toBeInstanceOf(PdfBuilder::class);
 
     $options = $builder->getContext()->options;
 

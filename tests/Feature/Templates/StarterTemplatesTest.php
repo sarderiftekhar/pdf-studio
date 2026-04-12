@@ -1,6 +1,7 @@
 <?php
 
 use PdfStudio\Laravel\Facades\Pdf;
+use PdfStudio\Laravel\PdfStudioServiceProvider;
 use PdfStudio\Laravel\Templates\TemplateRegistry;
 
 beforeEach(function () {
@@ -10,7 +11,7 @@ beforeEach(function () {
 
 it('registers starter templates when enabled', function () {
     // Re-boot to pick up config
-    $provider = $this->app->make(\PdfStudio\Laravel\PdfStudioServiceProvider::class, ['app' => $this->app]);
+    $provider = $this->app->make(PdfStudioServiceProvider::class, ['app' => $this->app]);
     $provider->boot();
 
     $registry = $this->app->make(TemplateRegistry::class);
@@ -23,7 +24,7 @@ it('registers starter templates when enabled', function () {
 it('does not register starter templates when disabled', function () {
     $this->app['config']->set('pdf-studio.starter_templates', false);
 
-    $provider = $this->app->make(\PdfStudio\Laravel\PdfStudioServiceProvider::class, ['app' => $this->app]);
+    $provider = $this->app->make(PdfStudioServiceProvider::class, ['app' => $this->app]);
     $provider->boot();
 
     $registry = $this->app->make(TemplateRegistry::class);
@@ -32,7 +33,7 @@ it('does not register starter templates when disabled', function () {
 });
 
 it('renders the invoice starter template', function () {
-    $provider = $this->app->make(\PdfStudio\Laravel\PdfStudioServiceProvider::class, ['app' => $this->app]);
+    $provider = $this->app->make(PdfStudioServiceProvider::class, ['app' => $this->app]);
     $provider->boot();
 
     $result = Pdf::template('pdf-studio::invoice')
@@ -52,7 +53,7 @@ it('renders the invoice starter template', function () {
 });
 
 it('renders the report starter template', function () {
-    $provider = $this->app->make(\PdfStudio\Laravel\PdfStudioServiceProvider::class, ['app' => $this->app]);
+    $provider = $this->app->make(PdfStudioServiceProvider::class, ['app' => $this->app]);
     $provider->boot();
 
     $result = Pdf::template('pdf-studio::report')
@@ -69,7 +70,7 @@ it('renders the report starter template', function () {
 });
 
 it('renders the certificate starter template', function () {
-    $provider = $this->app->make(\PdfStudio\Laravel\PdfStudioServiceProvider::class, ['app' => $this->app]);
+    $provider = $this->app->make(PdfStudioServiceProvider::class, ['app' => $this->app]);
     $provider->boot();
 
     $result = Pdf::template('pdf-studio::certificate')

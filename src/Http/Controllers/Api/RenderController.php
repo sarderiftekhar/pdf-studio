@@ -5,6 +5,7 @@ namespace PdfStudio\Laravel\Http\Controllers\Api;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use PdfStudio\Laravel\Jobs\RenderPdfJob;
 use PdfStudio\Laravel\Models\RenderJob;
 use PdfStudio\Laravel\PdfBuilder;
 use PdfStudio\Laravel\Templates\TemplateRegistry;
@@ -56,7 +57,7 @@ class RenderController
             'output_disk' => $request->input('output_disk'),
         ]);
 
-        \PdfStudio\Laravel\Jobs\RenderPdfJob::dispatch(
+        RenderPdfJob::dispatch(
             view: $job->view ?? '',
             html: $job->html,
             data: $job->data ?? [],

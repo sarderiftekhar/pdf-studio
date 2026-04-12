@@ -1,5 +1,6 @@
 <?php
 
+use PdfStudio\Laravel\Contracts\ProtectorContract;
 use PdfStudio\Laravel\Exceptions\ManipulationException;
 use PdfStudio\Laravel\Manipulation\PdfProtector;
 use PdfStudio\Laravel\Tests\TestCase;
@@ -9,7 +10,7 @@ uses(TestCase::class);
 it('implements ProtectorContract', function () {
     $protector = new PdfProtector;
 
-    expect($protector)->toBeInstanceOf(\PdfStudio\Laravel\Contracts\ProtectorContract::class);
+    expect($protector)->toBeInstanceOf(ProtectorContract::class);
 });
 
 it('output method throws exception', function () {

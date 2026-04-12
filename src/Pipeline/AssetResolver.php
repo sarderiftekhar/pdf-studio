@@ -242,7 +242,7 @@ class AssetResolver
         $allowedRoots = $this->allowedAssetRoots();
 
         foreach ($candidates as $candidate) {
-            if (!is_string($candidate) || !is_file($candidate) || !is_readable($candidate)) {
+            if (!is_file($candidate) || !is_readable($candidate)) {
                 continue;
             }
 
@@ -271,7 +271,7 @@ class AssetResolver
         $configured = $this->app['config']->get('pdf-studio.assets.allowed_roots', []);
 
         if ($configured !== []) {
-            return array_map(static fn (string $path): string => rtrim((string) realpath($path), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR, array_filter($configured, static fn ($p): bool => is_string($p) && realpath($p) !== false));
+            return array_map(static fn (string $path): string => rtrim((string) realpath($path), DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR, array_filter($configured, static fn (string $p): bool => realpath($p) !== false));
         }
 
         $roots = [];

@@ -1,6 +1,7 @@
 <?php
 
 use PdfStudio\Laravel\Contracts\PreviewDataProviderContract;
+use PdfStudio\Laravel\PdfStudioServiceProvider;
 
 beforeEach(function () {
     $this->app['config']->set('pdf-studio.default_driver', 'fake');
@@ -18,7 +19,7 @@ it('blocks preview in production when environment gate is enabled', function () 
     $this->app->detectEnvironment(fn () => 'production');
 
     // Re-boot to re-register routes with new config
-    $provider = $this->app->make(\PdfStudio\Laravel\PdfStudioServiceProvider::class, ['app' => $this->app]);
+    $provider = $this->app->make(PdfStudioServiceProvider::class, ['app' => $this->app]);
     $provider->boot();
 
     $response = $this->get('/pdf-studio/preview/simple?format=html');
@@ -30,7 +31,7 @@ it('allows preview in local environment when gate is enabled', function () {
     $this->app['config']->set('pdf-studio.preview.environment_gate', true);
     $this->app->detectEnvironment(fn () => 'local');
 
-    $provider = $this->app->make(\PdfStudio\Laravel\PdfStudioServiceProvider::class, ['app' => $this->app]);
+    $provider = $this->app->make(PdfStudioServiceProvider::class, ['app' => $this->app]);
     $provider->boot();
 
     $response = $this->get('/pdf-studio/preview/simple?format=html');
@@ -39,7 +40,7 @@ it('allows preview in local environment when gate is enabled', function () {
 });
 
 it('validates format parameter', function () {
-    $provider = $this->app->make(\PdfStudio\Laravel\PdfStudioServiceProvider::class, ['app' => $this->app]);
+    $provider = $this->app->make(PdfStudioServiceProvider::class, ['app' => $this->app]);
     $provider->boot();
 
     $response = $this->get('/pdf-studio/preview/simple?format=invalid');
@@ -48,7 +49,7 @@ it('validates format parameter', function () {
 });
 
 it('accepts valid format parameters', function () {
-    $provider = $this->app->make(\PdfStudio\Laravel\PdfStudioServiceProvider::class, ['app' => $this->app]);
+    $provider = $this->app->make(PdfStudioServiceProvider::class, ['app' => $this->app]);
     $provider->boot();
 
     $htmlResponse = $this->get('/pdf-studio/preview/simple?format=html');

@@ -1,5 +1,6 @@
 <?php
 
+use PdfStudio\Laravel\DTOs\TemplateDefinition;
 use PdfStudio\Laravel\Models\TemplateVersion;
 
 it('has correct table name', function () {
@@ -39,7 +40,7 @@ it('converts to TemplateDefinition DTO', function () {
 
     $dto = $model->toDefinition();
 
-    expect($dto)->toBeInstanceOf(\PdfStudio\Laravel\DTOs\TemplateDefinition::class)
+    expect($dto)->toBeInstanceOf(TemplateDefinition::class)
         ->and($dto->name)->toBe('invoice')
         ->and($dto->view)->toBe('pdf.invoice')
         ->and($dto->description)->toBe('Invoice template')

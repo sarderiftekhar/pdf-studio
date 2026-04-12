@@ -1,6 +1,7 @@
 <?php
 
 use PdfStudio\Laravel\Contracts\PreviewDataProviderContract;
+use PdfStudio\Laravel\PdfStudioServiceProvider;
 
 beforeEach(function () {
     $this->app['config']->set('pdf-studio.default_driver', 'fake');
@@ -15,7 +16,7 @@ beforeEach(function () {
 
     // Register preview routes since they're registered at boot time
     // and we changed config after boot
-    $provider = $this->app->make(\PdfStudio\Laravel\PdfStudioServiceProvider::class, ['app' => $this->app]);
+    $provider = $this->app->make(PdfStudioServiceProvider::class, ['app' => $this->app]);
     $provider->boot();
 });
 

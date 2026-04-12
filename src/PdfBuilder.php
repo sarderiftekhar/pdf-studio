@@ -3,11 +3,22 @@
 namespace PdfStudio\Laravel;
 
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\Response;
+use PdfStudio\Laravel\Contracts\MergerContract;
+use PdfStudio\Laravel\Contracts\PreviewDataProviderContract;
+use PdfStudio\Laravel\Contracts\ProtectorContract;
+use PdfStudio\Laravel\Contracts\WatermarkerContract;
+use PdfStudio\Laravel\Debug\DebugRecorder;
 use PdfStudio\Laravel\DTOs\RenderContext;
 use PdfStudio\Laravel\DTOs\WatermarkOptions;
+use PdfStudio\Laravel\Events\RenderCompleted;
+use PdfStudio\Laravel\Events\RenderFailed;
+use PdfStudio\Laravel\Events\RenderStarting;
+use PdfStudio\Laravel\Exceptions\RenderException;
 use PdfStudio\Laravel\Output\PdfResult;
 use PdfStudio\Laravel\Output\StorageResult;
 use PdfStudio\Laravel\Pipeline\RenderPipeline;
+use PdfStudio\Laravel\Templates\TemplateRegistry;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PdfBuilder
@@ -227,7 +238,7 @@ class PdfBuilder
 
     public function template(string $name): static
     {
-        $registry = $this->app->make(\PdfStudio\Laravel\Templates\TemplateRegistry::class);
+        $registry = $this->app->make(TemplateRegistry::class);
         $definition = $registry->get($name);
 
         $this->view($definition->view);
@@ -251,7 +262,7 @@ class PdfBuilder
 
         // Resolve data provider if configured
         if ($definition->dataProvider !== null) {
-            /** @var \PdfStudio\Laravel\Contracts\PreviewDataProviderContract $provider */
+            /** @var PreviewDataProviderContract $provider */
             $provider = $this->app->make($definition->dataProvider);
             $this->data($provider->data());
         }
@@ -419,7 +430,7 @@ class PdfBuilder
      */
     public function merge(array $sources): PdfResult
     {
-        $merger = $this->app->make(\PdfStudio\Laravel\Contracts\MergerContract::class);
+        $merger = $this->app->make(MergerContract::class);
 
         return $merger->merge($sources);
     }
@@ -675,7 +686,7 @@ class PdfBuilder
                 throw new \InvalidArgumentException('Each composed document must define either [view] or [html].');
             }
 
-            if (isset($document['data']) && is_array($document['data'])) {
+            if (isset($document['data'])) {
                 $builder->data($document['data']);
             }
 
@@ -698,7 +709,7 @@ class PdfBuilder
         $content = file_get_contents($path);
 
         if ($content === false) {
-            throw new \PdfStudio\Laravel\Exceptions\RenderException("Cannot read file: {$path}");
+            throw new RenderException("Cannot read file: {$path}");
         }
 
         return $content;
@@ -787,7 +798,7 @@ class PdfBuilder
             }
         }
 
-        event(new \PdfStudio\Laravel\Events\RenderStarting(
+        event(new RenderStarting(
             html: $html,
             driver: $driverName,
             viewName: $this->context->viewName,
@@ -823,7 +834,7 @@ class PdfBuilder
 
             // Post-render: watermark
             if ($this->context->options->watermark !== null) {
-                $watermarker = $this->app->make(\PdfStudio\Laravel\Contracts\WatermarkerContract::class);
+                $watermarker = $this->app->make(WatermarkerContract::class);
                 $context->pdfContent = $watermarker->apply(
                     $context->pdfContent ?? '',
                     $this->context->options->watermark,
@@ -832,7 +843,7 @@ class PdfBuilder
 
             // Post-render: password protection
             if ($this->context->options->userPassword !== null || $this->context->options->ownerPassword !== null) {
-                $protector = $this->app->make(\PdfStudio\Laravel\Contracts\ProtectorContract::class);
+                $protector = $this->app->make(ProtectorContract::class);
                 $context->pdfContent = $protector->protect(
                     $context->pdfContent ?? '',
                     $this->context->options->userPassword,
@@ -854,18 +865,18 @@ class PdfBuilder
                 $renderCache->put($cacheKey, $context->pdfContent ?? '', $this->cacheTtl);
             }
 
-            event(new \PdfStudio\Laravel\Events\RenderCompleted(
+            event(new RenderCompleted(
                 driver: $driverName,
                 renderTimeMs: $renderTimeMs,
                 bytes: $result->bytes,
             ));
 
-            $debugRecorder = $this->app->make(\PdfStudio\Laravel\Debug\DebugRecorder::class);
+            $debugRecorder = $this->app->make(DebugRecorder::class);
             $debugRecorder->record($context, $driverName, $renderTimeMs);
 
             return $result;
         } catch (\Throwable $e) {
-            event(new \PdfStudio\Laravel\Events\RenderFailed(
+            event(new RenderFailed(
                 driver: $driverName,
                 exception: $e,
             ));
@@ -874,7 +885,7 @@ class PdfBuilder
         }
     }
 
-    public function download(string $filename): \Illuminate\Http\Response
+    public function download(string $filename): Response
     {
         return $this->render()->download($filename);
     }

@@ -2,10 +2,13 @@
 
 namespace PdfStudio\Laravel\Commands;
 
+use Dompdf\Dompdf;
 use Illuminate\Console\Command;
+use mikehaertl\pdftk\Pdf;
 use PdfStudio\Laravel\Drivers\FakeDriver;
 use PdfStudio\Laravel\DTOs\RenderOptions;
 use PdfStudio\Laravel\Fonts\FontRegistry;
+use setasign\Fpdi\Fpdi;
 
 class DoctorCommand extends Command
 {
@@ -79,7 +82,7 @@ class DoctorCommand extends Command
         }
 
         // dompdf
-        $allPassed = $this->check('dompdf/dompdf installed', class_exists(\Dompdf\Dompdf::class),
+        $allPassed = $this->check('dompdf/dompdf installed', class_exists(Dompdf::class),
             'composer require dompdf/dompdf') && $allPassed;
 
         // wkhtmltopdf binary
@@ -93,7 +96,7 @@ class DoctorCommand extends Command
             'Install pdftk for merge/watermark/protect features') && $allPassed;
 
         // FPDI
-        $allPassed = $this->check('setasign/fpdi installed', class_exists(\setasign\Fpdi\Fpdi::class),
+        $allPassed = $this->check('setasign/fpdi installed', class_exists(Fpdi::class),
             'composer require setasign/fpdi (for merge/watermark)') && $allPassed;
 
         // Tailwind binary
@@ -182,13 +185,14 @@ class DoctorCommand extends Command
             ],
         ]);
 
+        $http_response_header = [];
         $result = @file_get_contents($url, false, $context);
 
         if ($result === false && empty($http_response_header)) {
             return false;
         }
 
-        foreach ($http_response_header ?? [] as $line) {
+        foreach ($http_response_header as $line) {
             if (preg_match('#^HTTP/\S+\s+(\d{3})#', $line, $matches) === 1) {
                 $status = (int) $matches[1];
 
@@ -255,8 +259,8 @@ class DoctorCommand extends Command
 
     protected function reportExistingPdfCapabilities(string $gotenbergUrl): void
     {
-        $fpdiAvailable = class_exists(\setasign\Fpdi\Fpdi::class);
-        $pdftkAvailable = class_exists(\mikehaertl\pdftk\Pdf::class);
+        $fpdiAvailable = class_exists(Fpdi::class);
+        $pdftkAvailable = class_exists(Pdf::class);
         $gotenbergConfigured = $gotenbergUrl !== '';
 
         $inspection = ['isPdf', 'inspectPdf'];

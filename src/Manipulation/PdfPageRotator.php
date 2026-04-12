@@ -74,7 +74,7 @@ class PdfPageRotator
     }
 
     /**
-     * @param  array<int, int>|null  $pages
+     * @param  array<int, mixed>|null  $pages
      * @return array<int, int>|null
      */
     protected function normalizePages(?array $pages): ?array
@@ -88,8 +88,8 @@ class PdfPageRotator
         }
 
         return array_values(array_map(
-            static fn (int $page): int => (int) $page,
-            array_filter($pages, static fn ($page): bool => is_int($page) || ctype_digit((string) $page))
+            static fn (mixed $page): int => (int) $page,
+            array_filter($pages, static fn (mixed $v): bool => is_int($v) || (is_string($v) && ctype_digit($v)))
         ));
     }
 

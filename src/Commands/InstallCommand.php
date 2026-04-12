@@ -2,7 +2,11 @@
 
 namespace PdfStudio\Laravel\Commands;
 
+use chillerlan\QRCode\QRCode;
+use Dompdf\Dompdf;
 use Illuminate\Console\Command;
+use Picqer\Barcode\BarcodeGeneratorSVG;
+use Spatie\Browsershot\Browsershot;
 use Symfony\Component\Process\Process;
 
 class InstallCommand extends Command
@@ -15,32 +19,32 @@ class InstallCommand extends Command
     protected array $features = [
         'Chromium PDF driver' => [
             'package' => 'spatie/browsershot',
-            'class' => \Spatie\Browsershot\Browsershot::class,
+            'class' => Browsershot::class,
             'description' => 'Render PDFs via headless Chrome',
         ],
         'Dompdf PDF driver' => [
             'package' => 'dompdf/dompdf',
-            'class' => \Dompdf\Dompdf::class,
+            'class' => Dompdf::class,
             'description' => 'Render PDFs via dompdf',
         ],
         'PDF manipulation' => [
             'package' => 'setasign/fpdi',
-            'class' => \setasign\Fpdi\Fpdi::class,
+            'class' => 'setasign\Fpdi\Fpdi',
             'description' => 'Merge, watermark, split, and reorder PDFs',
         ],
         'Form filling & protection' => [
             'package' => 'mikehaertl/php-pdftk',
-            'class' => \mikehaertl\pdftk\Pdf::class,
+            'class' => 'mikehaertl\pdftk\Pdf',
             'description' => 'AcroForm filling and password protection',
         ],
         'Barcodes' => [
             'package' => 'picqer/php-barcode-generator',
-            'class' => \Picqer\Barcode\BarcodeGeneratorSVG::class,
+            'class' => BarcodeGeneratorSVG::class,
             'description' => '@barcode Blade directive',
         ],
         'QR codes' => [
             'package' => 'chillerlan/php-qrcode',
-            'class' => \chillerlan\QRCode\QRCode::class,
+            'class' => QRCode::class,
             'description' => '@qrcode Blade directive',
         ],
     ];
@@ -76,7 +80,7 @@ class InstallCommand extends Command
 
         $this->line('');
 
-        if (! $process->isSuccessful()) {
+        if (!$process->isSuccessful()) {
             $this->error('Composer install failed. See output above for details.');
 
             return self::FAILURE;
@@ -148,7 +152,7 @@ class InstallCommand extends Command
 
     protected function showImagickReminder(): void
     {
-        if (! extension_loaded('imagick')) {
+        if (!extension_loaded('imagick')) {
             $this->line('');
             $this->warn('Note: For PDF thumbnail generation, you also need the imagick PHP extension.');
             $this->line('  This must be installed separately (not via Composer).');

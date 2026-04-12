@@ -3,6 +3,7 @@
 namespace PdfStudio\Laravel\Tests;
 
 use Orchestra\Testbench\TestCase as BaseTestCase;
+use PdfStudio\Laravel\Facades\Pdf;
 use PdfStudio\Laravel\PdfStudioServiceProvider;
 
 class TestCase extends BaseTestCase
@@ -17,7 +18,7 @@ class TestCase extends BaseTestCase
     protected function getPackageAliases($app): array
     {
         return [
-            'Pdf' => \PdfStudio\Laravel\Facades\Pdf::class,
+            'Pdf' => Pdf::class,
         ];
     }
 

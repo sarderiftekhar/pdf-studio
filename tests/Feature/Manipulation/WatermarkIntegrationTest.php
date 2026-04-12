@@ -3,6 +3,7 @@
 use PdfStudio\Laravel\DTOs\WatermarkOptions;
 use PdfStudio\Laravel\Facades\Pdf;
 use PdfStudio\Laravel\Manipulation\WatermarkBuilder;
+use PdfStudio\Laravel\PdfBuilder;
 
 beforeEach(function () {
     $this->app['config']->set('pdf-studio.default_driver', 'fake');
@@ -46,7 +47,7 @@ it('watermarkPdf returns WatermarkBuilder instance', function () {
 });
 
 it('watermark options are stored in RenderOptions', function () {
-    $builder = app(\PdfStudio\Laravel\PdfBuilder::class);
+    $builder = app(PdfBuilder::class);
 
     $builder->html('<h1>Test</h1>')
         ->watermark('DRAFT', opacity: 0.7, rotation: -30);
@@ -60,7 +61,7 @@ it('watermark options are stored in RenderOptions', function () {
 });
 
 it('watermarkImage options are stored in RenderOptions', function () {
-    $builder = app(\PdfStudio\Laravel\PdfBuilder::class);
+    $builder = app(PdfBuilder::class);
 
     $builder->html('<h1>Test</h1>')
         ->watermarkImage('/path/to/logo.png', opacity: 0.4, position: 'top-right');

@@ -4,7 +4,6 @@ namespace PdfStudio\Laravel\Manipulation;
 
 use PdfStudio\Laravel\Exceptions\ManipulationException;
 use PdfStudio\Laravel\Output\PdfResult;
-use setasign\Fpdi\Fpdi;
 
 class PdfChunker
 {

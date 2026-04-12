@@ -2,6 +2,7 @@
 
 namespace PdfStudio\Laravel\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use PdfStudio\Laravel\DTOs\TemplateDefinition;
 
@@ -15,7 +16,7 @@ use PdfStudio\Laravel\DTOs\TemplateDefinition;
  * @property string|null $author
  * @property string|null $change_notes
  *
- * @mixin \Illuminate\Database\Eloquent\Builder<TemplateVersion>
+ * @mixin Builder<TemplateVersion>
  */
 class TemplateVersion extends Model
 {
