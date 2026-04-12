@@ -106,7 +106,7 @@ it('renders HTML to PDF bytes', function () {
     expect($result)->toBeString()
         ->and(strlen($result))->toBeGreaterThan(0)
         ->and(str_starts_with($result, '%PDF'))->toBeTrue();
-})->skip(fn () => (bool) getenv('CI') || !class_exists(\Spatie\Browsershot\Browsershot::class), 'Chromium/Puppeteer not available');
+})->skip(fn () => !chromiumAvailable(), 'Chromium/Puppeteer not available');
 
 it('respects landscape option', function () {
     $driver = new ChromiumDriver;
@@ -116,7 +116,7 @@ it('respects landscape option', function () {
 
     expect($result)->toBeString()
         ->and(str_starts_with($result, '%PDF'))->toBeTrue();
-})->skip(fn () => (bool) getenv('CI') || !class_exists(\Spatie\Browsershot\Browsershot::class), 'Chromium/Puppeteer not available');
+})->skip(fn () => !chromiumAvailable(), 'Chromium/Puppeteer not available');
 
 it('respects format option', function () {
     $driver = new ChromiumDriver;
@@ -126,4 +126,4 @@ it('respects format option', function () {
 
     expect($result)->toBeString()
         ->and(str_starts_with($result, '%PDF'))->toBeTrue();
-})->skip(fn () => (bool) getenv('CI') || !class_exists(\Spatie\Browsershot\Browsershot::class), 'Chromium/Puppeteer not available');
+})->skip(fn () => !chromiumAvailable(), 'Chromium/Puppeteer not available');

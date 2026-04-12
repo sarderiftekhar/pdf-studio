@@ -65,7 +65,7 @@ class AssetResolver
         $images = $dom->getElementsByTagName('img');
 
         foreach ($images as $image) {
-            $src = $image->getAttribute('src');
+            $src = urldecode($image->getAttribute('src'));
 
             if ($src === '') {
                 continue;
@@ -111,7 +111,7 @@ class AssetResolver
                 continue;
             }
 
-            $href = $link->getAttribute('href');
+            $href = urldecode($link->getAttribute('href'));
 
             if ($href === '') {
                 continue;
@@ -228,7 +228,7 @@ class AssetResolver
     {
         $candidates = [];
 
-        if (str_starts_with($source, '/')) {
+        if (str_starts_with($source, '/') || preg_match('/^[A-Za-z]:[\\\\\/]/', $source)) {
             $candidates[] = $source;
         }
 

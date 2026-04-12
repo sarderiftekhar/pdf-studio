@@ -1,6 +1,9 @@
 <?php
 
 use PdfStudio\Laravel\Barcode\BarcodeGenerator;
+use PdfStudio\Laravel\Tests\TestCase;
+
+uses(TestCase::class);
 
 it('generates SVG barcode for CODE128', function () {
     $generator = new BarcodeGenerator;

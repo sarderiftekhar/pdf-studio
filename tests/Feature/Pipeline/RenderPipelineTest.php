@@ -5,6 +5,7 @@ use PdfStudio\Laravel\Pipeline\RenderPipeline;
 
 beforeEach(function () {
     $this->app['config']->set('pdf-studio.default_driver', 'fake');
+    $this->app['config']->set('pdf-studio.assets.allowed_roots', [sys_get_temp_dir()]);
     $this->app['view']->addNamespace('pdf-test', __DIR__.'/../../stubs/views');
 });
 
