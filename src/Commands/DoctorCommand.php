@@ -21,8 +21,8 @@ class DoctorCommand extends Command
         $allPassed = true;
 
         // PHP version
-        $allPassed = $this->check('PHP Version >= 8.1', version_compare(PHP_VERSION, '8.1.0', '>='),
-            'Upgrade PHP to >= 8.1');
+        $allPassed = $this->check('PHP Version >= 8.2', version_compare(PHP_VERSION, '8.2.0', '>='),
+            'Upgrade PHP to >= 8.2');
 
         // Memory limit
         $memoryLimit = ini_get('memory_limit') ?: '128M';
