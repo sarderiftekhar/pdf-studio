@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Changed
+- **Puppeteer** — npm lockfile updated to puppeteer 24.43.1 (within `^24.38.0`), resolving the `ip-address` and `js-yaml` advisories
+- **CI** — `actions/checkout` bumped from v4 to v7
+- **CI** — Laravel 11 matrix jobs now disable Composer's `policy.advisories.block` setting. Composer 2.10 refuses to install packages with open security advisories by default, and Laravel 11 is past its security-support window, so its releases can no longer be resolved without this override. Laravel 12 and 13 are unaffected
+
+### Added
+- **Dependabot** — weekly update checks for Composer and npm dependencies, monthly for GitHub Actions
+
 ## [3.0.0] - 2026-04-12
 
 ### Added
