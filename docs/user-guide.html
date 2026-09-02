@@ -2811,6 +2811,21 @@ $colorClass = match($status) {
         </tbody>
       </table>
 
+      <h3>Composer refuses to install on Laravel 11</h3>
+      <p>Laravel 11 left its security-support window in March 2026, so every <code>laravel/framework</code> 11.x release carries open security advisories. Composer 2.10 and later refuse to install packages with open advisories by default, and the resolver reports <em>"Your requirements could not be resolved to an installable set of packages"</em> with a note that the framework versions "were not loaded, because they are affected by security advisories".</p>
+      <div class="terminal">
+        <div class="terminal-header">
+          <div class="code-dots"><span></span><span></span><span></span></div>
+          <span class="terminal-title">bash</span>
+        </div>
+        <pre><span class="t-dim"># Preferred: upgrade the application to Laravel 12 or 13</span>
+
+<span class="t-dim"># Otherwise, allow packages with open advisories for this project</span>
+<span class="t-prompt">$</span> <span class="t-cmd">composer config policy.advisories.block false</span>
+<span class="t-prompt">$</span> <span class="t-cmd">composer require sarder/pdfstudio</span></pre>
+      </div>
+      <p>Laravel 12 and 13 resolve normally. Laravel 11 support will be dropped in the next major release of PDF Studio.</p>
+
       <h3>Performance — large PDFs taking too long</h3>
       <div class="code-block">
         <div class="code-header">
@@ -3399,7 +3414,7 @@ document.getElementById('downloadBtn').addEventListener('click', async () => {
 
   <footer class="footer">
     <div>PDF Studio for Laravel · MIT License · <a href="https://github.com/sarderiftekhar/pdf-studio">GitHub</a></div>
-    <div style="color:var(--border2)">261 tests · PHPStan level 6 · 24 sections</div>
+    <div style="color:var(--border2)">530 tests · PHPStan level 6 · 24 sections</div>
   </footer>
 
 </div><!-- /main -->

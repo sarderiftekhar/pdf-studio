@@ -2,7 +2,7 @@
 
 Design, preview, and generate PDFs using HTML and TailwindCSS in Laravel.
 
-[![Tests](https://img.shields.io/badge/tests-527%20passing-brightgreen)](tests)
+[![Tests](https://img.shields.io/badge/tests-530%20passing-brightgreen)](tests)
 [![PHPStan](https://img.shields.io/badge/phpstan-level%206-blue)](phpstan.neon)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
@@ -50,6 +50,14 @@ Design, preview, and generate PDFs using HTML and TailwindCSS in Laravel.
 - **PHP** >= 8.2
 - **Laravel** 11.x, 12.x, or 13.x
 
+> **Laravel 11 note:** Laravel 11 left its security-support window in March 2026, so every 11.x release now carries open security advisories. Composer 2.10 and later refuse to install packages with open advisories by default, which means `composer require sarder/pdfstudio` fails to resolve on a Laravel 11 app unless you relax that policy:
+>
+> ```bash
+> composer config policy.advisories.block false
+> ```
+>
+> Upgrading to Laravel 12 or 13 is the recommended fix. Laravel 11 support will be dropped in the next major release.
+
 ### Optional Dependencies
 
 | Driver | Package | Required For |
@@ -58,7 +66,7 @@ Design, preview, and generate PDFs using HTML and TailwindCSS in Laravel.
 | Cloudflare | Cloudflare Browser Rendering | Managed remote Chromium rendering |
 | Gotenberg | Self-hosted Gotenberg service | Remote/self-hosted Chromium rendering |
 | WeasyPrint | System `weasyprint` binary | Print-native rendering, attachments, PDF variants |
-| dompdf | `dompdf/dompdf` ^2.0\|^3.0 | Zero external dependencies, limited CSS |
+| dompdf | `dompdf/dompdf` ^3.1.6 (2.x also works) | Zero external dependencies, limited CSS. Releases before 3.1.6 carry known CVEs |
 | wkhtmltopdf | System binary | Good CSS fidelity, no Node.js needed |
 
 **PDF Manipulation (optional):**
@@ -68,7 +76,7 @@ Design, preview, and generate PDFs using HTML and TailwindCSS in Laravel.
 | `setasign/fpdi` ^2.3 | PDF merging, watermarking |
 | `mikehaertl/php-pdftk` ^4.0 | AcroForm fill, password protection |
 
-> **Note:** The Chromium driver requires Node.js and a Chromium/Chrome binary on the server.
+> **Note:** The Chromium driver requires Node.js 18+ and Puppeteer 24.x (`npm install puppeteer`), which downloads a compatible Chrome binary. Puppeteer 25 is ESM-only, requires Node.js 22.12+, and has not yet been verified with Browsershot, so stay on 24.x for now.
 
 ---
 

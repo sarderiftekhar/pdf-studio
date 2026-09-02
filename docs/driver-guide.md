@@ -31,6 +31,14 @@ Use this default decision tree:
 
 ### Chromium
 
+Requires:
+
+- Node.js 18+ on the rendering host
+- Puppeteer 24.x (`npm install puppeteer`), which downloads a matching Chrome build
+- `spatie/browsershot` ^5.2
+
+Puppeteer 25 is ESM-only, needs Node.js 22.12+, and has not been verified against Browsershot yet. Pin to `puppeteer@^24` until Browsershot confirms support.
+
 Use when:
 
 - your templates rely on modern CSS

@@ -12,6 +12,11 @@ All notable changes to this project will be documented in this file.
 ### Added
 - **Dependabot** — weekly update checks for Composer and npm dependencies, monthly for GitHub Actions
 
+### Documentation
+- README, user guide and driver guide now explain the Laravel 11 / Composer 2.10 advisory-blocking issue and the Puppeteer 24.x requirement for the Chromium driver
+- CONTRIBUTING gains Continuous Integration and Dependency Updates sections
+- Test count badges and footers updated to 530
+
 ## [3.0.0] - 2026-04-12
 
 ### Added

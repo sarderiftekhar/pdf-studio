@@ -71,6 +71,37 @@ Use conventional commits:
 - `ci:` CI/CD changes
 - `docs:` documentation
 
+## Continuous Integration
+
+Every pull request runs three workflows on GitHub Actions:
+
+- **Tests** — Pest across a matrix of PHP 8.2, 8.3, 8.4 and Laravel 11, 12, 13 (Laravel 13 requires PHP 8.3+, so that combination is excluded)
+- **Static Analysis** — PHPStan on PHP 8.3
+- **Code Style** — Pint on PHP 8.3
+
+`composer.lock` is gitignored, so CI resolves dependencies fresh on every run. If a job fails at the "Install dependencies" step, a newly released dependency or Composer version is usually the cause rather than the code change.
+
+The Laravel 11 matrix jobs disable Composer's `policy.advisories.block` setting before installing. Composer 2.10+ refuses to install packages with open security advisories, and Laravel 11 is past its security-support window, so its releases can no longer be resolved under the default policy. Laravel 12 and 13 resolve normally.
+
+## Dependency Updates
+
+Dependabot is configured in `.github/dependabot.yml`:
+
+- **Composer** — weekly, minor and patch updates grouped into one PR
+- **npm** (Puppeteer for the Chromium driver) — weekly
+- **GitHub Actions** — monthly
+
+To check manually:
+
+```bash
+composer outdated --direct   # direct Composer dependencies
+composer audit               # security advisories
+npm outdated                 # Puppeteer
+npm audit fix                # patch npm advisories within the current semver range
+```
+
+`package-lock.json` is committed, so npm updates must be applied locally and included in the PR. Puppeteer major upgrades need a Browsershot compatibility check before they are merged.
+
 ## Release Process
 
 Releases follow semantic versioning. Tags are cut from the `main` branch after CI passes.
