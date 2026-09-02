@@ -21,7 +21,7 @@ jobs:
     name: PHP ${{ matrix.php }} / Laravel ${{ matrix.laravel }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -29,6 +29,13 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: dom, curl, libxml, mbstring, zip
           coverage: none
+
+      # Laravel 11 is past its security-support window, so every 11.x release carries
+      # open advisories. Composer >= 2.10 refuses to install such packages by default,
+      # which makes the Laravel 11 matrix unresolvable unless the policy is relaxed.
+      - name: Allow packages with open advisories (Laravel 11 only)
+        if: matrix.laravel == '11.*'
+        run: composer config policy.advisories.block false
 
       - name: Install dependencies
         run: |
@@ -43,7 +50,7 @@ jobs:
     name: Static Analysis
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -62,7 +69,7 @@ jobs:
     name: Code Style
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
