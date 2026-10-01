@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [2.1.0] - 2026-10-01
 
 ### Added
 - **Laravel 10 / PHP 8.1 Support** — `illuminate/*` constraints widened to `^10.0|^11.0|^12.0|^13.0` and PHP to `^8.1`. CI now covers Laravel 10 on PHP 8.1–8.3 (testbench ^8, Pest 2).
@@ -13,6 +13,7 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - **Cloudflare driver request shape** — PDF options (`format`, `margin`, `landscape`, `printBackground`, `scale`, `pageRanges`, `preferCSSPageSize`, header/footer templates) are now sent under `pdfOptions` as the Browser Rendering API expects; previously they were sent top-level and not applied. `format` is lower-cased (`a4`), margins are sent with units (`10mm`) instead of bare numbers (which the API treats as pixels), `waitForSelector` is sent as `{selector: ...}`, and `gotoOptions.timeout` is capped at the API maximum of 60s.
+- **PHP 8.1 CI** — Dev dependencies now allow `picqer/php-barcode-generator` `^2.4` and `spatie/browsershot` `^3.61` (all newer releases require PHP 8.2), so the PHP 8.1 / Laravel 10 CI row installs. CI no longer uses fail-fast.
 
 ## [3.0.0] - 2026-04-12
 
