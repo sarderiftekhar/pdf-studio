@@ -53,59 +53,60 @@ class CloudflareDriver implements RendererContract
     }
 
     /**
+     * Build the Browser Rendering request body. PDF options live under `pdfOptions`
+     * and readiness options at the top level, mirroring the REST API schema.
+     *
      * @return array<string, mixed>
      */
     protected function buildPayload(string $html, RenderOptions $options): array
     {
-        $payload = [
-            'html' => $html,
+        $pdfOptions = [
             'printBackground' => $options->printBackground,
             'landscape' => $options->landscape,
             'scale' => $options->scale,
             'preferCSSPageSize' => $options->preferCssPageSize,
-            'gotoOptions' => array_filter([
-                'waitUntil' => $options->waitUntil,
-                'timeout' => $this->timeout * 1000,
-            ], static fn ($value): bool => $value !== null),
         ];
 
         if ($options->format !== '') {
-            $payload['format'] = $options->format;
+            $pdfOptions['format'] = strtolower($options->format);
         }
 
         if ($options->pageRanges !== null) {
-            $payload['pageRanges'] = $options->pageRanges;
+            $pdfOptions['pageRanges'] = $options->pageRanges;
         }
+
+        if ($options->headerHtml !== null || $options->footerHtml !== null) {
+            $pdfOptions['displayHeaderFooter'] = true;
+            $pdfOptions['headerTemplate'] = $options->headerHtml ?? '<span></span>';
+            $pdfOptions['footerTemplate'] = $options->footerHtml ?? '<span></span>';
+        }
+
+        if ($options->margins !== []) {
+            // Bare numbers are treated as pixels by the API, so send explicit units.
+            $pdfOptions['margin'] = array_map(
+                static fn (int $millimeters): string => "{$millimeters}mm",
+                array_intersect_key($options->margins, array_flip(['top', 'right', 'bottom', 'left'])),
+            );
+        }
+
+        $payload = [
+            'html' => $html,
+            'pdfOptions' => $pdfOptions,
+            'gotoOptions' => array_filter([
+                'waitUntil' => $options->waitUntil,
+                'timeout' => min($this->timeout * 1000, 60000),
+            ], static fn ($value): bool => $value !== null),
+        ];
 
         if ($options->waitDelayMs !== null) {
             $payload['waitForTimeout'] = $options->waitDelayMs;
         }
 
         if ($options->waitForSelector !== null) {
-            $payload['waitForSelector'] = $options->waitForSelector;
-        }
-
-        if ($options->headerHtml !== null || $options->footerHtml !== null) {
-            $payload['displayHeaderFooter'] = true;
-            $payload['headerTemplate'] = $options->headerHtml ?? '<span></span>';
-            $payload['footerTemplate'] = $options->footerHtml ?? '<span></span>';
-        }
-
-        if ($options->margins !== []) {
-            $payload['margin'] = [
-                'top' => $this->toInches($options->margins['top']),
-                'right' => $this->toInches($options->margins['right']),
-                'bottom' => $this->toInches($options->margins['bottom']),
-                'left' => $this->toInches($options->margins['left']),
-            ];
+            $payload['waitForSelector'] = ['selector' => $options->waitForSelector];
         }
 
         return $payload;
-    }
-
-    protected function toInches(int $millimeters): float
-    {
-        return round($millimeters / 25.4, 2);
     }
 
     /**

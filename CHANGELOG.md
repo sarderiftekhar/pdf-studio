@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- **Laravel 10 / PHP 8.1 Support** — `illuminate/*` constraints widened to `^10.0|^11.0|^12.0|^13.0` and PHP to `^8.1`. CI now covers Laravel 10 on PHP 8.1–8.3 (testbench ^8, Pest 2).
+
+### Changed
+- **Behaviour change: package migrations are opt-in** — The service provider now only auto-loads its migrations (`template_versions`, `workspaces`, `workspace_members`, `projects`, `api_keys`, `render_jobs`, `usage_records`) when `pdf-studio.pro.enabled` or `pdf-studio.saas.enabled` is `true`. Previously `php artisan migrate` created these tables in every app. If you use Pro/SaaS features, enable the matching flag or publish the migrations with `php artisan vendor:publish --tag=pdf-studio-migrations` (the tag is unchanged).
+- **SchemaValidator** — `validate()` and `validateJson()` now declare a `bool` return type (still always return `true`) because the standalone `true` type requires PHP 8.2.
+
+### Fixed
+- **Cloudflare driver request shape** — PDF options (`format`, `margin`, `landscape`, `printBackground`, `scale`, `pageRanges`, `preferCSSPageSize`, header/footer templates) are now sent under `pdfOptions` as the Browser Rendering API expects; previously they were sent top-level and not applied. `format` is lower-cased (`a4`), margins are sent with units (`10mm`) instead of bare numbers (which the API treats as pixels), `waitForSelector` is sent as `{selector: ...}`, and `gotoOptions.timeout` is capped at the API maximum of 60s.
+
 ## [3.0.0] - 2026-04-12
 
 ### Added

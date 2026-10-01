@@ -47,8 +47,8 @@ Design, preview, and generate PDFs using HTML and TailwindCSS in Laravel.
 
 ## Requirements
 
-- **PHP** >= 8.2
-- **Laravel** 11.x, 12.x, or 13.x
+- **PHP** >= 8.1
+- **Laravel** 10.x, 11.x, 12.x, or 13.x
 
 ### Optional Dependencies
 
@@ -113,6 +113,8 @@ If you're using Pro or SaaS features, publish and run migrations:
 php artisan vendor:publish --tag=pdf-studio-migrations
 php artisan migrate
 ```
+
+> **Note:** The package only auto-loads its migrations when `pdf-studio.pro.enabled` or `pdf-studio.saas.enabled` is `true`, so apps that only render PDFs never get the Pro/SaaS tables. Publishing them with the tag above works in either case.
 
 ---
 

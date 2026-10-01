@@ -10,7 +10,8 @@ class SchemaValidator
     /** @var array<int, string> */
     protected array $supportedVersions = ['1.0'];
 
-    public function validate(DocumentSchema $schema): true
+    /** @return true */
+    public function validate(DocumentSchema $schema): bool
     {
         if (!in_array($schema->version, $this->supportedVersions, true)) {
             throw SchemaValidationException::unsupportedVersion($schema->version);
@@ -23,7 +24,8 @@ class SchemaValidator
         return true;
     }
 
-    public function validateJson(string $json): true
+    /** @return true */
+    public function validateJson(string $json): bool
     {
         try {
             $schema = DocumentSchema::fromJson($json);
