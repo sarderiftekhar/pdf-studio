@@ -3,7 +3,7 @@
 use PdfStudio\Laravel\Tests\TestCase;
 use Spatie\Browsershot\Browsershot;
 
-pest()->extend(TestCase::class)->in('Feature');
+uses(TestCase::class)->in('Feature');
 
 /**
  * Check if Chromium/Puppeteer is available for integration tests.

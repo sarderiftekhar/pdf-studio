@@ -10,7 +10,10 @@ use PdfStudio\Laravel\Contracts\RendererContract;
 use PdfStudio\Laravel\Contracts\TemplateVersionServiceContract;
 use PdfStudio\Laravel\Contracts\UsageMeterContract;
 
-arch()->preset()->php();
+// Arch presets only exist in Pest 3+ (Pest 2 is used for PHP 8.1 / Laravel 10).
+if (function_exists('pest')) {
+    arch()->preset()->php();
+}
 
 arch('contracts are interfaces')
     ->expect('PdfStudio\Laravel\Contracts')

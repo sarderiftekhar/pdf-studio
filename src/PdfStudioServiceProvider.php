@@ -105,7 +105,12 @@ class PdfStudioServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'pdf-studio');
-        $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+
+        // The bundled tables only back Pro / SaaS features, so plain rendering
+        // apps must not get them created by `php artisan migrate`.
+        if (config('pdf-studio.saas.enabled') || config('pdf-studio.pro.enabled')) {
+            $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        }
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
